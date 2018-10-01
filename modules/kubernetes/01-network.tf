@@ -6,7 +6,7 @@ data "aws_vpc" "targeted_vpc" {
 
 ## TODO: count.index+1 is to avoid zone a in us-east (see readme)
 resource "aws_subnet" "k8s_private" {
-  count                   = 2
+  count                   = 2                                                # TODO: FIXME: Make this depending on the number of subnetes
   vpc_id                  = "${data.aws_vpc.targeted_vpc.id}"
   availability_zone       = "${var.availability_zone[count.index]}"
   cidr_block              = "${var.subnets_private_cidr_block[count.index]}"
@@ -21,7 +21,7 @@ resource "aws_subnet" "k8s_private" {
 }
 
 resource "aws_subnet" "k8s_public" {
-  count                   = 2
+  count                   = 2                                               # TODO: FIXME: Make this depending on the number of subnetes
   vpc_id                  = "${data.aws_vpc.targeted_vpc.id}"
   availability_zone       = "${var.availability_zone[count.index]}"
   map_public_ip_on_launch = "true"
@@ -36,7 +36,7 @@ resource "aws_subnet" "k8s_public" {
 }
 
 resource "aws_route_table" "k8s_private_route_table" {
-  vpc_id = "${data.aws_vpc.targeted_vpc.id}"
+  vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an NAT id
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -51,7 +51,7 @@ resource "aws_route_table" "k8s_private_route_table" {
 }
 
 resource "aws_route_table" "k8s_public_route_table" {
-  vpc_id = "${data.aws_vpc.targeted_vpc.id}"
+  vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an IGW
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -66,13 +66,13 @@ resource "aws_route_table" "k8s_public_route_table" {
 }
 
 resource "aws_route_table_association" "k8s_private_route_table_assoc" {
-  count          = 2
+  count          = 2                                                      # TODO: FIXME: Make this depending on the number of subnetes
   subnet_id      = "${element(aws_subnet.k8s_private.*.id, count.index)}"
   route_table_id = "${aws_route_table.k8s_private_route_table.id}"
 }
 
 resource "aws_route_table_association" "k8s_public_route_table_assoc" {
-  count          = 2
+  count          = 2                                                     # TODO: FIXME: Make this depending on the number of subnetes
   subnet_id      = "${element(aws_subnet.k8s_public.*.id, count.index)}"
   route_table_id = "${aws_route_table.k8s_public_route_table.id}"
 }

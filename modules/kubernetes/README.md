@@ -63,10 +63,13 @@ So now the new join call is:
 
 ## TODO
 
+- update k8s version to latest. Maybe try one version at the time ;)
+- Add tags on resources with path to the module they are defined it
 - Create a NAT if the user doesn't pass it
 - Create a IGW if the user doesn't pass it
 - Make the route optional of they don pass the IGW
 - Make the route optional of they don pass the NAT
+- Health check on the asg is done via ELB (check for using ALB)
 - Push networking routing outside the module
 - Export the information needed to create a target group outside the module
 - move from launch configuration to launch template

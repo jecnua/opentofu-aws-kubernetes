@@ -147,7 +147,6 @@ resource "aws_security_group_rule" "allow_all_from_k8s_controller_nodes" {
   type                     = "ingress"
 }
 
-## TODO: Add tags
 resource "aws_autoscaling_group" "k8s_workers_ag" {
   depends_on                = ["aws_autoscaling_group.k8s_controllers_ag"]
   max_size                  = "${var.k8s_workers_num_nodes}"
