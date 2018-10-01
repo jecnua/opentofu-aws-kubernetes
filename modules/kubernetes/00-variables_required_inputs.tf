@@ -1,81 +1,99 @@
 ###################################### Providers
 
 variable "access_key" {
-  type = "string"
+  type        = "string"
+  description = "Aws access key"
 }
 
 variable "secret_key" {
-  type = "string"
+  type        = "string"
+  description = "Aws secret key"
 }
 
 variable "network_region" {
-  type = "string"
+  type        = "string"
+  description = "The AWS region where to spin the infrastructure"
 }
 
 ###################################### General
 
 variable "unique_identifier" {
-  type = "string"
+  type        = "string"
+  description = "A UUID to be used in resource names generation to avoid conflicts"
 }
 
 variable "environment" {
-  type = "string"
+  type        = "string"
+  description = "The environment to use"
 }
 
 variable "controller_join_token" {
-  type = "string"
+  type        = "string"
+  description = "kubeadm control join token. This needs to be unique for each cluster"
 }
 
 variable "kubernetes_cluster" {
-  type = "string"
+  type        = "string"
+  description = "Cluster name indentifier"
 }
 
 ###################################### Network
 
 variable "vpc_id" {
-  type = "string"
+  type        = "string"
+  description = "The VPC id"
 }
 
 variable "nat_gateway" {
-  type = "string"
+  type        = "string"
+  description = "The NAT gateway to use in the private subnets"
 }
 
-variable "subnets_cidr_block" {
-  type = "list"
+variable "subnets_private_cidr_block" {
+  type        = "list"
+  description = "The CIDR to use when creating private subnets"
 }
 
 variable "subnets_public_cidr_block" {
-  type = "list"
+  type        = "list"
+  description = "The CIDR to use when creating public subnets"
 }
 
 ###################################### EC2
 
 variable "ec2_key_name" {
-  type = "string"
+  type        = "string"
+  description = "The key name to associate to the new ec2 servers"
 }
 
 variable "ec2_k8s_controllers_instance_type" {
-  type = "string"
+  type        = "string"
+  description = "Instance size for the controllers"
 }
 
 variable "ec2_k8s_workers_instance_type" {
-  type = "string"
+  type        = "string"
+  description = "Instance size for the nodes"
 }
 
 variable "k8s_controllers_num_nodes" {
-  type = "string"
+  type        = "string"
+  description = "Number of nodes in the asg for the controllers"
 }
 
 variable "k8s_workers_num_nodes" {
-  type = "string"
+  type        = "string"
+  description = "Number of nodes for the asg for the nodes"
 }
 
 ###################################### bootstrap
 
 variable "internet_gateway" {
-  type = "string"
+  type        = "string"
+  description = "ID for the interenet gatawey to use for the public subnets"
 }
 
 variable "internal_network_cidr" {
-  type = "string"
+  type        = "string"
+  description = "TEMPORARY: Allow access from a certain ip range" # TODO: FIXME: This needs to be removed and the sg exported
 }

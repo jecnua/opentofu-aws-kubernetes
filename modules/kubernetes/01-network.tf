@@ -9,7 +9,7 @@ resource "aws_subnet" "k8s_private" {
   count                   = 2
   vpc_id                  = "${data.aws_vpc.targeted_vpc.id}"
   availability_zone       = "${var.availability_zone[count.index]}"
-  cidr_block              = "${var.subnets_cidr_block[count.index]}"
+  cidr_block              = "${var.subnets_private_cidr_block[count.index]}"
   map_public_ip_on_launch = "false"
 
   tags {

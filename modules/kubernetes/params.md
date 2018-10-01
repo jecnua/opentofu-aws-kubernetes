@@ -3,38 +3,36 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| access_key |  | string | - | yes |
+| access_key | Aws access key | string | - | yes |
 | ami_id_controller | The id of the AMI to use for the controller. If empty, the latest ubuntu will be user. | string | `` | no |
 | ami_id_worker | The id of the AMI to use for the workers. If empty, the latest ubuntu will be user. | string | `` | no |
 | ami_name_filter_regex | Regex to find the ami to use | string | `ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*` | no |
 | ami_name_regex | The name regex | string | `^.*` | no |
 | ami_owner | ID of the owner of the ami (example 099720109477 for Canonical) | string | `099720109477` | no |
-| availability_zone | r4.2xlarge are still not available in C | list | `<list>` | no |
-| controller_join_token |  | string | - | yes |
-| ec2_k8s_controllers_instance_root_device_size |  | string | `40` | no |
-| ec2_k8s_controllers_instance_type |  | string | - | yes |
-| ec2_k8s_workers_instance_root_device_size |  | string | `40` | no |
-| ec2_k8s_workers_instance_type |  | string | - | yes |
-| ec2_key_name |  | string | - | yes |
-| environment |  | string | - | yes |
-| hostname_prefix_k8s_controllers |  | string | - | yes |
-| hostname_prefix_k8s_workers |  | string | - | yes |
-| internal_network_cidr |  | string | - | yes |
-| internet_gateway |  | string | - | yes |
-| k8s_controllers_lb_timeout |  | string | `60` | no |
-| k8s_controllers_num_nodes |  | string | - | yes |
+| availability_zone | The availability zone to use. r4.2xlarge are still not available in C | list | `<list>` | no |
+| controller_join_token | kubeadm control join token. This needs to be unique for each cluster | string | - | yes |
+| ec2_k8s_controllers_instance_type | Instance size for the controllers | string | - | yes |
+| ec2_k8s_workers_instance_type | Instance size for the nodes | string | - | yes |
+| ec2_key_name | The key name to associate to the new ec2 servers | string | - | yes |
+| environment | The environment to use | string | - | yes |
+| internal_network_cidr | TEMPORARY: Allow access from a certain ip range | string | - | yes |
+| internet_gateway | ID for the interenet gatawey to use for the public subnets | string | - | yes |
+| k8s_controllers_instance_root_device_size | root device size (GB) for the nodes | string | `40` | no |
+| k8s_controllers_instance_root_device_size_seconds | root device size (GB) for the controllers | string | `40` | no |
+| k8s_controllers_lb_timeout_seconds | lb timeout in seconds for the controllers | string | `60` | no |
+| k8s_controllers_num_nodes | Number of nodes in the asg for the controllers | string | - | yes |
 | k8s_worker_additional_lbs | List of additional ELBs to attach to the AG for nodes (workers) | list | `<list>` | no |
-| k8s_workers_lb_timeout |  | string | `60` | no |
-| k8s_workers_num_nodes |  | string | - | yes |
-| kubernetes_cluster |  | string | - | yes |
-| nat_gateway |  | string | - | yes |
-| network_region |  | string | - | yes |
-| secret_key |  | string | - | yes |
-| sns_topic_notifications | The SNS topic to use when the system autoscale. If empty no notification will be sent | string | `` | no |
-| subnets_cidr_block |  | list | - | yes |
-| subnets_public_cidr_block |  | list | - | yes |
-| unique_identifier |  | string | - | yes |
-| vpc_id |  | string | - | yes |
+| k8s_workers_lb_timeout_seconds | lb timeout in second for the nodes | string | `60` | no |
+| k8s_workers_num_nodes | Number of nodes for the asg for the nodes | string | - | yes |
+| kubernetes_cluster | Cluster name indentifier | string | - | yes |
+| nat_gateway | The NAT gateway to use in the private subnets | string | - | yes |
+| network_region | The AWS region where to spin the infrastructure | string | - | yes |
+| secret_key | Aws secret key | string | - | yes |
+| sns_topic_notifications | The SNS topic to notify when the system autoscale. If empty no notification will be sent | string | `` | no |
+| subnets_private_cidr_block | The CIDR to use when creating private subnets | list | - | yes |
+| subnets_public_cidr_block | The CIDR to use when creating public subnets | list | - | yes |
+| unique_identifier | A UUID to be used in resource names generation to avoid conflicts | string | - | yes |
+| vpc_id | The VPC id | string | - | yes |
 
 ## Outputs
 

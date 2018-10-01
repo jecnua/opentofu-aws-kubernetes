@@ -63,6 +63,10 @@ So now the new join call is:
 
 ## TODO
 
+- Create a NAT if the user doesn't pass it
+- Create a IGW if the user doesn't pass it
+- Make the route optional of they don pass the IGW
+- Make the route optional of they don pass the NAT
 - Push networking routing outside the module
 - Export the information needed to create a target group outside the module
 - move from launch configuration to launch template

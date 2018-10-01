@@ -20,7 +20,7 @@ resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
 
   root_block_device = {
     volume_type           = "gp2"
-    volume_size           = "${var.ec2_k8s_workers_instance_root_device_size}"
+    volume_size           = "${var.k8s_controllers_instance_root_device_size}"
     delete_on_termination = true
   }
 
@@ -37,7 +37,7 @@ resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
 resource "aws_elb" "k8s_workers_internal_elb" {
   name                      = "${var.unique_identifier}-${var.environment}-wrkr-int-elb"
   subnets                   = ["${aws_subnet.k8s_private.*.id}"]
-  idle_timeout              = "${var.k8s_workers_lb_timeout}"
+  idle_timeout              = "${var.k8s_workers_lb_timeout_seconds}"
   internal                  = true
   cross_zone_load_balancing = true
   connection_draining       = true

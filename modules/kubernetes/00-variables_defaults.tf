@@ -34,27 +34,30 @@ variable "availability_zone" {
   default     = ["us-east-1b", "us-east-1d"]
 }
 
-variable "ec2_k8s_controllers_instance_root_device_size" {
-  type    = "string"
-  default = "40"
+variable "k8s_controllers_instance_root_device_size_seconds" {
+  type        = "string"
+  description = "root device size (GB) for the controllers"
+  default     = "40"
 }
 
-variable "ec2_k8s_workers_instance_root_device_size" {
-  type    = "string"
-  default = "40"
+variable "k8s_controllers_instance_root_device_size" {
+  type        = "string"
+  description = "root device size (GB) for the nodes"
+  default     = "40"
 }
 
-variable "k8s_controllers_lb_timeout" {
-  type    = "string"
-  default = "60"
+variable "k8s_controllers_lb_timeout_seconds" {
+  type        = "string"
+  description = "lb timeout in seconds for the controllers"
+  default     = "60"
 }
 
-variable "k8s_workers_lb_timeout" {
-  type    = "string"
-  default = "60"
+variable "k8s_workers_lb_timeout_seconds" {
+  type        = "string"
+  description = "lb timeout in second for the nodes"
+  default     = "60"
 }
 
-##
 variable "k8s_worker_additional_lbs" {
   type        = "list"
   description = "List of additional ELBs to attach to the AG for nodes (workers)"

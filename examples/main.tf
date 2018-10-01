@@ -6,7 +6,7 @@ module "k8s" {
   vpc_id                            = "vpc-xxx" # DEPENDENCY
   ipsec_vgw                         = "xxx"          # TBR
   nat_gateway                       = "xxx"          # TBR
-  subnets_cidr_block                = ["x.x.x.x/x", "x.x.x.x/x"]
+  subnets_private_cidr_block                = ["x.x.x.x/x", "x.x.x.x/x"]
   subnets_public_cidr_block         = ["x.x.x.x/x", "x.x.x.x/x"]
   k8s_controllers_num_nodes         = "1"            # Always 1
   k8s_workers_num_nodes             = "2"
