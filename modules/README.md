@@ -1,3 +1,3 @@
-# details about the kubernetes module
+# Modules
 
-This is a placeholder for the kubernetes module... Watch this space.
+- [Kubernetes module](kubernetes/README.md)

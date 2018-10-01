@@ -2,5 +2,5 @@
 
 | Role | Name | Email |
 |------|------|:-------------:|
-| Primary | Fabrizio Sabatini |  |
+| Primary | Fabrizio Sabatini | fabrizio.sabatini.it@gmail.it |
 | Secondary | | |
