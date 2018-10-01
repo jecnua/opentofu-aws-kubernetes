@@ -1,4 +1,5 @@
-variable "access_key" {}
+variable "access_key" {
+}
 
 variable "secret_key" {}
 
@@ -48,6 +49,4 @@ variable "hostname_prefix_k8s_workers" {}
 
 variable "internet_gateway" {}
 
-variable "internal_network_cidr" {
-  
-}
+variable "internal_network_cidr" {}

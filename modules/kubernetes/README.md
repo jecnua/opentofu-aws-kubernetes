@@ -63,9 +63,11 @@ So now the new join call is:
 
 ## TODO
 
-- Allow injections of ALBs
+- Push networking routing outside the module
+- Export the information needed to create a target group outside the module
+- move from launch configuration to launch template
 - region is hardcoded in the bash
 - version is hardcoded in the bash
 - separate etcd!!!
 - rename all workers reference to nodes
-- fix/reduce IAM roles
+- fix/reduce IAM roles power

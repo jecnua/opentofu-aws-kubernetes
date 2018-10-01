@@ -160,17 +160,18 @@ resource "aws_security_group_rule" "allow_all_from_k8s_worker_nodes" {
   security_group_id        = "${aws_security_group.k8s_controllers_node_sg.id}"
 }
 
-## TODO: Add tags
 resource "aws_autoscaling_group" "k8s_controllers_ag" {
-  max_size                  = 1
-  min_size                  = 1
-  desired_capacity          = 1
+  max_size                  = "${var.k8s_controllers_num_nodes}"
+  min_size                  = "${var.k8s_controllers_num_nodes}"
+  desired_capacity          = "${var.k8s_controllers_num_nodes}"
   launch_configuration      = "${aws_launch_configuration.k8s_controllers_launch_configuration.id}"
   health_check_grace_period = 300
   health_check_type         = "EC2"
   force_delete              = false
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
+  vpc_zone_identifier       = ["${aws_subnet.k8s_private.*.id}"]
+  load_balancers            = ["${aws_elb.k8s_controllers_internal_elb.name}"]
 
   termination_policies = [
     "OldestInstance",
@@ -214,10 +215,4 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
     value               = "1"
     propagate_at_launch = true
   }
-
-  vpc_zone_identifier = ["${aws_subnet.k8s_private.*.id}"]
-
-  load_balancers = [
-    "${aws_elb.k8s_controllers_internal_elb.name}",
-  ]
 }
