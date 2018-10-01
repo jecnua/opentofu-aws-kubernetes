@@ -63,6 +63,7 @@ So now the new join call is:
 
 ## TODO
 
+- Add a random provider to generate something flexyble to use in naming
 - update k8s version to latest. Maybe try one version at the time ;)
 - Add tags on resources with path to the module they are defined it
 - Create a NAT if the user doesn't pass it
