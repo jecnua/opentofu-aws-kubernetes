@@ -1,25 +1,44 @@
+###################################### Providers
+
 variable "access_key" {
+  type = "string"
 }
 
-variable "secret_key" {}
+variable "secret_key" {
+  type = "string"
+}
 
-variable "network_region" {}
+variable "network_region" {
+  type = "string"
+}
 
 ###################################### General
 
-variable "unique_identifier" {}
+variable "unique_identifier" {
+  type = "string"
+}
 
-variable "environment" {}
+variable "environment" {
+  type = "string"
+}
 
-variable "controller_join_token" {}
+variable "controller_join_token" {
+  type = "string"
+}
 
-variable "kubernetes_cluster" {}
+variable "kubernetes_cluster" {
+  type = "string"
+}
 
 ###################################### Network
 
-variable "vpc_id" {}
+variable "vpc_id" {
+  type = "string"
+}
 
-variable "nat_gateway" {}
+variable "nat_gateway" {
+  type = "string"
+}
 
 variable "subnets_cidr_block" {
   type = "list"
@@ -31,22 +50,40 @@ variable "subnets_public_cidr_block" {
 
 ###################################### EC2
 
-variable "ec2_key_name" {}
+variable "ec2_key_name" {
+  type = "string"
+}
 
-variable "ec2_k8s_controllers_instance_type" {}
+variable "ec2_k8s_controllers_instance_type" {
+  type = "string"
+}
 
-variable "ec2_k8s_workers_instance_type" {}
+variable "ec2_k8s_workers_instance_type" {
+  type = "string"
+}
 
-variable "k8s_controllers_num_nodes" {}
+variable "k8s_controllers_num_nodes" {
+  type = "string"
+}
 
-variable "k8s_workers_num_nodes" {}
+variable "k8s_workers_num_nodes" {
+  type = "string"
+}
 
 ###################################### bootstrap
 
-variable "hostname_prefix_k8s_controllers" {}
+variable "hostname_prefix_k8s_controllers" {
+  type = "string"
+}
 
-variable "hostname_prefix_k8s_workers" {}
+variable "hostname_prefix_k8s_workers" {
+  type = "string"
+}
 
-variable "internet_gateway" {}
+variable "internet_gateway" {
+  type = "string"
+}
 
-variable "internal_network_cidr" {}
+variable "internal_network_cidr" {
+  type = "string"
+}
