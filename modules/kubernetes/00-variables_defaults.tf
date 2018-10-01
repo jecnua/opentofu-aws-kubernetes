@@ -30,7 +30,7 @@ variable "ami_id_worker" {
 
 variable "availability_zone" {
   type        = "list"
-  description = "r4.2xlarge are still not available in C"
+  description = "The availability zone to use. r4.2xlarge are still not available in C"
   default     = ["us-east-1b", "us-east-1d"]
 }
 
@@ -44,18 +44,18 @@ variable "ec2_k8s_workers_instance_root_device_size" {
   default = "40"
 }
 
-variable "k8s_controllers_elb_timeout" {
+variable "k8s_controllers_lb_timeout" {
   type    = "string"
   default = "60"
 }
 
-variable "k8s_workers_elb_timeout" {
+variable "k8s_workers_lb_timeout" {
   type    = "string"
   default = "60"
 }
 
 ##
-variable "k8s_worker_additional_elbs" {
+variable "k8s_worker_additional_lbs" {
   type        = "list"
   description = "List of additional ELBs to attach to the AG for nodes (workers)"
   default     = []
@@ -63,6 +63,6 @@ variable "k8s_worker_additional_elbs" {
 
 variable "sns_topic_notifications" {
   type        = "string"
-  description = "The SNS topic to use when the system autoscale. If empty no notification will be sent"
+  description = "The SNS topic to notify when the system autoscale. If empty no notification will be sent"
   default     = ""
 }

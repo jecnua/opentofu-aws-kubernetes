@@ -37,7 +37,7 @@ resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
 resource "aws_elb" "k8s_workers_internal_elb" {
   name                      = "${var.unique_identifier}-${var.environment}-wrkr-int-elb"
   subnets                   = ["${aws_subnet.k8s_private.*.id}"]
-  idle_timeout              = "${var.k8s_workers_elb_timeout}"
+  idle_timeout              = "${var.k8s_workers_lb_timeout}"
   internal                  = true
   cross_zone_load_balancing = true
   connection_draining       = true
@@ -154,13 +154,13 @@ resource "aws_autoscaling_group" "k8s_workers_ag" {
   min_size                  = "${var.k8s_workers_num_nodes}"
   desired_capacity          = "${var.k8s_workers_num_nodes}"
   launch_configuration      = "${aws_launch_configuration.k8s_workers_launch_configuration.id}"
-  health_check_grace_period = 300                                                                                                ## TODO: Parametrise
-  health_check_type         = "EC2"                                                                                              ## TODO: What do we want to do with this?
+  health_check_grace_period = 300                                                                                               ## TODO: Parametrise
+  health_check_type         = "EC2"                                                                                             ## TODO: What do we want to do with this?
   force_delete              = false
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
   vpc_zone_identifier       = ["${aws_subnet.k8s_private.*.id}"]
-  load_balancers            = ["${compact(concat(list(aws_elb.k8s_workers_internal_elb.name),var.k8s_worker_additional_elbs))}"]
+  load_balancers            = ["${compact(concat(list(aws_elb.k8s_workers_internal_elb.name),var.k8s_worker_additional_lbs))}"]
 
   termination_policies = [
     "OldestInstance",

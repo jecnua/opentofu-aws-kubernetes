@@ -37,7 +37,7 @@ resource "aws_launch_configuration" "k8s_controllers_launch_configuration" {
 resource "aws_elb" "k8s_controllers_internal_elb" {
   name                      = "${var.unique_identifier}-${var.environment}-ctrl-int-elb"
   subnets                   = ["${aws_subnet.k8s_private.*.id}"]
-  idle_timeout              = "${var.k8s_controllers_elb_timeout}"
+  idle_timeout              = "${var.k8s_controllers_lb_timeout}"
   internal                  = true
   cross_zone_load_balancing = true
   connection_draining       = true

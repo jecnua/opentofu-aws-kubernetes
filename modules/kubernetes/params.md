@@ -21,10 +21,10 @@
 | hostname_prefix_k8s_workers |  | string | - | yes |
 | internal_network_cidr |  | string | - | yes |
 | internet_gateway |  | string | - | yes |
-| k8s_controllers_elb_timeout |  | string | `60` | no |
+| k8s_controllers_lb_timeout |  | string | `60` | no |
 | k8s_controllers_num_nodes |  | string | - | yes |
-| k8s_worker_additional_elbs | List of additional ELBs to attach to the AG for nodes (workers) | list | `<list>` | no |
-| k8s_workers_elb_timeout |  | string | `60` | no |
+| k8s_worker_additional_lbs | List of additional ELBs to attach to the AG for nodes (workers) | list | `<list>` | no |
+| k8s_workers_lb_timeout |  | string | `60` | no |
 | k8s_workers_num_nodes |  | string | - | yes |
 | kubernetes_cluster |  | string | - | yes |
 | nat_gateway |  | string | - | yes |

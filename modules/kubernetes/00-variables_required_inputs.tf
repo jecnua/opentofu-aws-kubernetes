@@ -72,14 +72,6 @@ variable "k8s_workers_num_nodes" {
 
 ###################################### bootstrap
 
-variable "hostname_prefix_k8s_controllers" {
-  type = "string"
-}
-
-variable "hostname_prefix_k8s_workers" {
-  type = "string"
-}
-
 variable "internet_gateway" {
   type = "string"
 }
