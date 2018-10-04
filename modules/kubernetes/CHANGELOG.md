@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 1.2.0
+
 ## 1.1.0
 
 - Made it work in a new environement

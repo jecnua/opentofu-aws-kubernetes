@@ -37,7 +37,7 @@ variable "nat_gateway" {
 variable "availability_zone" {
   type        = "list"
   description = "The availability zone to use. r4.2xlarge are still not available in C"
-  default     = ["eu-west-1a", "eu-west-1b"]
+  default     = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 
 variable "k8s_controllers_instance_root_device_size_seconds" {
