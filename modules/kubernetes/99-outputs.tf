@@ -1,21 +1,21 @@
 output "workers_elb_internal_dns_name" {
   description = "The AWS DNS name of the worker nodes ELB"
-  value       = "${aws_elb.k8s_workers_internal_elb.dns_name}"
+  value       = "${aws_elb.k8s_workers_internal_elb.0.dns_name}"
 }
 
 output "workers_elb_internal_zone_id" {
   description = "The AWS zone id for the worker nodes ELB"
-  value       = "${aws_elb.k8s_workers_internal_elb.zone_id}"
+  value       = "${aws_elb.k8s_workers_internal_elb.0.zone_id}"
 }
 
 output "nodes_ag_id" {
   description = "The nodes autoscaling group id"
-  value       = "${aws_autoscaling_group.k8s_workers_ag.id}"
+  value       = "${aws_autoscaling_group.k8s_workers_ag.0.id}"
 }
 
 output "nodes_ag_availability_zones" {
   description = "The nodes autoscaling group AZ used"
-  value       = "${aws_autoscaling_group.k8s_workers_ag.availability_zones}"
+  value       = "${aws_autoscaling_group.k8s_workers_ag.0.availability_zones}"
 }
 
 output "nodes_subnets_private_id" {
@@ -48,6 +48,12 @@ output "k8s_role_id" {
   value       = "${aws_iam_role.k8s_assume_role.id}"
 }
 
-output "private_route_table" {
-  value = "${aws_route_table.k8s_private_route_table.id}"
+output "private_route_table_id" {
+  description = "The id of the PRIVATE route table"
+  value       = "${aws_route_table.k8s_private_route_table.id}"
+}
+
+output "public_route_table_id" {
+  description = "The id of the PUBLIC route table"
+  value       = "${aws_route_table.k8s_public_route_table.id}"
 }

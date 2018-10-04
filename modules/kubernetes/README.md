@@ -74,6 +74,7 @@ So now the new join call is:
 
 ## TODO
 
+- Update ubuntu from 16.04 to 18.04
 - FIX the bash
 - Move the NAT outside
 - Move the IGW outside

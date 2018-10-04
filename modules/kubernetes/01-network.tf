@@ -4,7 +4,6 @@ data "aws_vpc" "targeted_vpc" {
   state   = "available"
 }
 
-## TODO: count.index+1 is to avoid zone a in us-east (see readme)
 resource "aws_subnet" "k8s_private" {
   count                   = "${length(var.subnets_private_cidr_block)}"
   vpc_id                  = "${data.aws_vpc.targeted_vpc.id}"
@@ -36,7 +35,7 @@ resource "aws_subnet" "k8s_public" {
 }
 
 resource "aws_route_table" "k8s_private_route_table" {
-  vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an NAT id
+  vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
     Name              = "${var.unique_identifier} ${var.environment} k8s private route table"
@@ -45,20 +44,15 @@ resource "aws_route_table" "k8s_private_route_table" {
   }
 }
 
-# resource "aws_route_table" "k8s_public_route_table" {
-#   vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an IGW
+resource "aws_route_table" "k8s_public_route_table" {
+  vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = "${var.internet_gateway}" # Internet Gateway
-#   }
-
-#   tags {
-#     Name              = "${var.unique_identifier} ${var.environment} k8s public route table"
-#     managed           = "terraform"
-#     KubernetesCluster = "${var.kubernetes_cluster}"
-#   }
-# }
+  tags {
+    Name              = "${var.unique_identifier} ${var.environment} k8s public route table"
+    managed           = "terraform"
+    KubernetesCluster = "${var.kubernetes_cluster}"
+  }
+}
 
 resource "aws_route_table_association" "k8s_private_route_table_assoc" {
   count          = "${length(var.subnets_private_cidr_block)}"
@@ -66,9 +60,8 @@ resource "aws_route_table_association" "k8s_private_route_table_assoc" {
   route_table_id = "${aws_route_table.k8s_private_route_table.id}"
 }
 
-# resource "aws_route_table_association" "k8s_public_route_table_assoc" {
-#   count          = "${length(var.subnets_public_cidr_block)}"
-#   subnet_id      = "${element(aws_subnet.k8s_public.*.id, count.index)}"
-#   route_table_id = "${aws_route_table.k8s_public_route_table.id}"
-# }
-
+resource "aws_route_table_association" "k8s_public_route_table_assoc" {
+  count          = "${length(var.subnets_public_cidr_block)}"
+  subnet_id      = "${element(aws_subnet.k8s_public.*.id, count.index)}"
+  route_table_id = "${aws_route_table.k8s_public_route_table.id}"
+}
