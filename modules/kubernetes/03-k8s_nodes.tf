@@ -5,6 +5,7 @@ data "template_file" "bootstrap_node_k8s_workers" {
     controller_join_token = "${var.controller_join_token}"
     is_worker             = "true"
     cluster_id            = "${var.kubernetes_cluster}"
+    region                = "${var.node_region}"
   }
 }
 

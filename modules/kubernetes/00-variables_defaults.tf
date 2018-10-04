@@ -34,6 +34,18 @@ variable "availability_zone" {
   default     = ["us-east-1b", "us-east-1d"]
 }
 
+variable "region" {
+  default = "us-east-1"
+}
+
+variable "controller_region" {
+  default = "us-east-1"
+}
+
+variable "node_region" {
+  default = "us-east-1"
+}
+
 variable "ec2_k8s_controllers_instance_root_device_size" {
   type    = "string"
   default = "40"
