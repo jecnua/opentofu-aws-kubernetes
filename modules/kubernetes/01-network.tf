@@ -38,11 +38,6 @@ resource "aws_subnet" "k8s_public" {
 resource "aws_route_table" "k8s_private_route_table" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an NAT id
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${var.nat_gateway}" #NAT Gateway
-  }
-
   tags {
     Name              = "${var.unique_identifier} ${var.environment} k8s private route table"
     managed           = "terraform"
