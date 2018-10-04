@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.0
+
+- Made it work in a new environement
+
 ## 1.0.0
 
 - Opensourced

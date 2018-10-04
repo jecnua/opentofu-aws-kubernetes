@@ -1,14 +1,14 @@
 ###################################### Providers
 
-variable "access_key" {
-  type        = "string"
-  description = "Aws access key"
-}
+# variable "access_key" {
+#   type        = "string"
+#   description = "Aws access key"
+# }
 
-variable "secret_key" {
-  type        = "string"
-  description = "Aws secret key"
-}
+# variable "secret_key" {
+#   type        = "string"
+#   description = "Aws secret key"
+# }
 
 variable "network_region" {
   type        = "string"
@@ -44,10 +44,10 @@ variable "vpc_id" {
   description = "The VPC id"
 }
 
-variable "nat_gateway" {
-  type        = "string"
-  description = "The NAT gateway to use in the private subnets"
-}
+# variable "nat_gateway" {
+#   type        = "string"
+#   description = "The NAT gateway to use in the private subnets"
+# }
 
 variable "subnets_private_cidr_block" {
   type        = "list"
@@ -88,10 +88,10 @@ variable "k8s_workers_num_nodes" {
 
 ###################################### bootstrap
 
-variable "internet_gateway" {
-  type        = "string"
-  description = "ID for the interenet gatawey to use for the public subnets"
-}
+# variable "internet_gateway" {
+#   type        = "string"
+#   description = "ID for the interenet gatawey to use for the public subnets"
+# }
 
 variable "internal_network_cidr" {
   type        = "string"

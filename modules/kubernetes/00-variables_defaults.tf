@@ -28,10 +28,16 @@ variable "ami_id_worker" {
   default     = ""
 }
 
+variable "nat_gateway" {
+  type        = "string"
+  description = "temp"
+  default     = ""
+}
+
 variable "availability_zone" {
   type        = "list"
   description = "The availability zone to use. r4.2xlarge are still not available in C"
-  default     = ["us-east-1b", "us-east-1d"]
+  default     = ["eu-west-1a", "eu-west-1b"]
 }
 
 variable "k8s_controllers_instance_root_device_size_seconds" {

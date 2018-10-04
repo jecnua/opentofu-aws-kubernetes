@@ -5,9 +5,20 @@
 This module will spin a up all you need in your infrastructure to run
 a kubernetes cluster.
 
+- provider.aws: version = "~> 1.39"
+- provider.template: version = "~> 1.0"
+
 ## Parameters
 
 You can find them [here](params.md)
+
+## Usage
+
+Remember to [generate a kubeadm token](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-token/#cmd-token-generate):
+
+        kubeadm token generate
+
+Be careful to pass the right subnets in availability_zone!
 
 ## Limitations
 
@@ -64,6 +75,8 @@ So now the new join call is:
 ## TODO
 
 - FIX the bash
+- Move the NAT outside
+- Move the IGW outside
 - Add a random provider to generate something flexyble to use in naming
 - update k8s version to latest. Maybe try one version at the time ;)
 - Add tags on resources with path to the module they are defined it

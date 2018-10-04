@@ -47,3 +47,7 @@ output "k8s_role_id" {
   description = "The role the nodes use. Can be used to attach policies"
   value       = "${aws_iam_role.k8s_assume_role.id}"
 }
+
+output "private_route_table" {
+  value = "${aws_route_table.k8s_private_route_table.id}"
+}

@@ -24,8 +24,8 @@ resource "aws_subnet" "k8s_public" {
   count                   = 2                                               # TODO: FIXME: Make this depending on the number of subnetes
   vpc_id                  = "${data.aws_vpc.targeted_vpc.id}"
   availability_zone       = "${var.availability_zone[count.index]}"
-  map_public_ip_on_launch = "true"
   cidr_block              = "${var.subnets_public_cidr_block[count.index]}"
+  map_public_ip_on_launch = "true"
 
   tags {
     Name                     = "${var.unique_identifier} ${var.environment} k8s public subnet"
@@ -50,20 +50,20 @@ resource "aws_route_table" "k8s_private_route_table" {
   }
 }
 
-resource "aws_route_table" "k8s_public_route_table" {
-  vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an IGW
+# resource "aws_route_table" "k8s_public_route_table" {
+#   vpc_id = "${data.aws_vpc.targeted_vpc.id}" # TODO: Make this only depending on receiving an IGW
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${var.internet_gateway}" # Internet Gateway
-  }
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     gateway_id = "${var.internet_gateway}" # Internet Gateway
+#   }
 
-  tags {
-    Name              = "${var.unique_identifier} ${var.environment} k8s public route table"
-    managed           = "terraform"
-    KubernetesCluster = "${var.kubernetes_cluster}"
-  }
-}
+#   tags {
+#     Name              = "${var.unique_identifier} ${var.environment} k8s public route table"
+#     managed           = "terraform"
+#     KubernetesCluster = "${var.kubernetes_cluster}"
+#   }
+# }
 
 resource "aws_route_table_association" "k8s_private_route_table_assoc" {
   count          = 2                                                      # TODO: FIXME: Make this depending on the number of subnetes
@@ -71,8 +71,9 @@ resource "aws_route_table_association" "k8s_private_route_table_assoc" {
   route_table_id = "${aws_route_table.k8s_private_route_table.id}"
 }
 
-resource "aws_route_table_association" "k8s_public_route_table_assoc" {
-  count          = 2                                                     # TODO: FIXME: Make this depending on the number of subnetes
-  subnet_id      = "${element(aws_subnet.k8s_public.*.id, count.index)}"
-  route_table_id = "${aws_route_table.k8s_public_route_table.id}"
-}
+# resource "aws_route_table_association" "k8s_public_route_table_assoc" {
+#   count          = 2                                                     # TODO: FIXME: Make this depending on the number of subnetes
+#   subnet_id      = "${element(aws_subnet.k8s_public.*.id, count.index)}"
+#   route_table_id = "${aws_route_table.k8s_public_route_table.id}"
+# }
+

@@ -8,3 +8,6 @@ terraform.tfvars
 # OS X files
 .history
 .DS_Store
+
+# Local
+local/
