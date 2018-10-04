@@ -9,6 +9,7 @@ data "template_file" "bootstrap_node_k8s_workers" {
 }
 
 resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
+  count                       = "${signum(var.k8s_workers_num_nodes)}"
   image_id                    = "${var.ami_id_worker != "" ? var.ami_id_worker : data.aws_ami.ami_dynamic.id}"
   instance_type               = "${var.ec2_k8s_workers_instance_type}"
   key_name                    = "${var.ec2_key_name}"
@@ -35,6 +36,7 @@ resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
 
 # TODO: access_logs
 resource "aws_elb" "k8s_workers_internal_elb" {
+  count                     = "${signum(var.k8s_workers_num_nodes)}"
   name                      = "${var.unique_identifier}-${var.environment}-wrkr-int-elb"
   subnets                   = ["${aws_subnet.k8s_private.*.id}"]
   idle_timeout              = "${var.k8s_workers_lb_timeout_seconds}"
@@ -148,6 +150,7 @@ resource "aws_security_group_rule" "allow_all_from_k8s_controller_nodes" {
 }
 
 resource "aws_autoscaling_group" "k8s_workers_ag" {
+  count                     = "${signum(var.k8s_workers_num_nodes)}"
   depends_on                = ["aws_autoscaling_group.k8s_controllers_ag"]
   max_size                  = "${var.k8s_workers_num_nodes}"
   min_size                  = "${var.k8s_workers_num_nodes}"
