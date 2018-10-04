@@ -123,7 +123,7 @@ then
   # kubectl cordon $AWS_HOSTNAME
 else
   # You need to filter by tag Name to find the master to connect to. You don't
-  # know at startup time the ip.
+  # know at startup time the ip. Region is param from variables_defaults.tf
   MASTER_IP=`aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region=${region} | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq`
   # Read gotchas #1
   echo "Connecting to $MASTER_IP port 6443"
