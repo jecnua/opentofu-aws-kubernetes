@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 1.3.0
+
+### Features
+
+- Updated from version 1.7 to 1.12
+- Updated ubuntu to 18.04
+
+### Bugfixes
+
+- Fixed the problem with the nodes not joining the master
+
+### Changes
+
+### Known bugs/issues
+
+- Sg are defined inside the module with rules. This will be removed to allow rule injection outside the system
+
 ## 1.2.1
 
 ### Features

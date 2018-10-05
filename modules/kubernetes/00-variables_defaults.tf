@@ -1,7 +1,7 @@
 variable "ami_name_filter_regex" {
   type        = "string"
   description = "Regex to find the ami to use"
-  default     = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
+  default     = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"
 }
 
 variable "ami_owner" {
@@ -28,12 +28,6 @@ variable "ami_id_worker" {
   default     = ""
 }
 
-variable "nat_gateway" {
-  type        = "string"
-  description = "temp"
-  default     = ""
-}
-
 variable "availability_zone" {
   type        = "list"
   description = "The availability zone to use. r4.2xlarge are still not available in C"
@@ -41,7 +35,7 @@ variable "availability_zone" {
 }
 
 variable "region" {
-  type        = "list"
+  type        = "string"
   description = "The region to use with the aws cli in the bootstrap (region you are spinning k8s in)"
   default     = "us-east-1"
 }

@@ -44,11 +44,6 @@ variable "vpc_id" {
   description = "The VPC id"
 }
 
-# variable "nat_gateway" {
-#   type        = "string"
-#   description = "The NAT gateway to use in the private subnets"
-# }
-
 variable "subnets_private_cidr_block" {
   type        = "list"
   description = "The CIDR to use when creating private subnets"
@@ -87,12 +82,6 @@ variable "k8s_workers_num_nodes" {
 }
 
 ###################################### bootstrap
-
-# variable "internet_gateway" {
-#   type        = "string"
-#   description = "ID for the interenet gatawey to use for the public subnets"
-# }
-
 variable "internal_network_cidr" {
   type        = "string"
   description = "TEMPORARY: Allow access from a certain ip range" # TODO: FIXME: This needs to be removed and the sg exported
