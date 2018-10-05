@@ -79,7 +79,6 @@ So now the new join call is:
 ## TODO
 
 - Make k8s 1.12 run and join
-- Make region in bootstrap parametric to find the master (from the node)
 - Update ubuntu from 16.04 to 18.04
 - FIX internal_network_cidr
 - FIX the bash

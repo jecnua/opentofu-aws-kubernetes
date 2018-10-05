@@ -1,7 +1,7 @@
 variable "ami_name_filter_regex" {
   type        = "string"
   description = "Regex to find the ami to use"
-  default     = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
+  default     = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"
 }
 
 variable "ami_owner" {
@@ -25,12 +25,6 @@ variable "ami_id_controller" {
 variable "ami_id_worker" {
   type        = "string"
   description = "The id of the AMI to use for the workers. If empty, the latest ubuntu will be user."
-  default     = ""
-}
-
-variable "nat_gateway" {
-  type        = "string"
-  description = "temp"
   default     = ""
 }
 
