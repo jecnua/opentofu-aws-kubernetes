@@ -40,6 +40,12 @@ variable "availability_zone" {
   default     = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 
+variable "region" {
+  type        = "list"
+  description = "The region to use with the aws cli in the bootstrap (region you are spinning k8s in)"
+  default     = "us-east-1"
+}
+
 variable "k8s_controllers_instance_root_device_size_seconds" {
   type        = "string"
   description = "root device size (GB) for the controllers"

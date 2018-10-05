@@ -14,6 +14,20 @@
 
 - Sg are defined inside the module with rules. This will be removed to allow rule injection outside the system
 
+## 1.2.1
+
+### Features
+
+### Bugfixes
+
+-Now the region used by AWS cli inside the bootstrap is parametric
+
+### Changes
+
+### Known bugs/issues
+
+- Sg are defined inside the module with rules. This will be removed to allow rule injection outside the system
+
 ## 1.2.0
 
 Updated networking to follow best practices :)

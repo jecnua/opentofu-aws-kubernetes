@@ -111,7 +111,7 @@ then
 else
   # You need to filter by tag Name to find the master to connect to. You don't
   # know at startup time the ip.
-  MASTER_IP=`aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region='us-east-1' | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq`
+  MASTER_IP=`aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region=${region} | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq`
   # Read gotchas #1
   echo "Connecting to $MASTER_IP port 6443"
   echo "Connecting with token $CONTROLLER_JOIN_TOKEN"

@@ -25,6 +25,7 @@
 | kubernetes_cluster | Cluster name indentifier | string | - | yes |
 | nat_gateway | temp | string | `` | no |
 | network_region | The AWS region where to spin the infrastructure | string | - | yes |
+| region | The region to use with the aws cli in the bootstrap (region you are spinning k8s in) | list | `us-east-1` | no |
 | sns_topic_notifications | The SNS topic to notify when the system autoscale. If empty no notification will be sent | string | `` | no |
 | subnets_private_cidr_block | The CIDR to use when creating private subnets | list | - | yes |
 | subnets_public_cidr_block | The CIDR to use when creating public subnets | list | - | yes |
