@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 ################################################# Dynamic vars (from terraform)
 
@@ -85,26 +84,12 @@ then
     --kubernetes-version $VERSION \
     --token $CONTROLLER_JOIN_TOKEN
 
-  # Set up kubectl for ubuntu
-  #KCTL_USER=ubuntu
-  #KCTL_HOME=/home/ubuntu
-  #mkdir -p $KCTL_HOME/.kube
-  #cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
-  #chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
-
   KCTL_USER='ubuntu'
   cd /home/$KCTL_USER || exit
   mkdir -p /home/$KCTL_USER/.kube
   sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
   sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
   echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
-
-  # Set up kubectl for root
-  #KCTL_USER=root
-  #KCTL_HOME=/root
-  #mkdir -p $KCTL_HOME/.kube
-  #cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
-  #chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
 
   # Retag for the lost tag
   # Fix bug https://github.com/kubernetes/kubeadm/issues/124
@@ -122,7 +107,10 @@ else
   # Read gotchas #1
   echo "Connecting to $MASTER_IP port 6443"
   echo "Connecting with token $CONTROLLER_JOIN_TOKEN"
-  kubeadm join --token $CONTROLLER_JOIN_TOKEN $MASTER_IP:6443
+  kubeadm join \
+    --discovery-token-unsafe-skip-ca-verification \
+    --token $CONTROLLER_JOIN_TOKEN \
+    $MASTER_IP:6443
 fi
 
 touch /opt/bootstrap_completed
