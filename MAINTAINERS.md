@@ -3,4 +3,4 @@
 | Role | Name | Email |
 |------|------|:-------------:|
 | Primary | Fabrizio Sabatini | fabrizio.sabatini.it@gmail.it |
-| Secondary | | |
+| Secondary | Adam Day | stopcontinentaldrift@gmail.com |

@@ -13,3 +13,11 @@ script:
   - cd examples
   - terraform init
   - terraform validate
+
+notifications:
+  email:
+    recipients:
+      - fabrizio.sabatini.it@gmail.it
+      - stopcontinentaldrift@gmail.com
+    on_success: never # default: change
+    on_failure: always # default: always
