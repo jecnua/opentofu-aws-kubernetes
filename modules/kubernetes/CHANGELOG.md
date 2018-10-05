@@ -1,12 +1,15 @@
 # CHANGELOG
 
-## 1.3.0 (Unreleased)
+## 1.3.0
 
 ### Features
 
 - Updated from version 1.7 to 1.12
+- Updated ubuntu to 18.04
 
 ### Bugfixes
+
+- Fixed the problem with the nodes not joining the master
 
 ### Changes
 
