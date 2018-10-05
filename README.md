@@ -2,11 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-*NOTE*: This module is now opensource but the version of k8s it installs is very old.
-I will work on updating it but in the meantime use this repo just to see another possible
-implementation of k8s on AWS but don't use it. Since I am not using k8s at work at the moment
-implementing this module will progress at the speed of a side project.
-
 This repo contains the module to install a kubernetes cluster in your
 environment. More informations can be found at its own repo:
 
@@ -14,21 +9,15 @@ environment. More informations can be found at its own repo:
 
 ## Gotchas
 
-This module is not ready for a production workload. The first thing you want to do if going in that 
-direction is to separate etcd in it's own external cluster or run it with the operator platoform.
+This module is not ready for a production workload. The first thing you want to do if going in that direction is to separate etcd in it's own external cluster or run it with the operator platoform.
 
-The second thing you want to do is add autoscaling to the workers nodes and diversify the set
-of ec2 server to give different combination of CPU/RAM.
+The second thing you want to do is add autoscaling to the workers nodes and diversify the set of ec2 server to give different combination of CPU/RAM.
 
-As it is now there is no path to upgrade aside moving the workload to another cluster. It is not a big
-problem if you run everything stateless, but keep it in mind.
+As it is now there is no path to upgrade aside moving the workload to another cluster. It is not a big problem if you run everything stateless, but keep it in mind.
 
 ### Implementation choices
 
-At the moment I wanted to avid dependencies to external tools like ansible, so the installation
-happens in bash with cloud-init. This means some architectural choices are defined in there
-and they can't be modified. One example is I am using weave as overlay network implementation
-and swapping it with flannel is not possible.
+At the moment I wanted to avid dependencies to external tools like ansible, so the installation happens in bash with cloud-init. This means some architectural choices are defined in there and they can't be modified. One example is I am using weave as overlay network implementation and swapping it with flannel is not possible.
 
 Obviously this can be fixed, just fork and PR into this :)
 
@@ -37,7 +26,7 @@ Obviously this can be fixed, just fork and PR into this :)
 The script "regenerate.sh" is used to refresh the dependencies and the params file. It should be run it after any parameter change or when new resources are added.
 
     ./regenerate.sh
-    elasticsearch: params regenerated
+    k8s: params regenerated
 
 You need to install _terraform-docs_:
 
