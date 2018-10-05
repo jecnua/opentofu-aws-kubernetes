@@ -150,6 +150,37 @@ resource "aws_security_group_rule" "allow_all_from_k8s_controller_nodes" {
   type                     = "ingress"
 }
 
+resource "aws_autoscaling_policy" "k8s_workers_scale_up" {
+  name                   = "k8s_workers_CPU_scale_up"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = "${aws_autoscaling_group.k8s_workers_ag.name}"
+
+    target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 80
+  }
+}
+
+resource "aws_autoscaling_policy" "k8s_workers_scale_down" {
+  name                   = "k8s_workers_CPU_scale_down"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = "${aws_autoscaling_group.k8s_workers_ag.name}"
+    target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 30
+  }
+}
+
 resource "aws_autoscaling_group" "k8s_workers_ag" {
   count                     = "${signum(var.k8s_workers_num_nodes)}"
   depends_on                = ["aws_autoscaling_group.k8s_controllers_ag"]
