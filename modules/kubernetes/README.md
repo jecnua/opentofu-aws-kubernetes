@@ -78,24 +78,18 @@ So now the new join call is:
 
 ## TODO
 
-- Make k8s 1.12 run and join
 - Update ubuntu from 16.04 to 18.04
+- Make k8s 1.12 run and join
+- Change the providers to be injected instead of defining in the module
 - FIX internal_network_cidr
 - FIX the bash
 - Move the NAT outside
 - Move the IGW outside
 - Add a random provider to generate something flexyble to use in naming
-- update k8s version to latest. Maybe try one version at the time ;)
 - Add tags on resources with path to the module they are defined it
-- Create a NAT if the user doesn't pass it
-- Create a IGW if the user doesn't pass it
-- Make the route optional of they don pass the IGW
-- Make the route optional of they don pass the NAT
 - Health check on the asg is done via ELB (check for using ALB)
-- Push networking routing outside the module
 - Export the information needed to create a target group outside the module
 - move from launch configuration to launch template
-- region is hardcoded in the bash
 - version is hardcoded in the bash
 - separate etcd!!!
 - rename all workers reference to nodes
