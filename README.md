@@ -1,5 +1,6 @@
 # Terraform module for kubernetes on AWS
 
+[![Build Status](https://travis-ci.com/jecnua/terraform-aws-kubernetes.svg?branch=master)](https://travis-ci.com/jecnua/terraform-aws-kubernetes)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This repo contains the module to install a kubernetes cluster in your
