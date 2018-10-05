@@ -66,27 +66,12 @@ apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
-apt-mark hold kubelet kubeadm=1.7.0-00 kubectl kubernetes-cni
+apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 # Set new memory limit container with high memory requirements
 sysctl -w vm.max_map_count=262144
 
-# ISSUE: https://github.com/kubernetes/kubernetes/issues/36213
-# https://github.com/kubernetes/release/pull/198
-# https://github.com/kubernetes/kubeadm/issues/28
-# Waiting for: https://github.com/kubernetes/kubernetes/pull/29459
-# Waiting for: https://github.com/kubernetes/kubernetes/issues/27980
-# HACK: https://github.com/kubernetes/release/pull/198
-# My horrible bash :)
-check_cloud_provider=`cat /etc/systemd/system/kubelet.service.d/10-kubeadm.conf | grep 'cloud-provider=aws' | wc -l`
-line_to_add='Environment="KUBELET_EXTRA_ARGS=--cloud-provider=aws"'
-if [[ $check_cloud_provider == 0 ]]
-then
-  sed -i "/ExecStart=/ { N; s/ExecStart=\n/$line_to_add\n&/ }" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-fi
-# Do this before every other step
-systemctl daemon-reload
-service kubelet restart
+echo 'KUBELET_EXTRA_ARGS=--cloud-provider=aws' > /etc/default/kubelet
 
 # Adding autocomplete for ubuntu
 echo 'source <(kubectl completion bash)' > /etc/bash_completion.d/kubectl
@@ -95,32 +80,34 @@ if [[ "x"$IS_WORKER == "x" ]]
 then
   # Start as master (no HA)
   # Forcing version
-  VERSION='stable-1.7'
+  VERSION='stable-1.12'
   kubeadm init \
     --kubernetes-version $VERSION \
     --token $CONTROLLER_JOIN_TOKEN
 
-  # Install kubectl for ubuntu
+  # Set up kubectl for ubuntu
   KCTL_USER=ubuntu
   KCTL_HOME=/home/ubuntu
   mkdir -p $KCTL_HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
-  sudo chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
+  cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
+  chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
+
+  # Set up kubectl for root
+  KCTL_USER=root
+  KCTL_HOME=/root
+  mkdir -p $KCTL_HOME/.kube
+  cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
+  chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
 
   # Retag for the lost tag
   # Fix bug https://github.com/kubernetes/kubeadm/issues/124
   # Also: https://github.com/kubernetes/kubernetes/pull/39112
   # Old way
-  kubectl label --overwrite no $AWS_HOSTNAME kubeadm.alpha.kubernetes.io/role=master
+  # kubectl label --overwrite no $AWS_HOSTNAME kubeadm.alpha.kubernetes.io/role=master */
   # New way
   kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true
   # Install CNI plugin
-  # kubectl apply -f https://git.io/weave-kube # Install NET
-  # New way
-  curl -fsSL -o weave-net.yaml "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-  kubectl apply -n kube-system -f weave-net.yaml
-  mv weave-net.yaml /opt/weave-net.yaml
-  # kubectl cordon $AWS_HOSTNAME
+  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 else
   # You need to filter by tag Name to find the master to connect to. You don't
   # know at startup time the ip.

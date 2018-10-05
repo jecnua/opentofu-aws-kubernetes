@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 1.3.0 (Unreleased)
+
+### Features
+
+- Updated from version 1.7 to 1.12
+
+### Bugfixes
+
+### Changes
+
+### Known bugs/issues
+
+- Sg are defined inside the module with rules. This will be removed to allow rule injection outside the system
+
 ## 1.2.0
 
 Updated networking to follow best practices :)

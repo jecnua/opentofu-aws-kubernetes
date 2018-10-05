@@ -1,7 +1,5 @@
 # Kubernetes module (STILL not suitable for everybody)
 
-![Overview](graphs/overview.png)
-
 This module will spin a up all you need in your infrastructure to run
 a kubernetes cluster.
 
@@ -19,6 +17,12 @@ Remember to [generate a kubeadm token](https://kubernetes.io/docs/reference/setu
         kubeadm token generate
 
 Be careful to pass the right subnets in availability_zone!
+
+## Debug
+
+To get the kubelet logs:
+
+        journalctl -u kubelet
 
 ## Limitations
 
@@ -74,7 +78,10 @@ So now the new join call is:
 
 ## TODO
 
+- Make k8s 1.12 run and join
+- Make region in bootstrap parametric to find the master (from the node)
 - Update ubuntu from 16.04 to 18.04
+- FIX internal_network_cidr
 - FIX the bash
 - Move the NAT outside
 - Move the IGW outside
