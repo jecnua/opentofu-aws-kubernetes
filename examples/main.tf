@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "eu-west-1"
+}
+
 module "k8s" {
   source                            = "../modules/kubernetes"
   network_region                    = "eu-west-1"
