@@ -41,7 +41,7 @@ variable "availability_zone" {
 }
 
 variable "region" {
-  type        = "list"
+  type        = "string"
   description = "The region to use with the aws cli in the bootstrap (region you are spinning k8s in)"
   default     = "us-east-1"
 }

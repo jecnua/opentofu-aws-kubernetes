@@ -86,18 +86,25 @@ then
     --token $CONTROLLER_JOIN_TOKEN
 
   # Set up kubectl for ubuntu
-  KCTL_USER=ubuntu
-  KCTL_HOME=/home/ubuntu
-  mkdir -p $KCTL_HOME/.kube
-  cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
-  chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
+  #KCTL_USER=ubuntu
+  #KCTL_HOME=/home/ubuntu
+  #mkdir -p $KCTL_HOME/.kube
+  #cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
+  #chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
+
+  KCTL_USER='ubuntu'
+  cd /home/$KCTL_USER || exit
+  mkdir -p /home/$KCTL_USER/.kube
+  sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
+  sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
+  echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
 
   # Set up kubectl for root
-  KCTL_USER=root
-  KCTL_HOME=/root
-  mkdir -p $KCTL_HOME/.kube
-  cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
-  chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
+  #KCTL_USER=root
+  #KCTL_HOME=/root
+  #mkdir -p $KCTL_HOME/.kube
+  #cp -i /etc/kubernetes/admin.conf $KCTL_HOME/.kube/config
+  #chown $KCTL_USER:$KCTL_USER $KCTL_HOME/.kube/config
 
   # Retag for the lost tag
   # Fix bug https://github.com/kubernetes/kubeadm/issues/124
@@ -105,9 +112,9 @@ then
   # Old way
   # kubectl label --overwrite no $AWS_HOSTNAME kubeadm.alpha.kubernetes.io/role=master */
   # New way
-  kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true
+  su $KCTL_USER -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
   # Install CNI plugin
-  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  su $KCTL_USER -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 else
   # You need to filter by tag Name to find the master to connect to. You don't
   # know at startup time the ip.
