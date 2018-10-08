@@ -10,9 +10,10 @@ before_install:
   - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
 
 script:
+  - shellcheck modules/kubernetes/scripts/* # Validating BASH
   - cd examples
   - terraform init
-  - terraform validate
+  - terraform validate # Validating Terraform
 
 notifications:
   email:

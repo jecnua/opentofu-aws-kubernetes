@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 1.3.1
+
+### Features
+
+### Bugfixes
+
+### Changes
+
+- Linted and corrected all the BASH to follow best practices
+- Added shellcheck to travis checks
+
+### Known bugs/issues
+
+- Sg are defined inside the module with rules. This will be removed to allow rule injection outside the system
+
 ## 1.3.0
 
 ### Features
