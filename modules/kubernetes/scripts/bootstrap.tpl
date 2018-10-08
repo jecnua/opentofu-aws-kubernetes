@@ -1,19 +1,24 @@
 #!/bin/bash
 
-################################################# Dynamic vars (from terraform)
+### Dynamic vars (from terraform)
 
 DATA_DIR_NAME=data
+# shellcheck disable=SC2154
 CONTROLLER_JOIN_TOKEN=${controller_join_token}
+# shellcheck disable=SC2154
 IS_WORKER=${is_worker}
+# shellcheck disable=SC2154
 CLUSTER_ID=${cluster_id}
+# shellcheck disable=SC2154
+AWS_REGION=${region}
 
-################################################# Static
+### Statics
 
-echo "START: "`date` >> /opt/bootstrap_times
+echo "START: $(date)" >> /opt/bootstrap_times
 
-AWS_HOSTNAME=`curl http://169.254.169.254/latest/meta-data/local-hostname`
-hostname $AWS_HOSTNAME
-echo $AWS_HOSTNAME > /etc/hostname
+AWS_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/local-hostname)
+hostname "$AWS_HOSTNAME"
+echo "$AWS_HOSTNAME" > /etc/hostname
 echo "127.0.0.1 $AWS_HOSTNAME" >> /etc/hosts
 
 export DEBIAN_FRONTEND="noninteractive"
@@ -27,14 +32,14 @@ locale-gen en_GB.UTF-8 # Will fix the warning when logging to the box
 ################################################# If it has drives
 
 # Format drive if present
-ISFORMATTED=`file -s /dev/xvdi | grep '/dev/xvdi: data' | wc -l`
-if [[ $ISFORMATTED == '1'  ]]
+ISFORMATTED=$(file -s /dev/xvdi | grep -c '/dev/xvdi: data')
+if [[ "$ISFORMATTED" == '1'  ]]
 then
   mkfs -t ext4 /dev/xvdi
 fi
 
 # Mount drive if present
-ISFORMATTED=`file -s /dev/xvdi | grep 'ext4 filesystem data' | wc -l`
+ISFORMATTED=$(file -s /dev/xvdi | grep -c 'ext4 filesystem data')
 if [[ $ISFORMATTED == '1'  ]]
 then
   mkdir /opt/$DATA_DIR_NAME
@@ -81,8 +86,8 @@ then
   # Forcing version
   VERSION='stable-1.12'
   kubeadm init \
-    --kubernetes-version $VERSION \
-    --token $CONTROLLER_JOIN_TOKEN
+    --kubernetes-version "$VERSION" \
+    --token "$CONTROLLER_JOIN_TOKEN"
 
   KCTL_USER='ubuntu'
   cd /home/$KCTL_USER || exit
@@ -97,21 +102,21 @@ then
   # Old way
   # kubectl label --overwrite no $AWS_HOSTNAME kubeadm.alpha.kubernetes.io/role=master */
   # New way
-  su $KCTL_USER -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
+  su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
   # Install CNI plugin
-  su $KCTL_USER -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 else
   # You need to filter by tag Name to find the master to connect to. You don't
   # know at startup time the ip.
-  MASTER_IP=`aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region=${region} | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq`
+  MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
   # Read gotchas #1
   echo "Connecting to $MASTER_IP port 6443"
   echo "Connecting with token $CONTROLLER_JOIN_TOKEN"
   kubeadm join \
     --discovery-token-unsafe-skip-ca-verification \
-    --token $CONTROLLER_JOIN_TOKEN \
-    $MASTER_IP:6443
+    --token "$CONTROLLER_JOIN_TOKEN" \
+    "$MASTER_IP:6443"
 fi
 
 touch /opt/bootstrap_completed
-echo "END: "`date` >> /opt/bootstrap_times
+echo "END: $(date)" >> /opt/bootstrap_times
