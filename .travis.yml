@@ -11,7 +11,7 @@ before_install:
 
 script:
   - shellcheck modules/kubernetes/scripts/* # Validating BASH
-  - shellcheck utilities/* # Validating BASH
+  - shellcheck utilities/*.sh # Validating BASH
   - cd examples
   - terraform init
   - terraform validate # Validating Terraform
