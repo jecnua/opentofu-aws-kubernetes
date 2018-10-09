@@ -33,7 +33,7 @@ To get the kubelet logs:
 
 You can follow the guide here:
 
-- [Utilities](../utilities/)
+- [Utilities](../../utilities/)
 
 ## Limitations
 
