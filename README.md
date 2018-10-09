@@ -7,8 +7,14 @@
 This repo contains the module to install a kubernetes cluster in your
 environment. More informations can be found at its own repo:
 
-- [Kubernetes module](modules/kubernetes/README.md)
+- [Kubernetes module](modules/kubernetes/)
 - - [Module maintainers](MAINTAINERS.md)
+
+## Connect to the cluster
+
+You can follow the guide here:
+
+- [Utilities](utilities/)
 
 ## Gotchas
 

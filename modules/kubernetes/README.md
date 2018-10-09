@@ -29,6 +29,12 @@ To get the kubelet logs:
 
         journalctl -u kubelet
 
+## Connect to the cluster
+
+You can follow the guide here:
+
+- [Utilities](../../utilities/)
+
 ## Limitations
 
 ### K8S Versions
