@@ -37,6 +37,7 @@
 |------|-------------|
 | controller_elb_internal_dns_name | The AWS DNS name of the controller nodes ELB |
 | controller_elb_internal_zone_id | The AWS zone id for the controller nodes ELB |
+| controllers_sd_id | The id of the controllers sg. Allows injection of rules aws_security_group_rule |
 | k8s_role_id | The role the nodes use. Can be used to attach policies |
 | nodes_ag_availability_zones | The nodes autoscaling group AZ used |
 | nodes_ag_id | The nodes autoscaling group id |

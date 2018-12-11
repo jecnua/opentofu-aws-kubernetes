@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 1.4.0
+
+### Features
+
+- Updated to version 1.13.0
+
+### Bugfixes
+
+- Fixed version of kubelet to be the same as kubeadm
+
+### Changes
+
+- Added the controller nodes sg id as output to allow injection
+
+### Known bugs/issues
+
+## 1.3.2
+
+### Features
+
+### Bugfixes
+
+### Changes
+
+### Known bugs/issues
+
+- Small updates
+
 ## 1.3.1
 
 ### Features
