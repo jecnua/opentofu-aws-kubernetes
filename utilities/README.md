@@ -22,5 +22,5 @@ Use it with kubernetes this way:
     $ export KUBECONFIG=kube.conf
     $ kubectl get nodes
     NAME                                             STATUS   ROLES    AGE     VERSION
-    ip-x-x-x-x.eu-west-1.compute.internal   Ready    master   5m45s   v1.12.1
-    ip-x-x-x-x.eu-west-1.compute.internal   Ready    <none>   5m32s   v1.12.1
+    ip-x-x-x-x.eu-west-1.compute.internal   Ready    master   5m45s   v1.13.0
+    ip-x-x-x-x.eu-west-1.compute.internal   Ready    <none>   5m32s   v1.13.0

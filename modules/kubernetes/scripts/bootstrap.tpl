@@ -66,7 +66,8 @@ EOF
 # You need nfs-common to use efs
 apt-get update
 apt-get install -y docker.io apt-transport-https awscli jq curl nfs-common
-apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+# This need to be synched
+apt-get install -y kubelet=1.13.0-00 kubeadm=1.13.0-00 kubectl=1.13.0-00 kubernetes-cni
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
@@ -84,7 +85,7 @@ if [[ "x"$IS_WORKER == "x" ]]
 then
   # Start as master (no HA)
   # Forcing version
-  VERSION='stable-1.12'
+  VERSION='stable-1.13'
   kubeadm init \
     --kubernetes-version "$VERSION" \
     --token "$CONTROLLER_JOIN_TOKEN"

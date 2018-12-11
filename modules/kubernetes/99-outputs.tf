@@ -43,6 +43,11 @@ output "nodes_sd_id" {
   value       = "${aws_security_group.k8s_workers_node_sg.id}"
 }
 
+output "controllers_sd_id" {
+  description = "The id of the controllers sg. Allows injection of rules aws_security_group_rule"
+  value       = "${aws_security_group.k8s_controllers_node_sg.id}"
+}
+
 output "k8s_role_id" {
   description = "The role the nodes use. Can be used to attach policies"
   value       = "${aws_iam_role.k8s_assume_role.id}"
