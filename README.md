@@ -16,6 +16,16 @@ You can follow the guide here:
 
 - [Utilities](utilities/)
 
+## AWS EKS
+
+If you are interested in AWS EKS I can advice to read the following link:
+
+- [https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html](https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html)
+
+The code is already implemented here:
+
+- [https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples/eks-getting-started](https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples/eks-getting-started)
+
 ## Gotchas
 
 This module is not ready for a production workload. The first thing you want to do if going in that direction is to separate etcd in it's own external cluster or run it with the operator platoform.
