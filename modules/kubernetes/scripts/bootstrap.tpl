@@ -67,7 +67,7 @@ EOF
 apt-get update
 apt-get install -y docker.io apt-transport-https awscli jq curl nfs-common
 # This need to be synched
-apt-get install -y kubelet=1.13.0-00 kubeadm=1.13.0-00 kubectl=1.13.0-00 kubernetes-cni
+apt-get install -y kubelet=1.13.0-00 kubeadm=1.13.0-00 kubectl=1.13.0-00
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
