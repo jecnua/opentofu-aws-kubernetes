@@ -2,7 +2,10 @@
 
 [![Build Status](https://travis-ci.com/jecnua/terraform-aws-kubernetes.svg?branch=master)](https://travis-ci.com/jecnua/terraform-aws-kubernetes)
 ![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.11.10-blue.svg?style=flat)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![](https://img.shields.io/maintenance/yes/2019.svg)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Percentage of issues still open")
 
 This repo contains the module to install a kubernetes cluster in your
 environment. More informations can be found at its own repo:
