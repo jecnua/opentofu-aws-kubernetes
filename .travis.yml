@@ -11,7 +11,8 @@ before_install:
   - gem install travis
   - mkdir -p ~/.travis
   - touch ~/.travis/config.yml
-  - echo "checked_completion: true" >> ~/.travis/config.yml
+  - |
+    echo "checked_completion: true" >> ~/.travis/config.yml
 
 script:
   - shellcheck modules/kubernetes/scripts/* # Validating BASH
