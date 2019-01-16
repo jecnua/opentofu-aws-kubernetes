@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.4.1
+
+### Features
+
+- Updated to version 1.13.2
+
+### Bugfixes
+
+### Changes
+
+### Known bugs/issues
+
 ## 1.4.0
 
 ### Features

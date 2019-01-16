@@ -12,6 +12,9 @@ CLUSTER_ID=${cluster_id}
 # shellcheck disable=SC2154
 AWS_REGION=${region}
 
+K8S_DEB_PACKAGES_VERSION='1.13.2'
+KUBEADM_VERSION_OF_K8S_TO_INSTALL='stable-1.13'
+
 ### Statics
 
 echo "START: $(date)" >> /opt/bootstrap_times
@@ -67,7 +70,7 @@ EOF
 apt-get update
 apt-get install -y docker.io apt-transport-https awscli jq curl nfs-common
 # This need to be synched
-apt-get install -y kubelet=1.13.1-00 kubeadm=1.13.1-00 kubectl=1.13.1-00
+apt-get install -y kubelet="$K8S_DEB_PACKAGES_VERSION-00" kubeadm="$K8S_DEB_PACKAGES_VERSION-00" kubectl="$K8S_DEB_PACKAGES_VERSION-00"
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
@@ -85,7 +88,7 @@ if [[ "x"$IS_WORKER == "x" ]]
 then
   # Start as master (no HA)
   # Forcing version
-  VERSION='stable-1.13'
+  VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
   kubeadm init \
     --kubernetes-version "$VERSION" \
     --token "$CONTROLLER_JOIN_TOKEN"
