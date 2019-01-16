@@ -1,6 +1,6 @@
 # Kubernetes module
 
-![](https://img.shields.io/badge/kubernetes-v1.13.1-green.svg)
+![](https://img.shields.io/badge/kubernetes-v1.13.2-green.svg)
 ![](https://img.shields.io/badge/ubuntu-18.04-blue.svg)
 
 This module will spin a up all you need in your infrastructure to run
@@ -8,9 +8,9 @@ a kubernetes cluster.
 
 Last tested with:
 
-    Terraform v0.11.10
-    + provider.aws v1.51.0
-    + provider.template v1.0.0
+    Terraform v0.11.11
+    + provider.aws v1.56.0
+    + provider.template v2.0.0
 
 ## Parameters
 
