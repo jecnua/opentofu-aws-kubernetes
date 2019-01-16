@@ -1,5 +1,10 @@
 provider "aws" {
-  region = "eu-west-1"
+  region  = "eu-west-1"
+  version = "~> 1.56"
+}
+
+provider "template" {
+  version = "~> 2.0"
 }
 
 module "k8s" {
