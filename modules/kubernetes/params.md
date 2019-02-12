@@ -48,4 +48,3 @@
 | public_route_table_id | The id of the PUBLIC route table |
 | workers_elb_internal_dns_name | The AWS DNS name of the worker nodes ELB |
 | workers_elb_internal_zone_id | The AWS zone id for the worker nodes ELB |
-
