@@ -90,7 +90,7 @@ So now the new join call is:
 
 ## kube-bench
 
-- [[https://github.com/aquasecurity/kube-bench]]
+- [https://github.com/aquasecurity/kube-bench](https://github.com/aquasecurity/kube-bench)
 
 Results:
 
