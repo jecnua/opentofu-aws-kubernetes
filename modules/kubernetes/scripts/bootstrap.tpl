@@ -12,7 +12,7 @@ CLUSTER_ID=${cluster_id}
 # shellcheck disable=SC2154
 AWS_REGION=${region}
 
-K8S_DEB_PACKAGES_VERSION='1.13.2'
+K8S_DEB_PACKAGES_VERSION='1.13.3'
 KUBEADM_VERSION_OF_K8S_TO_INSTALL='stable-1.13'
 
 ### Statics
