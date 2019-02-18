@@ -29,6 +29,11 @@ The code is already implemented here:
 
 - [https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples/eks-getting-started](https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples/eks-getting-started)
 
+AWS also released a quickstart here:
+
+- [https://aws.amazon.com/quickstart/architecture/amazon-eks/](https://aws.amazon.com/quickstart/architecture/amazon-eks/)
+- [https://github.com/aws-quickstart/quickstart-amazon-eks](https://github.com/aws-quickstart/quickstart-amazon-eks)
+
 ## Gotchas
 
 This module is not ready for a production workload. The first thing you want to do if going in that direction is to separate etcd in it's own external cluster or run it with the operator platoform.
