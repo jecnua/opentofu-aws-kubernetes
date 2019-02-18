@@ -15,7 +15,7 @@ resource "aws_subnet" "k8s_private" {
     Name                              = "${var.unique_identifier} ${var.environment} k8s private subnet"
     managed                           = "terraform (k8s module)"
     KubernetesCluster                 = "${var.kubernetes_cluster}"
-    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/role/internal-elb" = "true"                                                           # Needed for integration with load balancing
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_subnet" "k8s_public" {
     Name                     = "${var.unique_identifier} ${var.environment} k8s public subnet"
     managed                  = "terraform (k8s module)"
     KubernetesCluster        = "${var.kubernetes_cluster}"
-    "kubernetes.io/role/elb" = "1"
+    "kubernetes.io/role/elb" = "true"                                                          # Needed for integration with load balancing
   }
 }
 
