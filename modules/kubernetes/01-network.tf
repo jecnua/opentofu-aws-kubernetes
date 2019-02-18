@@ -12,8 +12,9 @@ resource "aws_subnet" "k8s_private" {
   map_public_ip_on_launch = "false"
 
   tags {
+    ManagedBy                         = "terraform (k8s module)"
+    ModuleRepository                  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name                              = "${var.unique_identifier} ${var.environment} k8s private subnet"
-    managed                           = "terraform (k8s module)"
     KubernetesCluster                 = "${var.kubernetes_cluster}"
     "kubernetes.io/role/internal-elb" = "true"                                                           # Needed for integration with load balancing
   }
@@ -27,8 +28,9 @@ resource "aws_subnet" "k8s_public" {
   map_public_ip_on_launch = "true"
 
   tags {
+    ManagedBy                = "terraform (k8s module)"
+    ModuleRepository         = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name                     = "${var.unique_identifier} ${var.environment} k8s public subnet"
-    managed                  = "terraform (k8s module)"
     KubernetesCluster        = "${var.kubernetes_cluster}"
     "kubernetes.io/role/elb" = "true"                                                          # Needed for integration with load balancing
   }
@@ -38,8 +40,9 @@ resource "aws_route_table" "k8s_private_route_table" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    ManagedBy         = "terraform (k8s module)"
+    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} k8s private route table"
-    managed           = "terraform"
     KubernetesCluster = "${var.kubernetes_cluster}"
   }
 }
@@ -48,8 +51,9 @@ resource "aws_route_table" "k8s_public_route_table" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    ManagedBy         = "terraform (k8s module)"
+    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} k8s public route table"
-    managed           = "terraform"
     KubernetesCluster = "${var.kubernetes_cluster}"
   }
 }

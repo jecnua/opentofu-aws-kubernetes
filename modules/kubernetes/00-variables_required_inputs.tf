@@ -1,15 +1,5 @@
 ###################################### Providers
 
-# variable "access_key" {
-#   type        = "string"
-#   description = "Aws access key"
-# }
-
-# variable "secret_key" {
-#   type        = "string"
-#   description = "Aws secret key"
-# }
-
 variable "network_region" {
   type        = "string"
   description = "The AWS region where to spin the infrastructure"
@@ -81,7 +71,8 @@ variable "k8s_workers_num_nodes" {
   description = "Number of nodes for the asg for the nodes"
 }
 
-###################################### bootstrap
+###################################### Bootstrap
+
 variable "internal_network_cidr" {
   type        = "string"
   description = "TEMPORARY: Allow access from a certain ip range" # TODO: FIXME: This needs to be removed and the sg exported

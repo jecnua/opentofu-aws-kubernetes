@@ -65,8 +65,9 @@ resource "aws_elb" "k8s_workers_internal_elb" {
   ]
 
   tags {
+    ManagedBy         = "terraform (k8s module)"
+    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} workers internal elb"
-    managed           = "terraform k8s_workers module"
     KubernetesCluster = "${var.kubernetes_cluster}"
     env               = "${var.environment}"
   }
@@ -85,6 +86,8 @@ resource "aws_security_group" "k8s_workers_internal_elb_ag_sg" {
   }
 
   tags {
+    ManagedBy         = "terraform (k8s module)"
+    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} workers internal elb sg"
     KubernetesCluster = "${var.kubernetes_cluster}"
   }
@@ -94,6 +97,8 @@ resource "aws_security_group" "k8s_workers_node_sg" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    ManagedBy         = "terraform (k8s module)"
+    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} workers sg"
     KubernetesCluster = "${var.kubernetes_cluster}"
   }
