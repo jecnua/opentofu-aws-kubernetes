@@ -12,6 +12,7 @@ resource "aws_subnet" "k8s_private" {
   map_public_ip_on_launch = "false"
 
   tags {
+    Environment                       = "${var.environment}"
     ManagedBy                         = "terraform (k8s module)"
     ModuleRepository                  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name                              = "${var.unique_identifier} ${var.environment} k8s private subnet"
@@ -28,6 +29,7 @@ resource "aws_subnet" "k8s_public" {
   map_public_ip_on_launch = "true"
 
   tags {
+    Environment              = "${var.environment}"
     ManagedBy                = "terraform (k8s module)"
     ModuleRepository         = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name                     = "${var.unique_identifier} ${var.environment} k8s public subnet"
@@ -40,6 +42,7 @@ resource "aws_route_table" "k8s_private_route_table" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} k8s private route table"
@@ -51,6 +54,7 @@ resource "aws_route_table" "k8s_public_route_table" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} k8s public route table"

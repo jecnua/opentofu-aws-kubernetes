@@ -54,7 +54,7 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
     healthy_threshold   = 2
     unhealthy_threshold = 3        #90 seconds
     timeout             = 10
-    target              = "TCP:22"
+    target              = "TCP:22" # TODO
     interval            = 15
   }
 
@@ -63,12 +63,11 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
   ]
 
   tags {
-    Name              = "${var.unique_identifier} ${var.environment} controllers internal elb"
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
-    env               = "${var.environment}"
+    Name              = "${var.unique_identifier} ${var.environment} controllers internal elb"
     KubernetesCluster = "${var.kubernetes_cluster}"
-    k8s_master        = "true"
   }
 }
 
@@ -95,6 +94,7 @@ resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
   }
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} controllers internal elb sg"
@@ -107,6 +107,7 @@ resource "aws_security_group" "k8s_controllers_node_sg" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} controllers sg"
@@ -199,14 +200,14 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   }
 
   tag {
-    key                 = "Name"
-    value               = "${var.unique_identifier} ${var.environment} controllers in autoscaling"
+    key                 = "Environment"
+    value               = "${var.environment}"
     propagate_at_launch = true
   }
 
   tag {
-    key                 = "env"
-    value               = "${var.environment}"
+    key                 = "Name"
+    value               = "${var.unique_identifier} ${var.environment} controllers in autoscaling"
     propagate_at_launch = true
   }
 
@@ -217,7 +218,7 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   }
 
   tag {
-    key                 = "k8s.io/role/master" #Taken from the kops
+    key                 = "k8s.io/role/master" # Taken from the kops and used by my script to find the master
     value               = "1"
     propagate_at_launch = true
   }

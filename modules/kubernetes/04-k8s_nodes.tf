@@ -65,11 +65,11 @@ resource "aws_elb" "k8s_workers_internal_elb" {
   ]
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} workers internal elb"
     KubernetesCluster = "${var.kubernetes_cluster}"
-    env               = "${var.environment}"
   }
 }
 
@@ -86,6 +86,7 @@ resource "aws_security_group" "k8s_workers_internal_elb_ag_sg" {
   }
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} workers internal elb sg"
@@ -97,6 +98,7 @@ resource "aws_security_group" "k8s_workers_node_sg" {
   vpc_id = "${data.aws_vpc.targeted_vpc.id}"
 
   tags {
+    Environment       = "${var.environment}"
     ManagedBy         = "terraform (k8s module)"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} workers sg"
@@ -196,7 +198,7 @@ resource "aws_autoscaling_group" "k8s_workers_ag" {
   }
 
   tag {
-    key                 = "env"
+    key                 = "Environment"
     value               = "${var.environment}"
     propagate_at_launch = true
   }
@@ -208,7 +210,7 @@ resource "aws_autoscaling_group" "k8s_workers_ag" {
   }
 
   tag {
-    key                 = "k8s.io/role/node" #Taken from the kops
+    key                 = "k8s.io/role/node" # Taken from the kops
     value               = "1"
     propagate_at_launch = true
   }
