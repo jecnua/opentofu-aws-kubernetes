@@ -4,7 +4,7 @@
 
 ### Features
 
-- Updated to version 1.13.2
+- Updated to version 1.13.4
 
 ### Bugfixes
 
