@@ -64,7 +64,7 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 
   tags {
     Environment       = "${var.environment}"
-    ManagedBy         = "terraform (k8s module)"
+    ManagedBy         = "terraform k8s module"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} controllers internal elb"
     KubernetesCluster = "${var.kubernetes_cluster}"
@@ -95,7 +95,7 @@ resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
 
   tags {
     Environment       = "${var.environment}"
-    ManagedBy         = "terraform (k8s module)"
+    ManagedBy         = "terraform k8s module"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} controllers internal elb sg"
     KubernetesCluster = "${var.kubernetes_cluster}"
@@ -108,7 +108,7 @@ resource "aws_security_group" "k8s_controllers_node_sg" {
 
   tags {
     Environment       = "${var.environment}"
-    ManagedBy         = "terraform (k8s module)"
+    ManagedBy         = "terraform k8s module"
     ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} controllers sg"
     KubernetesCluster = "${var.kubernetes_cluster}"
