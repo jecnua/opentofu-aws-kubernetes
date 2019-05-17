@@ -1,7 +1,7 @@
 # Terraform module for kubernetes on AWS
 
 [![Build Status](https://travis-ci.com/jecnua/terraform-aws-kubernetes.svg?branch=master)](https://travis-ci.com/jecnua/terraform-aws-kubernetes)
-![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.11.11-blue.svg?style=flat)
+![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.11.14-blue.svg?style=flat)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![](https://img.shields.io/maintenance/yes/2019.svg)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Average time to resolve an issue")
