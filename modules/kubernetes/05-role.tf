@@ -1,11 +1,11 @@
 resource "aws_iam_instance_profile" "k8s_instance_profile" {
   name_prefix = "${var.unique_identifier}-${var.environment}-"
-  role        = "${aws_iam_role.k8s_assume_role.name}"
+  role        = aws_iam_role.k8s_assume_role.name
 }
 
 resource "aws_iam_role_policy" "k8s_role" {
   name = "${var.unique_identifier}-${var.environment}-pol"
-  role = "${aws_iam_role.k8s_assume_role.id}"
+  role = aws_iam_role.k8s_assume_role.id
 
   policy = <<EOF
 {
@@ -30,6 +30,7 @@ resource "aws_iam_role_policy" "k8s_role" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role" "k8s_assume_role" {
@@ -50,4 +51,5 @@ resource "aws_iam_role" "k8s_assume_role" {
   ]
 }
 EOF
+
 }

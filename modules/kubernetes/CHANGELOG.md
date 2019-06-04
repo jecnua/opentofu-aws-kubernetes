@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2.0.0
+
+### Features
+
+- Updated k8s to version 1.14.2
+- Updated terraform to support 0.12.x (only)
+
+### Bugfixes
+
+### Changes
+
+### Known bugs/issues
+
 ## 1.4.1
 
 ### Features

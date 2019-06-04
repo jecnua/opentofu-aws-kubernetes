@@ -8,8 +8,8 @@ a kubernetes cluster.
 
 Last tested with:
 
-    Terraform v0.11.14
-    + provider.aws v2.10.0
+    Terraform v0.12.0
+    + provider.aws v2.13.0
     + provider.template v2.1.2
 
 ## Parameters
@@ -20,7 +20,7 @@ You can find them [here](params.md)
 
 Remember to [generate a kubeadm token](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-token/#cmd-token-generate):
 
-        kubeadm token generate
+    kubeadm token generate
 
 Be careful to pass the right subnets in availability_zone!
 
@@ -28,15 +28,13 @@ Be careful to pass the right subnets in availability_zone!
 
 To get the kubelet logs:
 
-        journalctl -u kubelet
+    journalctl -u kubelet
 
 ## Connect to the cluster
 
 You can follow the guide here:
 
 - [Utilities](../../utilities/)
-
-## Limitations
 
 ## AMI
 
