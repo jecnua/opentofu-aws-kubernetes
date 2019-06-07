@@ -1,6 +1,6 @@
 # Kubernetes module
 
-![](https://img.shields.io/badge/kubernetes-v1.14.2-green.svg)
+![](https://img.shields.io/badge/kubernetes-v1.14.3-green.svg)
 ![](https://img.shields.io/badge/ubuntu-18.04-blue.svg)
 
 This module will spin a up all you need in your infrastructure to run
