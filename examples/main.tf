@@ -1,13 +1,19 @@
 provider "aws" {
   region  = "eu-west-1"
-  version = "~> 1.56"
+  version = "~> 2.13.0"
 }
 
 provider "template" {
-  version = "~> 2.0"
+  version = "~> 2.1.2"
 }
 
 module "k8s" {
+
+  providers = {
+    aws      = aws
+    template = template
+  }
+
   source                            = "../modules/kubernetes"
   network_region                    = "eu-west-1"
   region                            = "eu-west-1"
@@ -37,11 +43,11 @@ module "k8s" {
 resource "aws_route" "private_subnets_route_traffic_to_NAT" {
   route_table_id         = "${module.k8s.private_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "nat-xxx"                              # NAT Gateway
+  nat_gateway_id         = "nat-xxx" # NAT Gateway
 }
 
 resource "aws_route" "private_subnets_route_traffic_to_IGW" {
   route_table_id         = "${module.k8s.public_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "igw-yyy"                             # Internet Gateway
+  gateway_id             = "igw-yyy" # Internet Gateway
 }
