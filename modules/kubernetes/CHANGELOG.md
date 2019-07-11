@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 2.1.0
+
+New version tested with k8s 1.15.0
+
+### Features
+
+- Made the version installable parametric (at long last)
+
+### Bugfixes
+
+### Changes
+
+### Known bugs/issues
+
 ## 2.0.0
 
 ### Features

@@ -1,6 +1,6 @@
 # Kubernetes module
 
-![](https://img.shields.io/badge/kubernetes-v1.14.3-green.svg)
+![](https://img.shields.io/badge/kubernetes-v1.15.0-green.svg)
 ![](https://img.shields.io/badge/ubuntu-18.04-blue.svg)
 
 This module will spin a up all you need in your infrastructure to run
@@ -12,17 +12,26 @@ Last tested with:
     + provider.aws v2.13.0
     + provider.template v2.1.2
 
-## Parameters
+## Parameters (not updated due to lack of support from terraform-docs for 0.12)
 
 You can find them [here](params.md)
 
 ## Usage
+
+- [Utilities](../../examples/)
 
 Remember to [generate a kubeadm token](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-token/#cmd-token-generate):
 
     kubeadm token generate
 
 Be careful to pass the right subnets in availability_zone!
+
+### Choose the version
+
+You can choose what version of k8s to install passing this variables:
+
+    k8s_deb_package_version           = "1.15.0"
+    kubeadm_install_version           = "stable-1.15"
 
 ## Debug
 

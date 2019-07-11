@@ -18,8 +18,10 @@ module "k8s" {
   network_region                    = "eu-west-1"
   region                            = "eu-west-1"
   vpc_id                            = "vpc-xxx"
-  k8s_controllers_num_nodes         = "1"
+  k8s_controllers_num_nodes         = "1" # Don't change this. This module does not support HA
   k8s_workers_num_nodes             = "1"
+  k8s_deb_package_version           = "1.15.0"
+  kubeadm_install_version           = "stable-1.15"
   controller_join_token             = "xxx.yyy"
   environment                       = "dev"
   unique_identifier                 = "k8s"

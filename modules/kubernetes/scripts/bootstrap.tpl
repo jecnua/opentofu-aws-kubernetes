@@ -11,9 +11,10 @@ IS_WORKER=${is_worker}
 CLUSTER_ID=${cluster_id}
 # shellcheck disable=SC2154
 AWS_REGION=${region}
-
-K8S_DEB_PACKAGES_VERSION='1.15.0'
-KUBEADM_VERSION_OF_K8S_TO_INSTALL='stable-1.15'
+# shellcheck disable=SC2154
+K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
+# shellcheck disable=SC2154
+KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
 
 ### Statics
 

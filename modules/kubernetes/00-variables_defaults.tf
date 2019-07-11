@@ -75,3 +75,15 @@ variable "sns_topic_notifications" {
   description = "The SNS topic to notify when the system autoscale. If empty no notification will be sent"
   default     = ""
 }
+
+variable "k8s_deb_package_version" {
+  type        = string
+  description = "The version of the deb package to install in ubuntu (i.e. 1.15.0)"
+  default     = "1.15.0"
+}
+
+variable "kubeadm_install_version" {
+  type        = string
+  description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.15)"
+  default     = "stable-1.15"
+}
