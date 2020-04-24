@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2.1.0
+
+New version tested with k8s from 1.15.x to 1.18.2
+
+### Features
+
+- Made the version installable parametric (at long last)
+- Tested up to 1.18.2
+- Updated default ubuntu AMI to 20.04
+
+### Bugfixes
+
+### Changes
+
+### Known bugs/issues
+
 ## 2.0.0
 
 ### Features

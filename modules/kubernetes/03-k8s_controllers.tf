@@ -2,10 +2,13 @@ data "template_file" "bootstrap_node_k8s_controllers" {
   template = file("${path.module}/scripts/bootstrap.tpl")
 
   vars = {
-    controller_join_token = var.controller_join_token
-    is_worker             = "" # Leave empty
-    cluster_id            = var.kubernetes_cluster
-    region                = var.region
+    controller_join_token   = var.controller_join_token
+    is_worker               = "" # Leave empty
+    cluster_id              = var.kubernetes_cluster
+    region                  = var.region
+    k8s_deb_package_version = var.k8s_deb_package_version
+    kubeadm_install_version = var.kubeadm_install_version
+    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
   }
 }
 
@@ -71,16 +74,63 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
   }
 }
 
+# External ELB to connect to the api
+resource "aws_elb" "k8s_controllers_external_elb" {
+  name                      = "${var.unique_identifier}-${var.environment}-ctrl-ext-elb"
+  subnets                   = aws_subnet.k8s_public.*.id
+  idle_timeout              = var.k8s_controllers_lb_timeout_seconds
+  internal                  = false
+  cross_zone_load_balancing = true
+  connection_draining       = true
+
+  listener {
+    instance_port     = 6443
+    instance_protocol = "http"
+    lb_port           = 6443
+    lb_protocol       = "http"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 3 #90 seconds
+    timeout             = 10
+    target              = "TCP:22" # TODO
+    interval            = 15
+  }
+
+  security_groups = [
+    aws_security_group.k8s_controllers_internal_elb_ag_sg.id,
+  ]
+
+  tags = {
+    Environment       = var.environment
+    ManagedBy         = "terraform k8s module"
+    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
+    Name              = "${var.unique_identifier} ${var.environment} controllers external elb"
+    KubernetesCluster = var.kubernetes_cluster
+  }
+}
+
+# TODO: Close this to outside and make it injectable
 resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
   name        = "kubernetes-master-${var.kubernetes_cluster}"
   vpc_id      = data.aws_vpc.targeted_vpc.id
   description = "Security group for masters"
 
+  # ingress {
+  #   from_port = 6443
+  #   to_port   = 6443
+  #   protocol  = "tcp"
+  #
+  #   cidr_blocks = [
+  #     var.internal_network_cidr,
+  #   ]
+  # }
+
   ingress {
     from_port = 6443
     to_port   = 6443
     protocol  = "tcp"
-
     cidr_blocks = [
       var.internal_network_cidr,
     ]
@@ -178,7 +228,10 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
   vpc_zone_identifier       = aws_subnet.k8s_private.*.id
-  load_balancers            = [aws_elb.k8s_controllers_internal_elb.name]
+  load_balancers            = [
+    aws_elb.k8s_controllers_internal_elb.name,
+    aws_elb.k8s_controllers_external_elb.name
+  ]
 
   termination_policies = [
     "OldestInstance",

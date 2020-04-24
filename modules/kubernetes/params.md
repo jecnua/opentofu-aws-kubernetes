@@ -1,49 +1,65 @@
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
+| template | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| ami_id_controller | The id of the AMI to use for the controller. If empty, the latest ubuntu will be user. | string | `` | no |
-| ami_id_worker | The id of the AMI to use for the workers. If empty, the latest ubuntu will be user. | string | `` | no |
-| ami_name_filter_regex | Regex to find the ami to use | string | `ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*` | no |
-| ami_name_regex | The name regex | string | `^.*` | no |
-| ami_owner | ID of the owner of the ami (example 099720109477 for Canonical) | string | `099720109477` | no |
-| availability_zone | The availability zone to use. r4.2xlarge are still not available in C | list | `<list>` | no |
-| controller_join_token | kubeadm control join token. This needs to be unique for each cluster | string | - | yes |
-| ec2_k8s_controllers_instance_type | Instance size for the controllers | string | - | yes |
-| ec2_k8s_workers_instance_type | Instance size for the nodes | string | - | yes |
-| ec2_key_name | The key name to associate to the new ec2 servers | string | - | yes |
-| environment | The environment to use | string | - | yes |
-| internal_network_cidr | TEMPORARY: Allow access from a certain ip range | string | - | yes |
-| k8s_controllers_instance_root_device_size | root device size (GB) for the nodes | string | `40` | no |
-| k8s_controllers_instance_root_device_size_seconds | root device size (GB) for the controllers | string | `40` | no |
-| k8s_controllers_lb_timeout_seconds | lb timeout in seconds for the controllers | string | `60` | no |
-| k8s_controllers_num_nodes | Number of nodes in the asg for the controllers | string | - | yes |
-| k8s_worker_additional_lbs | List of additional ELBs to attach to the AG for nodes (workers) | list | `<list>` | no |
-| k8s_workers_lb_timeout_seconds | lb timeout in second for the nodes | string | `60` | no |
-| k8s_workers_num_nodes | Number of nodes for the asg for the nodes | string | - | yes |
-| kubernetes_cluster | Cluster name indentifier | string | - | yes |
-| network_region | The AWS region where to spin the infrastructure | string | - | yes |
-| region | The region to use with the aws cli in the bootstrap (region you are spinning k8s in) | string | `us-east-1` | no |
-| sns_topic_notifications | The SNS topic to notify when the system autoscale. If empty no notification will be sent | string | `` | no |
-| subnets_private_cidr_block | The CIDR to use when creating private subnets | list | - | yes |
-| subnets_public_cidr_block | The CIDR to use when creating public subnets | list | - | yes |
-| unique_identifier | A UUID to be used in resource names generation to avoid conflicts | string | - | yes |
-| vpc_id | The VPC id | string | - | yes |
+|------|-------------|------|---------|:--------:|
+| ami\_id\_controller | The id of the AMI to use for the controller. If empty, the latest ubuntu will be user. | `string` | `""` | no |
+| ami\_id\_worker | The id of the AMI to use for the workers. If empty, the latest ubuntu will be user. | `string` | `""` | no |
+| ami\_name\_filter\_regex | Regex to find the ami to use | `string` | `"ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"` | no |
+| ami\_name\_regex | The name regex | `string` | `"^.*"` | no |
+| ami\_owner | ID of the owner of the ami (example 099720109477 for Canonical) | `string` | `"099720109477"` | no |
+| availability\_zone | The availability zone to use. r4.2xlarge are still not available in C | `list(string)` | <pre>[<br>  "eu-west-1a",<br>  "eu-west-1b",<br>  "eu-west-1c"<br>]</pre> | no |
+| controller\_join\_token | kubeadm control join token. This needs to be unique for each cluster | `string` | n/a | yes |
+| ec2\_k8s\_controllers\_instance\_type | Instance size for the controllers | `string` | n/a | yes |
+| ec2\_k8s\_workers\_instance\_type | Instance size for the nodes | `string` | n/a | yes |
+| ec2\_key\_name | The key name to associate to the new ec2 servers | `string` | n/a | yes |
+| environment | The environment to use | `string` | n/a | yes |
+| internal\_network\_cidr | TEMPORARY: Allow access from a certain ip range | `string` | n/a | yes |
+| k8s\_controllers\_instance\_root\_device\_size | root device size (GB) for the nodes | `string` | `"40"` | no |
+| k8s\_controllers\_instance\_root\_device\_size\_seconds | root device size (GB) for the controllers | `string` | `"40"` | no |
+| k8s\_controllers\_lb\_timeout\_seconds | lb timeout in seconds for the controllers | `string` | `"60"` | no |
+| k8s\_controllers\_num\_nodes | Number of nodes in the asg for the controllers | `string` | n/a | yes |
+| k8s\_deb\_package\_version | The version of the deb package to install in ubuntu (i.e. 1.18.2) | `string` | `"1.18.2"` | no |
+| k8s\_worker\_additional\_lbs | List of additional ELBs to attach to the AG for nodes (workers) | `list(string)` | `[]` | no |
+| k8s\_workers\_lb\_timeout\_seconds | lb timeout in second for the nodes | `string` | `"60"` | no |
+| k8s\_workers\_num\_nodes | Number of nodes for the asg for the nodes | `string` | n/a | yes |
+| kubeadm\_install\_version | The version to install in the syntax expected by kubeadm (i.e. stable-1.18) | `string` | `"stable-1.18"` | no |
+| kubernetes\_cluster | Cluster name indentifier | `string` | n/a | yes |
+| network\_region | The AWS region where to spin the infrastructure | `string` | n/a | yes |
+| region | The region to use with the aws cli in the bootstrap (region you are spinning k8s in) | `string` | `"us-east-1"` | no |
+| sns\_topic\_notifications | The SNS topic to notify when the system autoscale. If empty no notification will be sent | `string` | `""` | no |
+| subnets\_private\_cidr\_block | The CIDR to use when creating private subnets | `list(string)` | n/a | yes |
+| subnets\_public\_cidr\_block | The CIDR to use when creating public subnets | `list(string)` | n/a | yes |
+| unique\_identifier | A UUID to be used in resource names generation to avoid conflicts | `string` | n/a | yes |
+| vpc\_id | The VPC id | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| controller_elb_internal_dns_name | The AWS DNS name of the controller nodes ELB |
-| controller_elb_internal_zone_id | The AWS zone id for the controller nodes ELB |
-| controllers_sd_id | The id of the controllers sg. Allows injection of rules aws_security_group_rule |
-| k8s_role_id | The role the nodes use. Can be used to attach policies |
-| nodes_ag_availability_zones | The nodes autoscaling group AZ used |
-| nodes_ag_id | The nodes autoscaling group id |
-| nodes_sd_id | The id of the nodes (workers) sg. Allows injection of rules aws_security_group_rule |
-| nodes_subnets_private_id | The nodes subnets id |
-| nodes_subnets_public_id | The nodes subnets id |
-| private_route_table_id | The id of the PRIVATE route table |
-| public_route_table_id | The id of the PUBLIC route table |
-| workers_elb_internal_dns_name | The AWS DNS name of the worker nodes ELB |
-| workers_elb_internal_zone_id | The AWS zone id for the worker nodes ELB |
+| controller\_elb\_internal\_dns\_name | The AWS DNS name of the controller nodes ELB |
+| controller\_elb\_internal\_zone\_id | The AWS zone id for the controller nodes ELB |
+| controllers\_sd\_id | The id of the controllers sg. Allows injection of rules aws\_security\_group\_rule |
+| k8s\_role\_id | The role the nodes use. Can be used to attach policies |
+| nodes\_ag\_availability\_zones | The nodes autoscaling group AZ used |
+| nodes\_ag\_id | The nodes autoscaling group id |
+| nodes\_sd\_id | The id of the nodes (workers) sg. Allows injection of rules aws\_security\_group\_rule |
+| nodes\_subnets\_private\_id | The nodes subnets id |
+| nodes\_subnets\_public\_id | The nodes subnets id |
+| private\_route\_table\_id | The id of the PRIVATE route table |
+| public\_route\_table\_id | The id of the PUBLIC route table |
+| workers\_elb\_internal\_dns\_name | The AWS DNS name of the worker nodes ELB |
+| workers\_elb\_internal\_zone\_id | The AWS zone id for the worker nodes ELB |
+
