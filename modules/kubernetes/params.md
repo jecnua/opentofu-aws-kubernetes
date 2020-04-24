@@ -31,11 +31,11 @@
 | k8s\_controllers\_instance\_root\_device\_size\_seconds | root device size (GB) for the controllers | `string` | `"40"` | no |
 | k8s\_controllers\_lb\_timeout\_seconds | lb timeout in seconds for the controllers | `string` | `"60"` | no |
 | k8s\_controllers\_num\_nodes | Number of nodes in the asg for the controllers | `string` | n/a | yes |
-| k8s\_deb\_package\_version | The version of the deb package to install in ubuntu (i.e. 1.15.0) | `string` | `"1.15.0"` | no |
+| k8s\_deb\_package\_version | The version of the deb package to install in ubuntu (i.e. 1.18.2) | `string` | `"1.18.2"` | no |
 | k8s\_worker\_additional\_lbs | List of additional ELBs to attach to the AG for nodes (workers) | `list(string)` | `[]` | no |
 | k8s\_workers\_lb\_timeout\_seconds | lb timeout in second for the nodes | `string` | `"60"` | no |
 | k8s\_workers\_num\_nodes | Number of nodes for the asg for the nodes | `string` | n/a | yes |
-| kubeadm\_install\_version | The version to install in the syntax expected by kubeadm (i.e. stable-1.15) | `string` | `"stable-1.15"` | no |
+| kubeadm\_install\_version | The version to install in the syntax expected by kubeadm (i.e. stable-1.18) | `string` | `"stable-1.18"` | no |
 | kubernetes\_cluster | Cluster name indentifier | `string` | n/a | yes |
 | network\_region | The AWS region where to spin the infrastructure | `string` | n/a | yes |
 | region | The region to use with the aws cli in the bootstrap (region you are spinning k8s in) | `string` | `"us-east-1"` | no |
