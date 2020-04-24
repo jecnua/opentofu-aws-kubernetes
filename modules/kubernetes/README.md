@@ -1,20 +1,17 @@
 # Kubernetes module
 
-![](https://img.shields.io/badge/kubernetes-v1.15.0-green.svg)
-![](https://img.shields.io/badge/ubuntu-18.04-blue.svg)
+![](https://img.shields.io/badge/kubernetes-v1.18.2-green.svg)
+![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
 
-This module will spin a up all you need in your infrastructure to run
-a kubernetes cluster.
+This module will spin a up all you need in your infrastructure to run a kubernetes cluster.
 
 Last tested with:
 
-    Terraform v0.12.0
-    + provider.aws v2.13.0
+    Terraform v0.12.24
+    + provider.aws v2.58.0
     + provider.template v2.1.2
 
-## Parameters (not updated due to lack of support from terraform-docs for 0.12)
-
-You can find them [here](params.md)
+You can find the parameters [here](params.md)
 
 ## Usage
 
