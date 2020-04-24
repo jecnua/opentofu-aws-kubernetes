@@ -92,41 +92,18 @@ echo 'source <(kubectl completion bash)' > /etc/bash_completion.d/kubectl
 
 if [[ "x"$IS_WORKER == "x" ]]
 then
-
-  cat <<EOF >> /etc/kubeadm-config.yaml
-apiVersion: kubeadm.k8s.io/v1beta1
-kind: InitConfiguration
-bootstrapTokens:
-- token: "$CONTROLLER_JOIN_TOKEN"
-  description: "default kubeadm bootstrap token"
-  ttl: "0"
----
-apiVersion: kubeadm.k8s.io/v1alpha1
-kind: MasterConfiguration
-kubernetesVersion: "$VERSION"
-#---
-#apiVersion: kubeadm.k8s.io/v1beta1
-#kind: ClusterConfiguration
-#kubernetesVersion: stable
-#controlPlaneEndpoint: "$LOAD_BALANCER_DNS:6443"
-EOF
-
   # Start as master (no HA)
   # Forcing version
   VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
   kubeadm init \
     --kubernetes-version "$VERSION" \
     --token "$CONTROLLER_JOIN_TOKEN"
-
-#  kubeadm init --config=/etc/kubeadm-config.yaml --upload-certs
-
   KCTL_USER='ubuntu'
   cd /home/$KCTL_USER || exit
   mkdir -p /home/$KCTL_USER/.kube
   sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
   sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
   echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
-
   su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
   # Install CNI plugin
   su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
