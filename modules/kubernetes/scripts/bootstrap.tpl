@@ -33,6 +33,7 @@ apt-get update
 apt-get upgrade --assume-yes
 apt-get autoremove --assume-yes
 apt-get clean
+
 locale-gen en_GB.UTF-8 # Will fix the warning when logging to the box
 
 ################################################# If it has drives
@@ -50,12 +51,6 @@ if [[ $ISFORMATTED == '1'  ]]
 then
   mkdir /opt/$DATA_DIR_NAME
   cp /etc/fstab /etc/fstab.orig
-  # As you are running Ubuntu 14.04 LTS it is important to be aware of some
-  # performance bugs in the older kernel versions which can cause fsync to crash
-  # the box, with the work-around being to mount the filesystem with the
-  # data=writeback,relatime,nobarrier parameters. Further discussion around this
-  # can be read
-  # https://support.elastic.co/hc/en-us/requests/16385
   echo "/dev/xvdi       /opt/$DATA_DIR_NAME      ext4     data=writeback,relatime,nobarrier        0 0" >> /etc/fstab
   mount -a
 fi
@@ -68,12 +63,20 @@ cat << EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
-# Update and install
 # You need nfs-common to use efs
-apt-get update
-apt-get install -y docker.io apt-transport-https awscli jq curl nfs-common
+apt update
+apt install -y \
+  docker.io \
+  apt-transport-https \
+  awscli \
+  jq \
+  curl \
+  nfs-common
 # This need to be synched
-apt-get install -y kubelet="$K8S_DEB_PACKAGES_VERSION-00" kubeadm="$K8S_DEB_PACKAGES_VERSION-00" kubectl="$K8S_DEB_PACKAGES_VERSION-00"
+apt install -y \
+  kubelet="$K8S_DEB_PACKAGES_VERSION-00" \
+  kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
+  kubectl="$K8S_DEB_PACKAGES_VERSION-00"
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
@@ -124,12 +127,6 @@ EOF
   sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
   echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
 
-  # Retag for the lost tag
-  # Fix bug https://github.com/kubernetes/kubeadm/issues/124
-  # Also: https://github.com/kubernetes/kubernetes/pull/39112
-  # Old way
-  # kubectl label --overwrite no $AWS_HOSTNAME kubeadm.alpha.kubernetes.io/role=master */
-  # New way
   su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
   # Install CNI plugin
   su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
