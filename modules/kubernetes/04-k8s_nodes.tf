@@ -8,6 +8,7 @@ data "template_file" "bootstrap_node_k8s_workers" {
     region                  = var.region
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = ""
+    load_balancer_dns       = ""
   }
 }
 

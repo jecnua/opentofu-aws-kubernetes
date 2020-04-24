@@ -15,6 +15,8 @@ AWS_REGION=${region}
 K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 # shellcheck disable=SC2154
 KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
+# shellcheck disable=SC2154
+LOAD_BALANCER_DNS=${load_balancer_dns}
 
 ### Statics
 
@@ -87,12 +89,33 @@ echo 'source <(kubectl completion bash)' > /etc/bash_completion.d/kubectl
 
 if [[ "x"$IS_WORKER == "x" ]]
 then
+
+  cat <<EOF >> /etc/kubeadm-config.yaml
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: InitConfiguration
+bootstrapTokens:
+- token: "$CONTROLLER_JOIN_TOKEN"
+  description: "default kubeadm bootstrap token"
+  ttl: "0"
+---
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+kubernetesVersion: "$VERSION"
+#---
+#apiVersion: kubeadm.k8s.io/v1beta1
+#kind: ClusterConfiguration
+#kubernetesVersion: stable
+#controlPlaneEndpoint: "$LOAD_BALANCER_DNS:6443"
+EOF
+
   # Start as master (no HA)
   # Forcing version
   VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
   kubeadm init \
     --kubernetes-version "$VERSION" \
     --token "$CONTROLLER_JOIN_TOKEN"
+
+#  kubeadm init --config=/etc/kubeadm-config.yaml --upload-certs
 
   KCTL_USER='ubuntu'
   cd /home/$KCTL_USER || exit
