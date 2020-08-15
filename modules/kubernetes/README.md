@@ -1,6 +1,6 @@
 # Kubernetes module
 
-![](https://img.shields.io/badge/kubernetes-v1.18.2-green.svg)
+![](https://img.shields.io/badge/kubernetes-v1.18.8-green.svg)
 ![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
 
 This module will spin a up all you need in your infrastructure to run a kubernetes cluster.
@@ -12,6 +12,16 @@ Last tested with:
     + provider.template v2.1.2
 
 You can find the parameters [here](params.md)
+
+Support:
+
+    k8s     1.12.x      NO
+    k8s     1.13.12     YES
+    k8s     1.14.x      ?
+    k8s     1.15.x      YES
+    k8s     1.16.x      YES
+    k8s     1.17.x      YES
+    k8s     1.18.8      YES
 
 ## Usage
 

@@ -7,7 +7,7 @@ New version tested with k8s from 1.15.x to 1.18.2
 ### Features
 
 - Made the version installable parametric (at long last)
-- Tested up to 1.18.2
+- Tested up to 1.18.8
 - Updated default ubuntu AMI to 20.04
 
 ### Bugfixes

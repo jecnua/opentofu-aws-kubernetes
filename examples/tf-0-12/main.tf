@@ -14,7 +14,7 @@ module "k8s" {
     template = template
   }
 
-  source                            = "../modules/kubernetes"
+  source                            = "..\/..\/modules\/kubernetes"
   network_region                    = "eu-west-1"
   region                            = "eu-west-1"
   vpc_id                            = "vpc-xxx"
