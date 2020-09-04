@@ -79,11 +79,50 @@ variable "sns_topic_notifications" {
 variable "k8s_deb_package_version" {
   type        = string
   description = "The version of the deb package to install in ubuntu (i.e. 1.18.2)"
-  default     = "1.18.2"
+  default     = "1.19.4"
 }
 
 variable "kubeadm_install_version" {
   type        = string
   description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.18)"
-  default     = "stable-1.18"
+  default     = "stable-1.19"
+}
+
+variable "userdata_pre_install" {
+  description = "User-data that will be applied before everything else is installed"
+  type        = string
+  default     = ""
+}
+
+# By default will install calico as CNI but you can override it to use what you want
+# Example of weave as alternative (remember to escape the "):
+# su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+variable "userdata_cni_install" {
+  description = "User-data script that will be applied only in master"
+  type        = string
+  default     = "su \"$KCTL_USER\" -c \"kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml\""
+}
+
+variable "userdata_post_install" {
+  description = "User-data that will be applied on every node after everything else"
+  type        = string
+  default     = ""
+}
+
+variable "enable_ssm_access_to_nodes" {
+  description = "If set to true the nodes will register to AWS SSM"
+  type        = bool
+  default     = true
+}
+
+variable "ec2_key_name" {
+  type        = string
+  description = "The key name to associate to the new ec2 servers. Not needed if you use SSM or want no access"
+  default     = ""
+}
+
+variable "enable_admission_plugins" {
+  type        = string
+  description = "The comma separated list of admission plugin to enable"
+  default     = "NodeRestriction" # Def for 1.19
 }

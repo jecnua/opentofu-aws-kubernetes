@@ -1,21 +1,41 @@
 data "template_file" "bootstrap_node_k8s_controllers" {
-  template = file("${path.module}/scripts/bootstrap.tpl")
+  template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
     controller_join_token   = var.controller_join_token
     is_worker               = "" # Leave empty
     cluster_id              = var.kubernetes_cluster
-    region                  = var.region
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
-    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
+    //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
+    pre_install         = var.userdata_pre_install
+    cni_install         = var.userdata_cni_install
+    post_install        = var.userdata_post_install
+    kubeadm_config      = data.template_file.bootstrap_k8s_controllers_kubeadm_config.rendered
+    kubeadm_join_config = ""
+  }
+}
+
+data "template_file" "bootstrap_k8s_controllers_kubeadm_config" {
+  template = file("${path.module}/scripts/kubeadm_config.yaml")
+  vars = {
+    k8s_deb_package_version  = var.k8s_deb_package_version
+    controller_join_token    = var.controller_join_token
+    enable_admission_plugins = var.enable_admission_plugins
+  }
+}
+
+data "template_file" "bootstrap_k8s_controllers_kubeadm_join_config" {
+  template = file("${path.module}/scripts/kubeadm_join_config.yaml")
+  vars = {
+    controller_join_token = var.controller_join_token
   }
 }
 
 resource "aws_launch_configuration" "k8s_controllers_launch_configuration" {
   image_id                    = var.ami_id_controller != "" ? var.ami_id_controller : data.aws_ami.ami_dynamic.id
   instance_type               = var.ec2_k8s_controllers_instance_type
-  key_name                    = var.ec2_key_name
+  key_name                    = var.enable_ssm_access_to_nodes ? null : var.ec2_key_name
   user_data                   = data.template_file.bootstrap_node_k8s_controllers.rendered
   iam_instance_profile        = aws_iam_instance_profile.k8s_instance_profile.id
   associate_public_ip_address = false
@@ -37,7 +57,6 @@ resource "aws_launch_configuration" "k8s_controllers_launch_configuration" {
   ]
 }
 
-# TODO: access_logs
 resource "aws_elb" "k8s_controllers_internal_elb" {
   name                      = "${var.unique_identifier}-${var.environment}-ctrl-int-elb"
   subnets                   = aws_subnet.k8s_private.*.id
@@ -48,17 +67,17 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 
   listener {
     instance_port     = 6443
-    instance_protocol = "http"
+    instance_protocol = "tcp"
     lb_port           = 6443
-    lb_protocol       = "http"
+    lb_protocol       = "tcp"
   }
 
   health_check {
     healthy_threshold   = 2
-    unhealthy_threshold = 3 #90 seconds
-    timeout             = 10
-    target              = "TCP:22" # TODO
-    interval            = 15
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "TCP:6443"
+    interval            = 30
   }
 
   security_groups = [
@@ -75,41 +94,41 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 }
 
 # External ELB to connect to the api
-resource "aws_elb" "k8s_controllers_external_elb" {
-  name                      = "${var.unique_identifier}-${var.environment}-ctrl-ext-elb"
-  subnets                   = aws_subnet.k8s_public.*.id
-  idle_timeout              = var.k8s_controllers_lb_timeout_seconds
-  internal                  = false
-  cross_zone_load_balancing = true
-  connection_draining       = true
-
-  listener {
-    instance_port     = 6443
-    instance_protocol = "http"
-    lb_port           = 6443
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 3 #90 seconds
-    timeout             = 10
-    target              = "TCP:22" # TODO
-    interval            = 15
-  }
-
-  security_groups = [
-    aws_security_group.k8s_controllers_internal_elb_ag_sg.id,
-  ]
-
-  tags = {
-    Environment       = var.environment
-    ManagedBy         = "terraform k8s module"
-    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
-    Name              = "${var.unique_identifier} ${var.environment} controllers external elb"
-    KubernetesCluster = var.kubernetes_cluster
-  }
-}
+//resource "aws_elb" "k8s_controllers_external_elb" {
+//  name                      = "${var.unique_identifier}-${var.environment}-ctrl-ext-elb"
+//  subnets                   = aws_subnet.k8s_public.*.id
+//  idle_timeout              = var.k8s_controllers_lb_timeout_seconds
+//  internal                  = false
+//  cross_zone_load_balancing = true
+//  connection_draining       = true
+//
+//  listener {
+//    instance_port     = 6443
+//    instance_protocol = "http"
+//    lb_port           = 6443
+//    lb_protocol       = "http"
+//  }
+//
+//  health_check {
+//    healthy_threshold   = 2
+//    unhealthy_threshold = 3 #90 seconds
+//    timeout             = 10
+//    target              = "TCP:22" # TODO
+//    interval            = 15
+//  }
+//
+//  security_groups = [
+//    aws_security_group.k8s_controllers_internal_elb_ag_sg.id,
+//  ]
+//
+//  tags = {
+//    Environment       = var.environment
+//    ManagedBy         = "terraform k8s module"
+//    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
+//    Name              = "${var.unique_identifier} ${var.environment} controllers external elb"
+//    KubernetesCluster = var.kubernetes_cluster
+//  }
+//}
 
 # TODO: Close this to outside and make it injectable
 resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
@@ -207,7 +226,7 @@ resource "aws_security_group_rule" "allow_all_from_k8s_controller_internal_elb" 
 }
 
 # Allow everything from the cluster: TCP and UDP
-# Needed by some CNI network plugins like Weave
+# Needed by some CNI network plugins
 resource "aws_security_group_rule" "allow_all_from_k8s_worker_nodes" {
   type                     = "ingress"
   from_port                = 0
@@ -228,9 +247,9 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
   vpc_zone_identifier       = aws_subnet.k8s_private.*.id
-  load_balancers            = [
+
+  load_balancers = [
     aws_elb.k8s_controllers_internal_elb.name,
-    aws_elb.k8s_controllers_external_elb.name
   ]
 
   termination_policies = [

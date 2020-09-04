@@ -1,138 +1,76 @@
 [INFO] 1 Master Node Security Configuration
-[INFO] 1.1 API Server
-[FAIL] 1.1.1 Ensure that the --allow-privileged argument is set to false (Scored)
-[FAIL] 1.1.2 Ensure that the --anonymous-auth argument is set to false (Scored)
-[PASS] 1.1.3 Ensure that the --basic-auth-file argument is not set (Scored)
-[PASS] 1.1.4 Ensure that the --insecure-allow-any-token argument is not set (Scored)
-[PASS] 1.1.5 Ensure that the --kubelet-https argument is set to true (Scored)
-[PASS] 1.1.6 Ensure that the --insecure-bind-address argument is not set (Scored)
-[PASS] 1.1.7 Ensure that the --insecure-port argument is set to 0 (Scored)
-[PASS] 1.1.8 Ensure that the --secure-port argument is not set to 0 (Scored)
-[FAIL] 1.1.9 Ensure that the --profiling argument is set to false (Scored)
-[FAIL] 1.1.10 Ensure that the --repair-malformed-updates argument is set to false (Scored)
-[FAIL] 1.1.11 Ensure that the admission control policy is not set to AlwaysAdmit (Scored)
-[FAIL] 1.1.12 Ensure that the admission control policy is set to AlwaysPullImages (Scored)
-[FAIL] 1.1.13 Ensure that the admission control policy is set to DenyEscalatingExec (Scored)
-[FAIL] 1.1.14 Ensure that the admission control policy is set to SecurityContextDeny (Scored)
-[FAIL] 1.1.15 Ensure that the admission control policy is set to NamespaceLifecycle (Scored)
-[FAIL] 1.1.16 Ensure that the --audit-log-path argument is set as appropriate (Scored)
-[FAIL] 1.1.17 Ensure that the --audit-log-maxage argument is set to 30 or as appropriate (Scored)
-[FAIL] 1.1.18 Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate (Scored)
-[FAIL] 1.1.19 Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate (Scored)
-[PASS] 1.1.20 Ensure that the --authorization-mode argument is not set to AlwaysAllow (Scored)
-[PASS] 1.1.21 Ensure that the --token-auth-file parameter is not set (Scored)
-[FAIL] 1.1.22 Ensure that the --kubelet-certificate-authority argument is set as appropriate (Scored)
-[PASS] 1.1.23 Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate (Scored)
-[FAIL] 1.1.24 Ensure that the --service-account-lookup argument is set to true (Scored)
-[FAIL] 1.1.25 Ensure that the admission control policy is set to PodSecurityPolicy (Scored)
-[PASS] 1.1.26 Ensure that the --service-account-key-file argument is set as appropriate (Scored)
-[PASS] 1.1.27 Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate (Scored
-[FAIL] 1.1.28 Ensure that the admission control policy is set to ServiceAccount (Scored)
-[PASS] 1.1.29 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate (Scored)
-[PASS] 1.1.30 Ensure that the --client-ca-file argument is set as appropriate (Scored)
-[PASS] 1.1.31 Ensure that the --etcd-cafile argument is set as appropriate (Scored)
-[INFO] 1.2 Scheduler
-[FAIL] 1.2.1 Ensure that the --profiling argument is set to false (Scored)
+[INFO] 1.1 Master Node Configuration Files
+[PASS] 1.1.1 Ensure that the API server pod specification file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.2 Ensure that the API server pod specification file ownership is set to root:root (Automated)
+[PASS] 1.1.3 Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.4 Ensure that the controller manager pod specification file ownership is set to root:root (Automated)
+[PASS] 1.1.5 Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.6 Ensure that the scheduler pod specification file ownership is set to root:root (Automated)
+[PASS] 1.1.7 Ensure that the etcd pod specification file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.8 Ensure that the etcd pod specification file ownership is set to root:root (Automated)
+[WARN] 1.1.9 Ensure that the Container Network Interface file permissions are set to 644 or more restrictive (Manual)
+[WARN] 1.1.10 Ensure that the Container Network Interface file ownership is set to root:root (Manual)
+[PASS] 1.1.11 Ensure that the etcd data directory permissions are set to 700 or more restrictive (Automated)
+[FAIL] 1.1.12 Ensure that the etcd data directory ownership is set to etcd:etcd (Automated)
+[PASS] 1.1.13 Ensure that the admin.conf file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.14 Ensure that the admin.conf file ownership is set to root:root (Automated)
+[PASS] 1.1.15 Ensure that the scheduler.conf file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.16 Ensure that the scheduler.conf file ownership is set to root:root (Automated)
+[PASS] 1.1.17 Ensure that the controller-manager.conf file permissions are set to 644 or more restrictive (Automated)
+[PASS] 1.1.18 Ensure that the controller-manager.conf file ownership is set to root:root (Automated)
+[FAIL] 1.1.19 Ensure that the Kubernetes PKI directory and file ownership is set to root:root (Automated)
+[PASS] 1.1.20 Ensure that the Kubernetes PKI certificate file permissions are set to 644 or more restrictive (Manual)
+[PASS] 1.1.21 Ensure that the Kubernetes PKI key file permissions are set to 600 (Manual)
+[INFO] 1.2 API Server
+[WARN] 1.2.1 Ensure that the --anonymous-auth argument is set to false (Manual)
+[PASS] 1.2.2 Ensure that the --basic-auth-file argument is not set (Automated)
+[PASS] 1.2.3 Ensure that the --token-auth-file parameter is not set (Automated)
+[PASS] 1.2.4 Ensure that the --kubelet-https argument is set to true (Automated)
+[PASS] 1.2.5 Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate (Automated)
+[FAIL] 1.2.6 Ensure that the --kubelet-certificate-authority argument is set as appropriate (Automated)
+[PASS] 1.2.7 Ensure that the --authorization-mode argument is not set to AlwaysAllow (Automated)
+[PASS] 1.2.8 Ensure that the --authorization-mode argument includes Node (Automated)
+[PASS] 1.2.9 Ensure that the --authorization-mode argument includes RBAC (Automated)
+[WARN] 1.2.10 Ensure that the admission control plugin EventRateLimit is set (Manual)
+[PASS] 1.2.11 Ensure that the admission control plugin AlwaysAdmit is not set (Automated)
+[WARN] 1.2.12 Ensure that the admission control plugin AlwaysPullImages is set (Manual)
+[WARN] 1.2.13 Ensure that the admission control plugin SecurityContextDeny is set if PodSecurityPolicy is not used (Manual)
+[PASS] 1.2.14 Ensure that the admission control plugin ServiceAccount is set (Automated)
+[PASS] 1.2.15 Ensure that the admission control plugin NamespaceLifecycle is set (Automated)
+[FAIL] 1.2.16 Ensure that the admission control plugin PodSecurityPolicy is set (Automated)
+[PASS] 1.2.17 Ensure that the admission control plugin NodeRestriction is set (Automated)
+[PASS] 1.2.18 Ensure that the --insecure-bind-address argument is not set (Automated)
+[PASS] 1.2.19 Ensure that the --insecure-port argument is set to 0 (Automated)
+[PASS] 1.2.20 Ensure that the --secure-port argument is not set to 0 (Automated)
+[FAIL] 1.2.21 Ensure that the --profiling argument is set to false (Automated)
+[FAIL] 1.2.22 Ensure that the --audit-log-path argument is set (Automated)
+[FAIL] 1.2.23 Ensure that the --audit-log-maxage argument is set to 30 or as appropriate (Automated)
+[FAIL] 1.2.24 Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate (Automated)
+[FAIL] 1.2.25 Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate (Automated)
+[PASS] 1.2.26 Ensure that the --request-timeout argument is set as appropriate (Automated)
+[PASS] 1.2.27 Ensure that the --service-account-lookup argument is set to true (Automated)
+[PASS] 1.2.28 Ensure that the --service-account-key-file argument is set as appropriate (Automated)
+[PASS] 1.2.29 Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate (Automated)
+[PASS] 1.2.30 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate (Automated)
+[PASS] 1.2.31 Ensure that the --client-ca-file argument is set as appropriate (Automated)
+[PASS] 1.2.32 Ensure that the --etcd-cafile argument is set as appropriate (Automated)
+[WARN] 1.2.33 Ensure that the --encryption-provider-config argument is set as appropriate (Manual)
+[WARN] 1.2.34 Ensure that encryption providers are appropriately configured (Manual)
+[WARN] 1.2.35 Ensure that the API Server only makes use of Strong Cryptographic Ciphers (Manual)
 [INFO] 1.3 Controller Manager
-[FAIL] 1.3.1 Ensure that the --terminated-pod-gc-threshold argument is set as appropriate (Scored)
-[FAIL] 1.3.2 Ensure that the --profiling argument is set to false (Scored)
-[PASS] 1.3.3 Ensure that the --insecure-experimental-approve-all-kubelet-csrs-for-group argument is not set (Scored)
-[PASS] 1.3.4 Ensure that the --use-service-account-credentials argument is set
-[PASS] 1.3.5 Ensure that the --service-account-private-key-file argument is set as appropriate (Scored)
-[PASS] 1.3.6 Ensure that the --root-ca-file argument is set as appropriate (Scored)
-[INFO] 1.4 Configure Files
-[FAIL] 1.4.1 Ensure that the apiserver file permissions are set to 644 or more restrictive (Scored)
-[FAIL] 1.4.2 Ensure that the apiserver file ownership is set to root:root (Scored)
-[FAIL] 1.4.3 Ensure that the config file permissions are set to 644 or more restrictive (Scored)
-[FAIL] 1.4.4 Ensure that the config file ownership is set to root:root (Scored)
-[PASS] 1.4.5 Ensure that the scheduler file permissions are set to 644 or more restrictive (Scored)
-[PASS] 1.4.6 Ensure that the scheduler file ownership is set to root:root (Scored)
-[FAIL] 1.4.7 Ensure that the etcd.conf file permissions are set to 644 or more restrictive (Scored)
-[FAIL] 1.4.8 Ensure that the etcd.conf file ownership is set to root:root (Scored)
-[FAIL] 1.4.9 Ensure that the flanneld file permissions are set to 644 or more restrictive (Scored)
-[FAIL] 1.4.10 Ensure that the flanneld file ownership is set to root:root (Scored)
-[FAIL] 1.4.11 Ensure that the etcd data directory permissions are set to 700 or more restrictive (Scored)
-[FAIL] 1.4.12 Ensure that the etcd data directory ownership is set to etcd:etcd (Scored)
-[INFO] 1.5 etcd
-[PASS] 1.5.1 Ensure that the --cert-file and --key-file arguments are set as appropriate (Scored)
-[PASS] 1.5.2 Ensure that the --client-cert-auth argument is set to true (Scored)
-[PASS] 1.5.3 Ensure that the --auto-tls argument is not set to true (Scored)
-[PASS] 1.5.4 Ensure that the --peer-cert-file and --peer-key-file arguments are set as appropriate (Scored)
-[PASS] 1.5.5 Ensure that the --peer-client-cert-auth argument is set to true (Scored)
-[PASS] 1.5.6 Ensure that the --peer-auto-tls argument is not set to true (Scored)
-[FAIL] 1.5.7 Ensure that the --wal-dir argument is set as appropriate (Scored)
-[FAIL] 1.5.8 Ensure that the --max-wals argument is set to 0 (Scored)
-[WARN] 1.5.9 Ensure that a unique Certificate Authority is used for etcd (Not Scored)
-[INFO] 1.6 General Security Primitives
-[WARN] 1.6.1 Ensure that the cluster-admin role is only used where required (Not Scored)
-[WARN] 1.6.2 Create Pod Security Policies for your cluster (Not Scored)
-[WARN] 1.6.3 Create administrative boundaries between resources using namespaces (Not Scored)
-[WARN] 1.6.4 Create network segmentation using Network Policies (Not Scored)
-[WARN] 1.6.5 Avoid using Kubernetes Secrets (Not Scored)
-[WARN] 1.6.6 Ensure that the seccomp profile is set to docker/default in your pod definitions (Not Scored)
-[WARN] 1.6.7 Apply Security Context to Your Pods and Containers (Not Scored)
-[WARN] 1.6.8 Configure Image Provenance using ImagePolicyWebhook admission controller (Not Scored)
-
-== Remediations ==
-1.1.1 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ALLOW_PRIV parameter to "--allow-privileged=false"
-1.1.2 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--anonymous-auth=false"
-1.1.9 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--profiling=false"
-1.1.10 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--repair-malformed-updates=false"
-1.1.11 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to a value that does not include AlwaysAdmit
-1.1.12 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to "--admission-control=...,AlwaysPullImages,..."
-1.1.13 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to "--admission-control=...,DenyEscalatingExec,..."
-1.1.14 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to "--admission-control=...,SecurityContextDeny,..."
-1.1.15 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to "--admission-control=NamespaceLifecycle,..."
-1.1.16 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--audit-log-path=<filename>"
-1.1.17 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--audit-log-maxage=30"
-1.1.18 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--audit-log-maxbackup=10"
-1.1.19 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--audit-log-maxsize=100"
-1.1.22 Follow the Kubernetes documentation and setup the TLS connection between the apiserver and kubelets. Then, edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--kubelet-certificate-authority=<ca-string>"
-1.1.24 Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--service-account-lookup=true"
-1.1.25 Follow the documentation and create Pod Security Policy objects as per your environment. Then, edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to "--admission-control=...,PodSecurityPolicy,..."
-1.1.28 Follow the documentation and create ServiceAccount objects as per your environment. Then, edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_ADMISSION_CONTROL parameter to "--admissioncontrol=...,ServiceAccount,..."
-1.2.1 Edit the /etc/kubernetes/scheduler.conf file on the master node and set the KUBE_SCHEDULER_ARGS parameter to "--profiling=false"
-1.3.1 Edit the /etc/kubernetes/controller-manager.conf file on the master node and set the KUBE_CONTROLLER_MANAGER_ARGS parameter to "--terminated-pod-gcthreshold=<appropriate-number>"
-1.3.2 Edit the /etc/kubernetes/controller-manager.conf file on the master node and set the KUBE_CONTROLLER_MANAGER_ARGS parameter to "--profiling=false"
-1.4.1 Run the below command (based on the file location on your system) on the master node.
-For example, chmod 644 /etc/kubernetes/apiserver
-1.4.2 Run the below command (based on the file location on your system) on the master node.
-For example, chown root:root /etc/kubernetes/apiserver
-1.4.3 Run the below command (based on the file location on your system) on the master node.
-For example, chmod 644 $config
-1.4.4 Run the below command (based on the file location on your system) on the master node.
-For example, chown root:root $config
-1.4.7 Run the below command (based on the file location on your system) on the master node.
-For example, chmod 644 /etc/etcd/etcd.conf
-1.4.8 Run the below command (based on the file location on your system) on the master node.
-For example, chown root:root /etc/etcd/etcd.conf
-1.4.9 Run the below command (based on the file location on your system) on the master node.
-For example, chmod 644 /etc/sysconfig/flanneld
-1.4.10 Run the below command (based on the file location on your system) on the master node.
-For example, chown root:root /etc/sysconfig/flanneld
-1.4.11 On the etcd server node, get the etcd data directory, passed as an argument --data-dir , from the below command:
- ps -ef | grep etcd
- Run the below command (based on the etcd data directory found above). For example,
- chmod 700 /var/lib/etcd/default.etcd
-1.4.12 On the etcd server node, get the etcd data directory, passed as an argument --data-dir , from the below command:
- ps -ef | grep etcd
- Run the below command (based on the etcd data directory found above). For example,
- chown etcd:etcd /var/lib/etcd/default.etcd
-1.5.7 Edit the etcd environment file (for example, /etc/etcd/etcd.conf) on the etcd server node and set the ETCD_WAL_DIR parameter as appropriate. Edit the etcd startup file (for example, /etc/systemd/system/multiuser.target.wants/etcd.service) and configure the startup parameter for --wal-dir and set it to "${ETCD_WAL_DIR}"
-1.5.8 Edit the etcd environment file (for example, /etc/etcd/etcd.conf) on the etcd server node and set the ETCD_MAX_WALS parameter to 0. Edit the etcd startup file (for example, /etc/systemd/system/multiuser.target.wants/etcd.service) and configure the startup parameter for --max-wals and set it to "${ETCD_MAX_WALS}".
-1.5.9 Follow the etcd documentation and create a dedicated certificate authority setup for the etcd service.
-1.6.1 Remove any unneeded clusterrolebindings: kubectl delete clusterrolebinding [name]
-1.6.2 Follow the documentation and create and enforce Pod Security Policies for your cluster. Additionally, you could refer the "CIS Security Benchmark for Docker" and follow the suggested Pod Security Policies for your environment.
-1.6.3 Follow the documentation and create namespaces for objects in your deployment as you need them.
-1.6.4 Follow the documentation and create NetworkPolicy objects as you need them.
-1.6.5 Use other mechanisms such as vaults to manage your cluster secrets.
-1.6.6 Seccomp is an alpha feature currently. By default, all alpha features are disabled. So, you would need to enable alpha features in the apiserver by passing "--feature- gates=AllAlpha=true" argument.
- Edit the /etc/kubernetes/apiserver file on the master node and set the KUBE_API_ARGS parameter to "--feature-gates=AllAlpha=true" KUBE_API_ARGS="--feature-gates=AllAlpha=true"
-1.6.7 Follow the Kubernetes documentation and apply security contexts to your pods. For a suggested list of security contexts, you may refer to the CIS Security Benchmark for Docker Containers.
-1.6.8 Follow the Kubernetes documentation and setup image provenance.
+[WARN] 1.3.1 Ensure that the --terminated-pod-gc-threshold argument is set as appropriate (Manual)
+[FAIL] 1.3.2 Ensure that the --profiling argument is set to false (Automated)
+[PASS] 1.3.3 Ensure that the --use-service-account-credentials argument is set to true (Automated)
+[PASS] 1.3.4 Ensure that the --service-account-private-key-file argument is set as appropriate (Automated)
+[PASS] 1.3.5 Ensure that the --root-ca-file argument is set as appropriate (Automated)
+[FAIL] 1.3.6 Ensure that the RotateKubeletServerCertificate argument is set to true (Automated)
+[PASS] 1.3.7 Ensure that the --bind-address argument is set to 127.0.0.1 (Automated)
+[INFO] 1.4 Scheduler
+[FAIL] 1.4.1 Ensure that the --profiling argument is set to false (Automated)
+[PASS] 1.4.2 Ensure that the --bind-address argument is set to 127.0.0.1 (Automated)
 
 == Summary ==
-26 checks PASS
-32 checks FAIL
-9 checks WARN
+43 checks PASS
+12 checks FAIL
+10 checks WARN
 0 checks INFO

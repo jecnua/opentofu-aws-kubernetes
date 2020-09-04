@@ -1,14 +1,18 @@
 data "template_file" "bootstrap_node_k8s_workers" {
-  template = file("${path.module}/scripts/bootstrap.tpl")
+  template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
     controller_join_token   = var.controller_join_token
     is_worker               = "true"
     cluster_id              = var.kubernetes_cluster
-    region                  = var.region
     k8s_deb_package_version = var.k8s_deb_package_version
-    kubeadm_install_version = ""
-    load_balancer_dns       = ""
+    kubeadm_install_version = "" # Ignored for nodes
+    //    load_balancer_dns       = "" # Ignored for nodes
+    pre_install         = var.userdata_pre_install
+    cni_install         = "" # Ignored for nodes
+    post_install        = var.userdata_post_install
+    kubeadm_config      = ""
+    kubeadm_join_config = data.template_file.bootstrap_k8s_controllers_kubeadm_join_config.rendered
   }
 }
 
@@ -16,7 +20,7 @@ resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
   count                       = signum(var.k8s_workers_num_nodes)
   image_id                    = var.ami_id_worker != "" ? var.ami_id_worker : data.aws_ami.ami_dynamic.id
   instance_type               = var.ec2_k8s_workers_instance_type
-  key_name                    = var.ec2_key_name
+  key_name                    = var.enable_ssm_access_to_nodes ? null : var.ec2_key_name
   user_data                   = data.template_file.bootstrap_node_k8s_workers.rendered
   iam_instance_profile        = aws_iam_instance_profile.k8s_instance_profile.id
   associate_public_ip_address = false
@@ -150,7 +154,7 @@ resource "aws_security_group_rule" "allow_all_from_k8s_workers_internal_elb" {
 }
 
 # Allow ALL from the cluster: TCP and UDP
-# Needed by some CNI network plugins like Weave
+# Needed by some CNI network plugins
 resource "aws_security_group_rule" "allow_all_from_k8s_controller_nodes" {
   from_port                = 0
   to_port                  = 0

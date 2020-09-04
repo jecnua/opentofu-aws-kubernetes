@@ -1,0 +1,72 @@
+name: Tests
+# This workflow is triggered on pushes to the repository.
+on: [push]
+
+jobs:
+  default:
+    name: default
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: list
+        run: |
+          ls -la
+          pwd
+
+  shellcheck:
+    name: shellchecks
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
+      env:
+        placeholder: test
+    steps:
+        - uses: actions/checkout@v2
+        - name: Install deps
+          run: |
+            # Install deps
+            apt update
+            DEBIAN_FRONTEND=noninteractive apt install -y shellcheck
+        - name: Shellcheck
+          run: |
+            # shellcheck ./modules/kubernetes/scripts/* # Validating BASH
+            shellcheck ./utilities/*.sh # Validating BASH
+
+#  tfcheckexamples:
+#    name: terraform checks examples
+#    runs-on: ubuntu-latest
+#    container:
+#      image: ubuntu:20.04
+#      env:
+#        placeholder: test
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Install deps
+#        run: |
+#          # Install deps
+#          apt update
+#          DEBIAN_FRONTEND=noninteractive apt install -y shellcheck curl gnupg software-properties-common
+#          curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+#          apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+#          apt update
+#          apt-get install terraform
+#      - name: Validate examples
+#        run: |
+#          cd examples/tf-0-13
+#          terraform init
+#          terraform validate
+#          terraform fmt -check
+
+  # https://github.com/hashicorp/setup-terraform
+  tfcheckexamples:
+    name: terraform checks modules
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.13.4
+    - run: |
+        cd examples/tf-0-13
+        terraform init
+        terraform fmt -check

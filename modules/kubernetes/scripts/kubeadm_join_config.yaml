@@ -1,0 +1,11 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: MASTERIP:6443
+    token: ${controller_join_token}
+    unsafeSkipCAVerification: true
+  timeout: 5m0s
+  tlsBootstrapToken: ${controller_join_token}
+nodeRegistration:
+  taints: null
