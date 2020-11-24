@@ -13,7 +13,7 @@ environment. More informations can be found at its own repo:
 - [Kubernetes module](modules/kubernetes/)
 - - [Module maintainers](MAINTAINERS.md)
 
-*NOTE*: It only suppport terraform 0.13.x onward. 
+*NOTE*: It only supports Terraform 0.13.x onward
 
 For older Terraform version please use:
 
