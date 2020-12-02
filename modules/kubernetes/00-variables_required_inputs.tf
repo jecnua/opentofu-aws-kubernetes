@@ -46,11 +46,6 @@ variable "subnets_public_cidr_block" {
 
 ###################################### EC2
 
-variable "ec2_key_name" {
-  type        = string
-  description = "The key name to associate to the new ec2 servers"
-}
-
 variable "ec2_k8s_controllers_instance_type" {
   type        = string
   description = "Instance size for the controllers"

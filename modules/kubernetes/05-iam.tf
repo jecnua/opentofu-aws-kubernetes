@@ -3,6 +3,7 @@ resource "aws_iam_instance_profile" "k8s_instance_profile" {
   role        = aws_iam_role.k8s_assume_role.name
 }
 
+# For sure restrict the ZONE and VPC
 resource "aws_iam_role_policy" "k8s_role" {
   name = "${var.unique_identifier}-${var.environment}-pol"
   role = aws_iam_role.k8s_assume_role.id
@@ -43,7 +44,7 @@ resource "aws_iam_role" "k8s_assume_role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "ec2.amazonaws.com"
+        "Service": "ec2.${data.aws_partition.current.dns_suffix}"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -51,5 +52,11 @@ resource "aws_iam_role" "k8s_assume_role" {
   ]
 }
 EOF
+}
 
+resource "aws_iam_role_policy_attachment" "ssm_policy_att" {
+  count      = var.enable_ssm_access_to_nodes ? 1 : 0
+  depends_on = [aws_iam_role.k8s_assume_role]
+  role       = aws_iam_role.k8s_assume_role.name
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
