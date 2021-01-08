@@ -79,13 +79,13 @@ variable "sns_topic_notifications" {
 variable "k8s_deb_package_version" {
   type        = string
   description = "The version of the deb package to install in ubuntu (i.e. 1.18.2)"
-  default     = "1.19.4"
+  default     = "1.20.1"
 }
 
 variable "kubeadm_install_version" {
   type        = string
   description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.18)"
-  default     = "stable-1.19"
+  default     = "stable-1.20"
 }
 
 variable "userdata_pre_install" {

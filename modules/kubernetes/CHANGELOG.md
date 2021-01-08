@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 4.0.0
+
+Only supporting terraform 0.14 from now on. Major (and breaking) changes.
+
+### Features & Changes
+
+- Tested with 1.20.0 and update default version to 1.20.1
+- Tested with terraform 0.14.3. Updated min terraform version to 0.14
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 3.0.0
 
 Only supporting terraform 0.13 from now on. Major (and breaking) changes.

@@ -1,9 +1,9 @@
 # Terraform module for kubernetes on AWS
 
 [![Actions Status](https://github.com/jecnua/terraform-aws-kubernetes/workflows/Tests/badge.svg)](https://github.com/jecnua/terraform-aws-kubernetes/actions)
-![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.13.x-blue.svg?style=flat)
+![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.14.x-blue.svg?style=flat)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/maintenance/yes/2020.svg)
+![](https://img.shields.io/maintenance/yes/2021.svg)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Percentage of issues still open")
 
@@ -13,12 +13,13 @@ environment. More informations can be found at its own repo:
 - [Kubernetes module](modules/kubernetes/)
 - - [Module maintainers](MAINTAINERS.md)
 
-*NOTE*: It only supports Terraform 0.13.x onward
+*NOTE*: It only supports Terraform 0.14.x onward
 
 For older Terraform version please use:
 
 - For 0.11 the tag _v0.11.x-last-supported-code_
 - For 0.12 the tag _v0.12.x-last-supported-code_
+- For 0.13 the tag _v0.13.x-last-supported-code_
 
 ## Connect to the cluster
 
