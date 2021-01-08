@@ -13,6 +13,7 @@ CLUSTER_ID=${cluster_id}
 K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 # shellcheck disable=SC2154
 KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
+KCTL_USER='ubuntu'
 
 STERN_VERSION='1.11.0'
 
@@ -113,10 +114,12 @@ systemctl daemon-reload
 systemctl restart docker
 # Avoids [WARNING Service-Docker]: docker service is not enabled, please run 'systemctl enable docker.service'
 systemctl enable docker.service
+# Adding user on docker group
+sudo usermod -aG docker "$KCTL_USER"
 
 echo 'KUBELET_EXTRA_ARGS=--cloud-provider=aws' > /etc/default/kubelet
 
-# Adding autocomplete for ubuntu
+# Adding autocomplete
 echo 'source <(kubectl completion bash)' > /etc/bash_completion.d/kubectl
 
 if [[ "x"$IS_WORKER == "x" ]]
@@ -124,11 +127,10 @@ then
   # Start as master (no HA)
   # Forcing version
   VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
-  cat <<EOF > /home/ubuntu/kubeadm-config.yaml
+  cat <<EOF > "/home/$KCTL_USER/kubeadm-config.yaml"
 ${kubeadm_config}
 EOF
-  kubeadm init --config /home/ubuntu/kubeadm-config.yaml --v=5
-  KCTL_USER='ubuntu'
+  kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
   cd /home/$KCTL_USER || exit
   mkdir -p /home/$KCTL_USER/.kube
   sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
@@ -143,12 +145,12 @@ else
   # Read gotchas #1
   AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
   MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
-  cat <<EOF > /home/ubuntu/kubeadm-join-config.yaml
+  cat <<EOF > "/home/$KCTL_USER/kubeadm-join-config.yaml"
 ${kubeadm_join_config}
 EOF
   # Replacing with the master ip
-  sed -i "s/MASTERIP/$MASTER_IP/g" /home/ubuntu/kubeadm-join-config.yaml
-  kubeadm join --config /home/ubuntu/kubeadm-join-config.yaml --v=5
+  sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+  kubeadm join --config "/home/$KCTL_USER/kubeadm-join-config.yaml" --v=5
   # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
   echo 'protectKernelDefaults: true' >> /var/lib/kubelet/config.yaml
 fi
