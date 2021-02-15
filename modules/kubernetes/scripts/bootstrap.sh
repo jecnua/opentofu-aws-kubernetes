@@ -78,7 +78,8 @@ apt install -y \
   jq \
   curl \
   nfs-common \
-  net-tools
+  net-tools \
+  etcd-client
 # This need to be synchronized
 apt install -y \
   kubelet="$K8S_DEB_PACKAGES_VERSION-00" \
@@ -125,11 +126,26 @@ echo 'source <(kubectl completion bash)' > /etc/bash_completion.d/kubectl
 if [[ "x"$IS_WORKER == "x" ]]
 then
   # Start as master (no HA)
+
   # Forcing version
   VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
   cat <<EOF > "/home/$KCTL_USER/kubeadm-config.yaml"
 ${kubeadm_config}
 EOF
+
+  # Create the ETCD encryption file
+  mkdir -p /etc/kubernetes/etcd-encryption/
+  cat <<EOF > "/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
+${kubeadm_etcd_encryption}
+EOF
+  # TODO: Temporary.
+  # When doing multimaster this secrets needs to be the same, plus if you want the ETCD
+  # snapshot to make sense, you need to keep this between cluster
+  # Move it to a AWS Parameter Store or Secret Manager
+  etcd_secret=$(head -c 32 /dev/urandom | base64)
+  sed -i "s|PLACEHOLDER|$etcd_secret|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+  chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+
   kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
   cd /home/$KCTL_USER || exit
   mkdir -p /home/$KCTL_USER/.kube

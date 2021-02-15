@@ -8,11 +8,12 @@ data "template_file" "bootstrap_node_k8s_workers" {
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = "" # Ignored for nodes
     //    load_balancer_dns       = "" # Ignored for nodes
-    pre_install         = var.userdata_pre_install
-    cni_install         = "" # Ignored for nodes
-    post_install        = var.userdata_post_install
-    kubeadm_config      = ""
-    kubeadm_join_config = data.template_file.bootstrap_k8s_controllers_kubeadm_join_config.rendered
+    pre_install             = var.userdata_pre_install
+    cni_install             = "" # Ignored for nodes
+    post_install            = var.userdata_post_install
+    kubeadm_config          = ""
+    kubeadm_etcd_encryption = ""
+    kubeadm_join_config     = data.template_file.bootstrap_k8s_controllers_kubeadm_join_config.rendered
   }
 }
 
