@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 4.1.0
+
+### Features & Changes
+
+- Added etcd-client package in the default installation
+- Now ETCD is encrypted at rest with a random password (for now)
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 4.0.0
 
 Only supporting terraform 0.14 from now on. Major (and breaking) changes.

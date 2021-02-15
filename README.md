@@ -56,14 +56,3 @@ At the moment I wanted to avid dependencies to external tools like ansible, so t
 cloud-init. This means some architectural choices are defined in there and they can't be modified.
 
 Obviously this can be fixed, just fork and PR into this :)
-
-## Regenerate docs
-
-The script "regenerate.sh" is used to refresh the dependencies and the params file. It should be run it after any parameter change or when new resources are added.
-
-    ./regenerate.sh
-    k8s: params regenerated
-
-You need to install _terraform-docs_:
-
-    go get github.com/segmentio/terraform-docs

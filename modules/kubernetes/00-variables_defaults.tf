@@ -24,13 +24,13 @@ variable "ami_id_controller" {
 
 variable "ami_id_worker" {
   type        = string
-  description = "The id of the AMI to use for the workers. If empty, the latest ubuntu will be user."
+  description = "The id of the AMI to use for the workers. If empty, the latest ubuntu will be used."
   default     = ""
 }
 
 variable "availability_zone" {
   type        = list(string)
-  description = "The availability zone to use. r4.2xlarge are still not available in C"
+  description = "The availability zone to use. Be careful, r4.2xlarge are still not available in C for example"
   default     = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 
@@ -78,13 +78,13 @@ variable "sns_topic_notifications" {
 
 variable "k8s_deb_package_version" {
   type        = string
-  description = "The version of the deb package to install in ubuntu (i.e. 1.18.2)"
-  default     = "1.20.1"
+  description = "The version of the deb package to install in ubuntu (i.e. 1.20.2)"
+  default     = "1.20.2"
 }
 
 variable "kubeadm_install_version" {
   type        = string
-  description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.18)"
+  description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.20)"
   default     = "stable-1.20"
 }
 

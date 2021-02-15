@@ -14,7 +14,14 @@ apiServer:
     audit-log-maxage: "30"
     audit-log-maxbackup: "10"
     audit-log-maxsize: "100"
-    kubelet-certificate-authority: "/etc/kubernetes/pki/ca.crt"
+    encryption-provider-config: "/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
+  #    kubelet-certificate-authority: "/etc/kubernetes/pki/ca.crt"
+  extraVolumes:
+    - name: "etcd-encryption"
+      hostPath: "/etc/kubernetes/etcd-encryption"
+      mountPath: "/etc/kubernetes/etcd-encryption"
+      readOnly: true
+      pathType: DirectoryOrCreate
 controllerManager:
   extraArgs:
     profiling: "false"
