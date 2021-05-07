@@ -12,9 +12,9 @@ More information on each module can be found here:
 
 - [controller module](modules/controllers/): Spin up a single master to be used as control plane
 - [cri module](modules/cri/): Modules to choose which container engine to use
-    - [containerd module](modules/controllers/containerd)
-    - [cri-o module](modules/controllers/cri-o)
-    - [docker module](modules/controllers/docker)
+    - [containerd module](modules/cri/containerd)
+    - [cri-o module](modules/cri/cri-o)
+    - [docker module](modules/cri/docker)
 - [nodes module](modules/nodes/): Spin up a set of nodes to act as nodes for the cluster
 
 [Module maintainers](MAINTAINERS.md)
@@ -36,3 +36,15 @@ For older Terraform version please use:
 - For 0.12 the tag _v0.12.x-last-supported-code_
 - For 0.13 the tag _v0.13.x-last-supported-code_
 - For 0.14 the tag _v0.14.x-last-supported-code_
+
+## Tests
+
+Last tested with:
+
+    Terraform v0.15.1
+    on linux_amd64
+    + provider registry.terraform.io/hashicorp/aws v3.22.0
+    + provider registry.terraform.io/hashicorp/http v2.0.0
+    + provider registry.terraform.io/hashicorp/null v3.1.0
+    + provider registry.terraform.io/hashicorp/random v3.1.0
+    + provider registry.terraform.io/hashicorp/template v2.2.0

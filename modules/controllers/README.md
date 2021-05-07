@@ -1,16 +1,8 @@
-# Kubernetes module
+# Kubernetes controller module
 
-![](https://img.shields.io/badge/kubernetes-v1.20.x-green.svg)
 ![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
 
 This module will create a new kubernetes cluster inside your VPC.
-
-Last tested with:
-
-        Terraform v0.14.4
-        + provider registry.terraform.io/hashicorp/aws v3.22.0
-        + provider registry.terraform.io/hashicorp/http v2.0.0
-        + provider registry.terraform.io/hashicorp/template v2.2.0
 
 Support:
 
@@ -23,6 +15,7 @@ Support:
     k8s     1.18.8      YES
     k8s     1.19.4      YES
     k8s     1.20.1      YES
+    k8s     1.21.0      YES
 
 ## Usage
 
