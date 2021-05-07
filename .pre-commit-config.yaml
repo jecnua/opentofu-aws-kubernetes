@@ -1,19 +1,19 @@
 repos:
   - repo: git://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.45.0
+    rev: v1.50.0
     hooks:
       - id: terraform_fmt
       - id: terraform_tflint
 #      - id: terraform_validate
       - id: terraform_docs
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v3.4.0
     hooks:
       - id: check-merge-conflict
       - id: end-of-file-fixer
 #      - id: check-yaml # Check this expected a single document in the stream, but found another document
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: master  # or specific git tag
+    rev: 2.1.5  # or specific git tag
     hooks: #
       - id: forbid-binary
       - id: git-check  # Configure in .gitattributes
