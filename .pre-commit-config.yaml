@@ -8,13 +8,13 @@ repos:
       - id: terraform_docs
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
-    hooks: #
+    hooks:
       - id: check-merge-conflict
       - id: end-of-file-fixer
 #      - id: check-yaml # Check this expected a single document in the stream, but found another document
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 2.1.5  # or specific git tag
-    hooks: #
+    rev: 2.1.5
+    hooks:
       - id: forbid-binary
       - id: git-check  # Configure in .gitattributes
       - id: git-dirty  # Configure in .gitignore
