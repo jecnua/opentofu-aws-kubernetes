@@ -35,3 +35,4 @@ For older Terraform version please use:
 - For 0.11 the tag _v0.11.x-last-supported-code_
 - For 0.12 the tag _v0.12.x-last-supported-code_
 - For 0.13 the tag _v0.13.x-last-supported-code_
+- For 0.14 the tag _v0.14.x-last-supported-code_
