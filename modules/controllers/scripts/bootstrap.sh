@@ -97,8 +97,6 @@ TEOF
 chmod +x /opt/install-cri.sh
 /opt/install-cri.sh
 
-# echo 'KUBELET_EXTRA_ARGS=--cloud-provider=aws'$MODULE_KUBELET_EXTRA_ARGS > /etc/default/kubelet
-
 # Adding autocomplete
 echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
 

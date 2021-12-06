@@ -2,6 +2,9 @@ apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
 bootstrapTokens:
   - token: "${controller_join_token}"
+# nodeRegistration:
+#   kubeletExtraArgs:
+#     cloud-provider: external
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
