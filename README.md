@@ -1,9 +1,9 @@
 # Terraform module for kubernetes on AWS
 
 [![Actions Status](https://github.com/jecnua/terraform-aws-kubernetes/workflows/Tests/badge.svg)](https://github.com/jecnua/terraform-aws-kubernetes/actions)
-![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.15.x-blue.svg?style=flat)
+![https://www.terraform.io/](https://img.shields.io/badge/terraform-v1.2.x-blue.svg?style=flat)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/maintenance/yes/2021.svg)
+![](https://img.shields.io/maintenance/yes/2022.svg)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Percentage of issues still open")
 
@@ -29,7 +29,7 @@ More information on each module can be found at the following links:
 
 ## Supported terraform versions
 
-*NOTE*: It only supports Terraform 0.15.x onward
+*NOTE*: It only supports Terraform 1.2.x onward
 
 For older Terraform version please use:
 
@@ -45,10 +45,13 @@ For older Terraform version please use:
 Unfortunately for now is tested manually. I do however test it weekly :)
 Last tested with:
 
-    Terraform v0.15.3
-    on linux_amd64
-    + provider registry.terraform.io/hashicorp/aws v3.22.0
-    + provider registry.terraform.io/hashicorp/http v2.0.0
-    + provider registry.terraform.io/hashicorp/null v3.1.0
-    + provider registry.terraform.io/hashicorp/random v3.1.0
-    + provider registry.terraform.io/hashicorp/template v2.2.0
+```
+$ terraform version
+Terraform v1.2.6
+on linux_amd64
++ provider registry.terraform.io/hashicorp/aws v4.23.0
++ provider registry.terraform.io/hashicorp/http v3.0.1
++ provider registry.terraform.io/hashicorp/null v3.1.1
++ provider registry.terraform.io/hashicorp/random v3.3.2
++ provider registry.terraform.io/hashicorp/template v2.2.0
+```

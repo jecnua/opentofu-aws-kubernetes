@@ -2,32 +2,30 @@ resource "random_string" "seed" {
   length  = 6
   lower   = true
   upper   = false
-  number  = true
+  numeric = true
   special = false
 }
 
 data "template_cloudinit_config" "controller_bootstrap" {
   gzip          = true
   base64_encode = true
-
   # Main cloud-config configuration file.
   part {
     filename     = "boostrap.sh"
     content_type = "text/x-shellscript"
     content      = data.template_file.bootstrap_node_k8s_controllers.rendered
   }
-
 }
 
 resource "aws_launch_template" "controller" {
-  name                                 = "kubernetes-node-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
+  name                                 = "kubernetes-controller-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
   instance_initiated_shutdown_behavior = "terminate"
   image_id                             = var.ami_id != "" ? var.ami_id : data.aws_ami.ami_dynamic.id
   instance_type                        = var.ec2_k8s_controllers_instance_type
-  vpc_security_group_ids               = [aws_security_group.k8s_controllers_node_sg.id]
   user_data                            = data.template_cloudinit_config.controller_bootstrap.rendered
   key_name                             = var.enable_ssm_access_to_nodes ? null : var.ec2_key_name
   tags                                 = local.tags_as_map
+  #  vpc_security_group_ids               = [aws_security_group.k8s_controllers_node_sg.id] # Invalid launch template: When a network interface is provided, the security groups must be a part of it.
 
   dynamic "block_device_mappings" {
     for_each = [var.block_device_mappings]
@@ -56,24 +54,35 @@ resource "aws_launch_template" "controller" {
   //    }
   //  }
 
+  # Remounting the same private IP when a node dies
+  network_interfaces {
+    network_interface_id = aws_network_interface.fixed_private_ip.id
+  }
+
   tag_specifications {
     resource_type = "instance"
     tags          = local.tags_as_map
   }
 }
 
+resource "aws_network_interface" "fixed_private_ip" {
+  subnet_id       = aws_subnet.k8s_private.0.id
+  security_groups = [aws_security_group.k8s_controllers_node_sg.id]
+}
 
+# TODO: Use this var.k8s_controllers_num_nodes to cycle
 resource "aws_autoscaling_group" "k8s_controllers_ag" {
-  max_size         = var.k8s_controllers_num_nodes
-  min_size         = var.k8s_controllers_num_nodes
-  desired_capacity = var.k8s_controllers_num_nodes
-  //  launch_configuration      = aws_launch_configuration.k8s_controllers_launch_configuration.id
+  name                      = "kubernetes-controller-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
+  max_size                  = 1
+  min_size                  = 1
+  desired_capacity          = 1
   health_check_grace_period = 300
   health_check_type         = "EC2"
   force_delete              = false
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
-  vpc_zone_identifier       = aws_subnet.k8s_private.*.id
+  availability_zones        = [aws_subnet.k8s_private.0.availability_zone] # TODO: Cycle them up to AZs # Required now that I use a fixed private IP
+  #  vpc_zone_identifier       = [aws_subnet.k8s_private.0.id] # A network interface may not specify both a network interface ID and a subnet. Launching EC2 instance failed.
 
   launch_template {
     id      = aws_launch_template.controller.id

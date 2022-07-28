@@ -1,7 +1,8 @@
 ############# CONTAINERD #############
 
-# https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
+#CRICTL_VERSION="v1.20.0"
 
+# https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 cat <<EOF | tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
@@ -22,18 +23,14 @@ sysctl --system
 
 ##
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key --keyring /etc/apt/trusted.gpg.d/docker.gpg add -
-
-add-apt-repository \
-  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) \
-  stable"
-
+# Installing containerd from Ubuntu repos and not the docker one
 apt-get update
-apt-get install -y containerd.io
+apt install -y containerd # It will also install runc
 
+# Configure it
 mkdir -p /etc/containerd
 containerd config default | tee /etc/containerd/config.toml
+sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml # https://github.com/containerd/containerd/issues/4581#issuecomment-733704174
 
 # Now we need to add the shim to use also gvisor
 # https://gvisor.dev/docs/user_guide/install/
@@ -41,8 +38,8 @@ containerd config default | tee /etc/containerd/config.toml
   set -e
   ARCH=$(uname -m)
   URL=https://storage.googleapis.com/gvisor/releases/release/latest/$ARCH
-  wget $URL/runsc $URL/runsc.sha512 \
-    $URL/containerd-shim-runsc-v1 $URL/containerd-shim-runsc-v1.sha512
+  wget "$URL/runsc" "$URL/runsc.sha512" \
+    "$URL/containerd-shim-runsc-v1" "$URL/containerd-shim-runsc-v1.sha512"
   sha512sum -c runsc.sha512 \
     -c containerd-shim-runsc-v1.sha512
   rm -f *.sha512
@@ -52,35 +49,34 @@ containerd config default | tee /etc/containerd/config.toml
 
 # Configure the toml
 # https://gvisor.dev/docs/user_guide/containerd/quick_start/
-cat <<CRIEOF | tee /etc/containerd/config.toml
-disabled_plugins = ["restart"]
-[plugins.linux]
-  shim_debug = true
-[plugins.cri.containerd.runtimes.runsc]
-  runtime_type = "io.containerd.runsc.v1"
-CRIEOF
+#cat <<CRIEOF | tee /etc/containerd/config.toml
+#disabled_plugins = ["restart"]
+#[plugins.linux]
+#  shim_debug = true
+#[plugins.cri.containerd.runtimes.runsc]
+#  runtime_type = "io.containerd.runsc.v1"
+#CRIEOF
+
+#######################################################
 
 # Install crictl
 # https://gvisor.dev/docs/user_guide/containerd/quick_start/
-CRICTL_VERSION="v1.20.0"
-wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$CRICTL_VERSION/crictl-$CRICTL_VERSION-linux-amd64.tar.gz
-tar zxvf crictl-$CRICTL_VERSION-linux-amd64.tar.gz -C /usr/local/bin
-rm -f crictl-$CRICTL_VERSION-linux-amd64.tar.gz
+#wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$CRICTL_VERSION/crictl-$CRICTL_VERSION-linux-amd64.tar.gz
+#tar zxvf crictl-$CRICTL_VERSION-linux-amd64.tar.gz -C /usr/local/bin
+#rm -f crictl-$CRICTL_VERSION-linux-amd64.tar.gz
 
 # crictl use containerd as default
 cat <<CRIEOF | tee /etc/crictl.yaml
-runtime-endpoint: unix:///run/containerd/containerd.sock
+runtime-endpoint: unix:///var/run/containerd/containerd.sock
+image-endpoint: unix:///var/run/containerd/containerd.sock
+timeout: 10
+debug: false
 CRIEOF
 
-systemctl restart containerd
-
-# kubelet to use containerd
-# Remember the space at the start
-MODULE_KUBELET_EXTRA_ARGS=' --container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock'
+#######################################################
 
 systemctl daemon-reload
+systemctl restart containerd
 systemctl restart kubelet
-
-echo 'KUBELET_EXTRA_ARGS=--cloud-provider=aws'$MODULE_KUBELET_EXTRA_ARGS > /etc/default/kubelet
 
 ############# CONTAINERD #############

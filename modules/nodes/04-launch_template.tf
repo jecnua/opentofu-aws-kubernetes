@@ -11,10 +11,8 @@ resource "aws_launch_template" "k8s_node" {
 
   dynamic "block_device_mappings" {
     for_each = [var.block_device_mappings]
-
     content {
       device_name = "/dev/sda1" # root
-
       ebs {
         delete_on_termination = lookup(block_device_mappings.value, "delete_on_termination", true) # cattle not pets
         volume_type           = lookup(block_device_mappings.value, "volume_type", var.ebs_volume_type)

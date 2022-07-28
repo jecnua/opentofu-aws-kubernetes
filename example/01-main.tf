@@ -6,10 +6,6 @@ variable "k8s_full_version" {
   default = "1.20.5"
 }
 
-module "docker_cri" {
-  source = "../modules/cri/docker"
-}
-
 module "containerd_cri" {
   source = "../modules/cri/containerd"
 }
@@ -30,7 +26,7 @@ module "k8s" {
   ec2_k8s_controllers_instance_type = "m5a.large"
   kubernetes_cluster                = "k8s-poc"
   internal_network_cidr             = "10.244.0.0/16" # Flannel CIDR
-  controllers_cri_bootstrap         = module.docker_cri.cri_bootstrap
+  controllers_cri_bootstrap         = module.containerd_cri.cri_bootstrap
 
   subnets_public_cidr_block = [
     "x.x.x.x/25",

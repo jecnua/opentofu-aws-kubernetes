@@ -1,11 +1,11 @@
 resource "aws_iam_instance_profile" "k8s_instance_profile" {
-  name_prefix = "${var.unique_identifier}-${var.environment}-"
+  name_prefix = "kubernetes-controller-${var.unique_identifier}-${var.environment}-"
   role        = aws_iam_role.k8s_assume_role.name
 }
 
 # For sure restrict the ZONE and VPC
 resource "aws_iam_role_policy" "k8s_role" {
-  name = "${var.unique_identifier}-${var.environment}-pol"
+  name = "kubernetes-controller-${var.unique_identifier}-${var.environment}-pol"
   role = aws_iam_role.k8s_assume_role.id
 
   policy = <<EOF

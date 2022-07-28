@@ -98,7 +98,9 @@ chmod +x /opt/install-cri.sh
 /opt/install-cri.sh
 
 # Adding autocomplete
+echo 'source /usr/share/bash-completion/bash_completion' >>~/.bashrc
 echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
+echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
 
 # Start as master (no HA)
 

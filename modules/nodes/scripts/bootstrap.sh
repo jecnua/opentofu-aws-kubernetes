@@ -83,10 +83,10 @@ apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 # Install falco
 curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc | apt-key add -
-echo "deb https://dl.bintray.com/falcosecurity/deb stable main" | tee -a /etc/apt/sources.list.d/falcosecurity.list
-apt-get update -y
-apt-get -y install "linux-headers-$(uname -r)"
-apt-get install -y falco
+echo "deb https://download.falco.org/packages/deb stable main" | tee -a /etc/apt/sources.list.d/falcosecurity.list
+apt update -y
+apt -y install "linux-headers-$(uname -r)"
+apt install -y falco
 systemctl start falco
 systemctl status falco
 
@@ -113,10 +113,17 @@ sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 OLD_HOME=$HOME
 export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
 kubeadm join --config "/home/$KCTL_USER/kubeadm-join-config.yaml" --v=5
+# Adding autocomplete
+echo 'source /usr/share/bash-completion/bash_completion' >>$HOME/.bashrc
 HOME=$OLD_HOME
 
 # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
 echo 'protectKernelDefaults: true' >>/var/lib/kubelet/config.yaml
+
+# Adding autocomplete
+echo 'source /usr/share/bash-completion/bash_completion' >>/root/.bashrc
+echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
+echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
 
 # shellcheck disable=SC2154
 ${post_install}

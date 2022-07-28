@@ -7,7 +7,8 @@ variable "additional_tags_as_map" {
 variable "ami_name_filter_regex" {
   type        = string
   description = "Regex to find the ami to use"
-  default     = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
+  default     = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"
+  #  "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
 }
 
 variable "ami_id" {
@@ -48,14 +49,14 @@ variable "sns_topic_notifications" {
 
 variable "k8s_deb_package_version" {
   type        = string
-  description = "The version of the deb package to install in ubuntu (i.e. 1.23.3)"
-  default     = "1.23.3"
+  description = "The version of the deb package to install in ubuntu (i.e. 1.25.0)"
+  default     = "1.25.0"
 }
 
 variable "kubeadm_install_version" {
   type        = string
-  description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.23)"
-  default     = "stable-1.23"
+  description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.25)"
+  default     = "stable-1.25"
 }
 
 variable "userdata_pre_install" {
@@ -68,7 +69,7 @@ variable "userdata_pre_install" {
 # Example of weave as alternative (remember to escape the "):
 # su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 variable "userdata_cni_install" {
-  description = "User-data script that will be applied only in master"
+  description = "User-data script that will be applied"
   type        = string
   default     = "su \"$KCTL_USER\" -c \"kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml\""
 }
