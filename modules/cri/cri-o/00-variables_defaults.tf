@@ -1,5 +1,5 @@
 variable "crio_version" {
   type        = string
   description = "Version to install"
-  default     = "1.21"
+  default     = "1.23"
 }
