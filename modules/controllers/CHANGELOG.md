@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 5.1.0
+
+### Features & Changes
+
+- Updated k8s version to 1.21
+- Update cri-o installation
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 5.0.0
 
 ### Features & Changes

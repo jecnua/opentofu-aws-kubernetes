@@ -18,7 +18,21 @@ EOF
 # Apply sysctl params without reboot
 sysctl --system
 
-##
+## Compile crio-o
+
+DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  libvirt-clients \
+  golang \
+  libdevmapper-dev \
+  lvm2 \
+  make
+#git clone https://github.com/cri-o/cri-o.git
+#cd cri-o || exit 1
+#git checkout v1.21.0
+#sed -i 's/- exclude_graphdriver_devicemapper/# - exclude_graphdriver_devicemapper/g' .golangci.yml
+#make install
+
+## Install via apt
 
 . /etc/lsb-release
 OS='x'$DISTRIB_ID'_'$DISTRIB_RELEASE
@@ -33,11 +47,15 @@ curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y cri-o cri-o-runc cri-tools
 
+##
+
 sed -i 's|conmon = ""|conmon = "/usr/bin/conmon"|g' /etc/crio/crio.conf
 
-systemctl enable cri-o.service
-systemctl start cri-o.service
-systemctl status cri-o.service
+systemctl status crio
+
+systemctl enable crio.service
+systemctl start crio.service
+systemctl status crio.service
 
 crictl info
 

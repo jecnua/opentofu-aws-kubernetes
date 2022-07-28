@@ -1,7 +1,10 @@
-#
+# CRI-O powered nodes
 
-Only supports ubuntu.
-Tested on 20.04.
+- https://cri-o.io/
+
+Only supports ubuntu.  Tested on 20.04.
+
+Versions: https://github.com/cri-o/cri-o/releases
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
