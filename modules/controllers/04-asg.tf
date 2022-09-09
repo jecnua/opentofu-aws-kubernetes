@@ -57,7 +57,8 @@ data "template_cloudinit_config" "controller_bootstrap" {
 }
 
 resource "aws_launch_template" "controller" {
-  name                                 = "kubernetes-controller-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
+  count                                = var.k8s_controllers_num_nodes
+  name                                 = "k8s-controller-${count.index}-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
   instance_initiated_shutdown_behavior = "terminate"
   image_id                             = var.ami_id != "" ? var.ami_id : data.aws_ami.ami_dynamic.id
   instance_type                        = var.ec2_k8s_controllers_instance_type
@@ -65,13 +66,10 @@ resource "aws_launch_template" "controller" {
   key_name                             = var.enable_ssm_access_to_nodes ? null : var.ec2_key_name
   tags                                 = local.tags_as_map
   #  vpc_security_group_ids               = [aws_security_group.k8s_controllers_node_sg.id] # Invalid launch template: When a network interface is provided, the security groups must be a part of it.
-
   dynamic "block_device_mappings" {
     for_each = [var.block_device_mappings]
-
     content {
       device_name = "/dev/sda1" # root
-
       ebs {
         delete_on_termination = lookup(block_device_mappings.value, "delete_on_termination", true) # cattle not pets
         volume_type           = lookup(block_device_mappings.value, "volume_type", var.ebs_volume_type)
@@ -81,23 +79,19 @@ resource "aws_launch_template" "controller" {
       }
     }
   }
-
   iam_instance_profile {
     name = aws_iam_instance_profile.k8s_instance_profile.id
   }
-
   //  instance_market_options {
   //    market_type = var.market_options
   //    spot_options {
   //      spot_instance_type = "one-time" # Auto Scaling only supports the 'one-time' Spot instance type with no duration.
   //    }
   //  }
-
   # Remounting the same private IP when a node dies
   network_interfaces {
-    network_interface_id = aws_network_interface.fixed_private_ip.id
+    network_interface_id = aws_network_interface.fixed_private_ip[count.index].id
   }
-
   tag_specifications {
     resource_type = "instance"
     tags          = local.tags_as_map
@@ -105,13 +99,15 @@ resource "aws_launch_template" "controller" {
 }
 
 resource "aws_network_interface" "fixed_private_ip" {
-  subnet_id       = aws_subnet.k8s_private.0.id
+  count           = var.k8s_controllers_num_nodes
+  subnet_id       = aws_subnet.k8s_private[count.index].id
   security_groups = [aws_security_group.k8s_controllers_node_sg.id]
 }
 
 # TODO: Use this var.k8s_controllers_num_nodes to cycle
 resource "aws_autoscaling_group" "k8s_controllers_ag" {
-  name                      = "kubernetes-controller-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
+  count                     = var.k8s_controllers_num_nodes
+  name                      = "k8s-controller-${count.index}-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
   max_size                  = 1
   min_size                  = 1
   desired_capacity          = 1
@@ -120,11 +116,11 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   force_delete              = false
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
-  availability_zones        = [aws_subnet.k8s_private.0.availability_zone] # TODO: Cycle them up to AZs # Required now that I use a fixed private IP
+  availability_zones        = [aws_subnet.k8s_private[count.index].availability_zone] # TODO: Cycle them up to AZs # Required now that I use a fixed private IP
   #  vpc_zone_identifier       = [aws_subnet.k8s_private.0.id] # A network interface may not specify both a network interface ID and a subnet. Launching EC2 instance failed.
 
   launch_template {
-    id      = aws_launch_template.controller.id
+    id      = aws_launch_template.controller[count.index].id
     version = "$Latest"
   }
 
@@ -149,6 +145,12 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
 
   lifecycle {
     create_before_destroy = true
+  }
+
+  tag {
+    key                 = "ControllerID"
+    value               = count.index
+    propagate_at_launch = true
   }
 
   dynamic "tag" {

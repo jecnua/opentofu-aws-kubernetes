@@ -107,7 +107,6 @@ resource "aws_security_group_rule" "k8s_controllers_internal_elb_ag_sg_egress" {
 # SG of the node itself
 resource "aws_security_group" "k8s_controllers_node_sg" {
   vpc_id = data.aws_vpc.targeted_vpc.id
-
   tags = {
     Environment       = var.environment
     ManagedBy         = "terraform k8s module"
