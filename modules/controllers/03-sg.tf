@@ -110,37 +110,10 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 //  }
 //}
 
-# TODO: Close this to outside and make it injectable
 resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
   name        = "kubernetes-controller-${var.kubernetes_cluster}"
   vpc_id      = data.aws_vpc.targeted_vpc.id
   description = "Security group for controllers"
-
-  # ingress {
-  #   from_port = 6443
-  #   to_port   = 6443
-  #   protocol  = "tcp"
-  #
-  #   cidr_blocks = [
-  #     var.internal_network_cidr,
-  #   ]
-  # }
-
-  ingress {
-    from_port = 6443
-    to_port   = 6443
-    protocol  = "tcp"
-    cidr_blocks = [
-      var.internal_network_cidr,
-    ]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = {
     Environment       = var.environment
@@ -149,6 +122,24 @@ resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
     Name              = "${var.unique_identifier} ${var.environment} controllers internal elb sg"
     KubernetesCluster = var.kubernetes_cluster
   }
+}
+
+resource "aws_security_group_rule" "k8s_controllers_internal_elb_ag_sg_ingress" {
+  type              = "ingress"
+  from_port         = 6443
+  to_port           = 6443
+  protocol          = "tcp"
+  cidr_blocks       = [var.internal_network_cidr]
+  security_group_id = aws_security_group.k8s_controllers_internal_elb_ag_sg.id
+}
+#
+resource "aws_security_group_rule" "k8s_controllers_internal_elb_ag_sg_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.k8s_controllers_internal_elb_ag_sg.id
 }
 
 # SG of the node itself
@@ -197,8 +188,8 @@ resource "aws_security_group_rule" "allow_all_from_self_controllers" {
 
 # Allow TCP connections from the ELB
 resource "aws_security_group_rule" "allow_all_from_k8s_controller_internal_elb" {
-  from_port                = 0
-  to_port                  = 0
+  from_port                = 6443
+  to_port                  = 6443
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k8s_controllers_internal_elb_ag_sg.id
   security_group_id        = aws_security_group.k8s_controllers_node_sg.id

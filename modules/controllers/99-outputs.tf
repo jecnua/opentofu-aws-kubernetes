@@ -65,3 +65,7 @@ output "nodes_config_bundle" {
     "internal_network_cidr"   = var.internal_network_cidr
   }
 }
+
+output "k8s_controllers_internal_elb_ag_sg_id" {
+  value = aws_security_group.k8s_controllers_node_sg.id
+}
