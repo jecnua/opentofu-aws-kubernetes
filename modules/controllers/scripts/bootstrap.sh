@@ -138,6 +138,7 @@ OLD_HOME=$HOME
 export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
 kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
 
+# TODO: Cron every 6 hours to generate a new one and upload it to the secrect
 # Upload a fresh token and CA hash
 TOKEN=$(kubeadm token create)
 HASH=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')

@@ -34,12 +34,6 @@ variable "availability_zone" {
   default     = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 
-//variable "region" {
-//  type        = string
-//  description = "The region to use with the aws cli in the bootstrap (region you are spinning k8s in)"
-//  default     = "us-east-1"
-//}
-
 variable "k8s_workers_lb_timeout_seconds" {
   type        = string
   description = "lb timeout in second for the nodes"
@@ -51,11 +45,6 @@ variable "k8s_worker_additional_lbs" {
   description = "List of additional ELBs to attach to the AG for nodes"
   default     = []
 }
-
-//variable "k8s_deb_package_version" {
-//  type        = string
-//  description = "The version of the deb package to install in ubuntu (i.e. 1.20.2)"
-//}
 
 variable "userdata_pre_install" {
   description = "User-data that will be applied before everything else is installed"
