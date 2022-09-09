@@ -1,0 +1,22 @@
+name: Validate bash
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  shellcheck:
+    name: shellchecks
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - name: Install deps
+          run: |
+            # Install deps
+            sudo apt update
+            DEBIAN_FRONTEND=noninteractive sudo apt install -y shellcheck
+        - name: Shellcheck
+          run: |
+            # shellcheck ./modules/kubernetes/scripts/* # Validating BASH
+            shellcheck ./utilities/*.sh # Validating BASH

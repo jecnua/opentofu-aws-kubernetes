@@ -24,7 +24,7 @@ variable "ami_name_regex" {
 
 variable "ami_id_worker" {
   type        = string
-  description = "The id of the AMI to use for the workers. If empty, the latest ubuntu will be used."
+  description = "The id of the AMI to use for the nodes. If empty, the latest ubuntu will be used."
   default     = ""
 }
 
@@ -48,7 +48,7 @@ variable "k8s_workers_lb_timeout_seconds" {
 
 variable "k8s_worker_additional_lbs" {
   type        = list(string)
-  description = "List of additional ELBs to attach to the AG for nodes (workers)"
+  description = "List of additional ELBs to attach to the AG for nodes"
   default     = []
 }
 

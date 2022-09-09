@@ -11,33 +11,33 @@ Versions: https://github.com/cri-o/cri-o/releases
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| template | n/a |
+| <a name="provider_template"></a> [template](#provider\_template) | n/a |
 
 ## Modules
 
-No Modules.
+No modules.
 
 ## Resources
 
-| Name |
-|------|
-| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) |
+| Name | Type |
+|------|------|
+| [template_file.bootstrap_k8s_cri_installation_docker](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| crio\_version | Version to install | `string` | `"1.20"` | no |
+| <a name="input_crio_version"></a> [crio\_version](#input\_crio\_version) | Version to install | `string` | `"1.25"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| cri\_bootstrap | n/a |
+| <a name="output_cri_bootstrap"></a> [cri\_bootstrap](#output\_cri\_bootstrap) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

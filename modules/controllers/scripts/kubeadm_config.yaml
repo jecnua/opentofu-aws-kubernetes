@@ -1,44 +1,67 @@
-apiVersion: kubeadm.k8s.io/v1beta2
-kind: InitConfiguration
+apiVersion: kubeadm.k8s.io/v1beta3 # https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/
+kind: InitConfiguration # https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-InitConfiguration
 bootstrapTokens:
-  - token: "${controller_join_token}"
-# nodeRegistration:
-#   kubeletExtraArgs:
-#     cloud-provider: external
+  - groups:
+      - system:bootstrappers:kubeadm:default-node-token
+    token: "${controller_join_token}"
+    ttl: 24h0m0s
+    usages:
+      - signing
+      - authentication
+nodeRegistration:
+  imagePullPolicy: IfNotPresent
+  kubeletExtraArgs:
+    cloud-provider: external
+  taints:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
 ---
-apiVersion: kubeadm.k8s.io/v1beta2
-kind: ClusterConfiguration
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration # https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-ClusterConfiguration
 kubernetesVersion: v${k8s_deb_package_version}
 apiServer:
+  certSANs:
+    - "127.0.0.1" # Make it possible to tunnel from your machine to the control plane
   extraArgs:
-    profiling: "false"
+    audit-log-maxage: "30"
+    audit-log-maxbackup: "10"
+    audit-log-maxsize: "100"
+    audit-log-path: /var/log/kube-audit/audit-log.json
+    audit-policy-file: /etc/kubernetes/kube-audit/audit-policy.yaml
     enable-admission-plugins: ${enable_admission_plugins}
-    audit-log-path: "/var/log/kube-audit/audit-log.json"
-    audit-policy-file: "/etc/kubernetes/kube-audit/audit-policy.yaml"
-    audit-log-maxage: "30" # The maximum number of days to retain old audit log files based on the timestamp encoded in their filename.
-    audit-log-maxbackup: "10" # The maximum number of old audit log files to retain.
-    audit-log-maxsize: "100" # The maximum size in megabytes of the audit log file before it gets rotated.
-    encryption-provider-config: "/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
-  #    kubelet-certificate-authority: "/etc/kubernetes/pki/ca.crt"
+    encryption-provider-config: /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+    profiling: "false"
   extraVolumes:
-    - name: "etcd-encryption"
-      hostPath: "/etc/kubernetes/etcd-encryption"
-      mountPath: "/etc/kubernetes/etcd-encryption"
+    - hostPath: /etc/kubernetes/etcd-encryption
+      mountPath: /etc/kubernetes/etcd-encryption
+      name: etcd-encryption
+      pathType: DirectoryOrCreate
       readOnly: true
+    - hostPath: /etc/kubernetes/kube-audit
+      name: k8s-audit
+      mountPath: /etc/kubernetes/kube-audit
       pathType: DirectoryOrCreate
-    - name: "k8s-audit"
-      hostPath: "/etc/kubernetes/kube-audit"
-      mountPath: "/etc/kubernetes/kube-audit"
       readOnly: true
+    - hostPath: /var/log/kube-audit/
+      mountPath: /var/log/kube-audit/
+      name: k8s-audit-logs
       pathType: DirectoryOrCreate
-    - name: "k8s-audit-logs"
-      hostPath: "/var/log/kube-audit/"
-      mountPath: "/var/log/kube-audit/"
-      readOnly: false
-      pathType: DirectoryOrCreate
+  timeoutForControlPlane: 4m0s
+certificatesDir: /etc/kubernetes/pki
 controllerManager:
   extraArgs:
     profiling: "false"
+dns: {}
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: registry.k8s.io # k8s.gcr.io - Failed in 1.25 https://github.com/kubernetes/kubernetes/issues/112148
 scheduler:
   extraArgs:
     profiling: "false"
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd # https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/

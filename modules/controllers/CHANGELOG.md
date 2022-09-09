@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 6.0.0
+
+### Breaking changes
+
+- Updated minimum terraform version to 1.2
+- Updated kubeadm config to kubeadm.k8s.io/v1beta3
+- Now I assign a fixed private IP to the controller node, and the IP is reused if the node dies
+
+### Features & Changes
+
+- Updated k8s version to 1.25
+- Updated license and labels to 2022
+- Updated terraform version used to 1.2.x
+- Explicitly setting the cgroupDriver to systemd
+
+### Bugfixes
+
+- Fixed the repository to pull containers from to use the latest one https://github.com/kubernetes/kubernetes/issues/112148
+
+### Known bugs/issues
+
 ## 5.1.0
 
 ### Features & Changes

@@ -1,11 +1,15 @@
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 kind: JoinConfiguration
 discovery:
   bootstrapToken:
     apiServerEndpoint: MASTERIP:6443
     token: ${controller_join_token}
-    unsafeSkipCAVerification: true
+    unsafeSkipCAVerification: true # https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
   timeout: 5m0s
   tlsBootstrapToken: ${controller_join_token}
 nodeRegistration:
   taints: null
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd # https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/

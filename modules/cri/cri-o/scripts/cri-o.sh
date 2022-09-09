@@ -59,13 +59,12 @@ systemctl status crio.service
 
 crictl info
 
-# kubelet to use cri-o
-# Remember the space at the start
-MODULE_KUBELET_EXTRA_ARGS=' --container-runtime remote --cgroup-driver=systemd --container-runtime-endpoint unix:///var/run/crio/crio.sock --runtime-request-timeout=5m'
-
+# TODO: Move it to node configuration?
+# Preferably, the user should use
+# the .NodeRegistration.KubeletExtraArgs object in the configuration files instead.
+# KUBELET_EXTRA_ARGS should be sourced from this file.
+echo 'KUBELET_EXTRA_ARGS= --cgroup-driver=systemd --runtime-request-timeout=5m' > /etc/default/kubelet
 systemctl daemon-reload
 systemctl restart kubelet
-
-echo 'KUBELET_EXTRA_ARGS=--cloud-provider=aws'"$MODULE_KUBELET_EXTRA_ARGS" > /etc/default/kubelet
 
 ############# CRI-O #############

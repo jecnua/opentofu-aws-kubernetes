@@ -2,11 +2,11 @@ data "template_file" "bootstrap_node_k8s_controllers" {
   template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
-    controller_join_token = var.controller_join_token
     //    cluster_id              = var.kubernetes_cluster
+    //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
+    controller_join_token   = var.controller_join_token
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
-    //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
     pre_install             = var.userdata_pre_install
     cni_install             = var.userdata_cni_install
     post_install            = var.userdata_post_install
@@ -73,6 +73,7 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 }
 
 # External ELB to connect to the api
+# Not needed if you tunnel into the node.
 //resource "aws_elb" "k8s_controllers_external_elb" {
 //  name                      = "${var.unique_identifier}-${var.environment}-ctrl-ext-elb"
 //  subnets                   = aws_subnet.k8s_public.*.id
@@ -111,9 +112,9 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 
 # TODO: Close this to outside and make it injectable
 resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
-  name        = "kubernetes-master-${var.kubernetes_cluster}"
+  name        = "kubernetes-controller-${var.kubernetes_cluster}"
   vpc_id      = data.aws_vpc.targeted_vpc.id
-  description = "Security group for masters"
+  description = "Security group for controllers"
 
   # ingress {
   #   from_port = 6443

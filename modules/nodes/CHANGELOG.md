@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 6.0.0
+
+### Breaking changes
+
+- Updated minimum terraform version to 1.2
+- Updated kubeadm config to kubeadm.k8s.io/v1beta3
+- Updated terraform version used to 1.2.x
+
+### Features & Changes
+
+- Explicitly setting the cgroupDriver to systemd
+
+### Bugfixes
+
+- Fixed falco installation
+
+### Known bugs/issues
+
 ## 5.0.0
 
 ### Features & Changes

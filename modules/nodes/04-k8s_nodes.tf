@@ -2,7 +2,7 @@ resource "random_string" "seed" {
   length  = 6
   lower   = true
   upper   = false
-  number  = true
+  numeric = true
   special = false
 }
 
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "allow_all_from_us_workers" {
   type              = "ingress"
 }
 
-# Allow ALL connection from other workers
+# Allow ALL connection from other nodes
 resource "aws_security_group_rule" "allow_all_from_self_workers" {
   from_port         = 0
   to_port           = 0
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "allow_all_from_k8s_controller_nodes" {
 # Allow everything from the cluster: TCP and UDP
 # Needed by some CNI network plugins
 # TODO: Fix this???
-# You will change the master sg. Find a better way
+# You will change the controller sg. Find a better way
 resource "aws_security_group_rule" "allow_all_from_k8s_worker_nodes" {
   type                     = "ingress"
   from_port                = 0
