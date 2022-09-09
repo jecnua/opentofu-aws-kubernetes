@@ -59,21 +59,15 @@ output "nodes_config_bundle" {
     "environment"             = var.environment
     "k8s_deb_package_version" = var.k8s_deb_package_version
     "kubernetes_cluster"      = var.kubernetes_cluster
-    "controller_join_token"   = var.controller_join_token
     "unique_identifier"       = var.unique_identifier
     "controllers_sg_id"       = aws_security_group.k8s_controllers_node_sg.id
     "internal_network_cidr"   = var.internal_network_cidr
-    "secret_name"             = aws_secretsmanager_secret.secrets.name
     "secret_arn"              = aws_secretsmanager_secret.secrets.arn
   }
 }
 
 output "k8s_controllers_internal_elb_ag_sg_id" {
   value = aws_security_group.k8s_controllers_node_sg.id
-}
-
-output "secret_name" {
-  value = aws_secretsmanager_secret.secrets.name
 }
 
 output "secret_arn" {

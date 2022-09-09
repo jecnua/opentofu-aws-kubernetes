@@ -219,7 +219,6 @@ No modules.
 | <a name="output_private_route_table_id"></a> [private\_route\_table\_id](#output\_private\_route\_table\_id) | The id of the PRIVATE route table |
 | <a name="output_public_route_table_id"></a> [public\_route\_table\_id](#output\_public\_route\_table\_id) | The id of the PUBLIC route table |
 | <a name="output_secret_arn"></a> [secret\_arn](#output\_secret\_arn) | n/a |
-| <a name="output_secret_name"></a> [secret\_name](#output\_secret\_name) | n/a |
 | <a name="output_unique_identifier"></a> [unique\_identifier](#output\_unique\_identifier) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

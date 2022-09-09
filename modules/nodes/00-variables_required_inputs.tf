@@ -24,11 +24,9 @@ variable "nodes_config_bundle" {
     environment             = string
     k8s_deb_package_version = string
     kubernetes_cluster      = string
-    controller_join_token   = string
     unique_identifier       = string
     controllers_sg_id       = string
     internal_network_cidr   = string
-    secret_name             = string
     secret_arn              = string
   })
 }

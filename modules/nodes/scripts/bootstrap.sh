@@ -114,12 +114,10 @@ sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 #=======================================================================================================================
 # Get a fresh join token and the CA Hash
 
-# TODO: Need to wait for the token to be there
-# TODO: FINISH THIS
-SECRET_NAME=${secret_name}
+SECRET_ARN=${secret_arn}
 while true; do
-	TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_NAME" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
-	HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_NAME" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
+	TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
+	HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
 	#  echo TOKEN: "$TOKEN"
 	#  echo HASH: "$HASH"
 	# shellcheck disable=SC2000
