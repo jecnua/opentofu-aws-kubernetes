@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 7.0.0
+
+### Breaking changes
+
+- The nodes no longer take the token as a parameter (since it expires) and instead will retrieve it from a secret
+
+### Features & Changes
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 6.0.0
 
 ### Breaking changes

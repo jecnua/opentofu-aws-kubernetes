@@ -3,10 +3,11 @@ kind: JoinConfiguration
 discovery:
   bootstrapToken:
     apiServerEndpoint: MASTERIP:6443
-    token: ${controller_join_token}
-    unsafeSkipCAVerification: true # https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
+    token: CONTROLLERJOINTOKEN
+    caCertHashes: # https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
+      - sha256:CAHASH
   timeout: 5m0s
-  tlsBootstrapToken: ${controller_join_token}
+  tlsBootstrapToken: CONTROLLERJOINTOKEN
 nodeRegistration:
   taints: null
 ---

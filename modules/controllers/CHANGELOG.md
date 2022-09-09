@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 7.0.0
+
+### Breaking changes
+
+### Features & Changes
+
+- The master will populate a secret with the token and the CA HASH to share with the nodes
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 6.0.0
 
 ### Breaking changes

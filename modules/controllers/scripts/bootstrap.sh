@@ -79,6 +79,9 @@ apt install -y \
 	kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
 	kubectl="$K8S_DEB_PACKAGES_VERSION-00"
 
+# Requires js
+AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+
 # Install stern
 wget "https://github.com/wercker/stern/releases/download/$STERN_VERSION/stern_linux_amd64"
 chmod +x stern_linux_amd64
@@ -134,6 +137,13 @@ chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
 OLD_HOME=$HOME
 export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
 kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
+
+# Upload a fresh token and CA hash
+TOKEN=$(kubeadm token create)
+HASH=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
+SECRET_NAME=${secret_name}
+aws secretsmanager update-secret --secret-id "$SECRET_NAME" --region "$AWS_REGION" --secret-string '{"token":"'"$TOKEN"'","hash":"'"$HASH"'"}'
+
 HOME=$OLD_HOME
 
 cd /home/$KCTL_USER || exit

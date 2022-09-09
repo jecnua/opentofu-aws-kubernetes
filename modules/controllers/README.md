@@ -145,8 +145,7 @@ No modules.
 | [aws_route_table.k8s_public_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table_association.k8s_private_route_table_assoc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.k8s_public_route_table_assoc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
-| [aws_secretsmanager_secret.ca_hash](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret.token](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
+| [aws_secretsmanager_secret.secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_security_group.k8s_controllers_internal_elb_ag_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.k8s_controllers_node_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.allow_all_egress_from_k8s_controller_nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -219,6 +218,8 @@ No modules.
 | <a name="output_nodes_subnets_public_id"></a> [nodes\_subnets\_public\_id](#output\_nodes\_subnets\_public\_id) | The nodes subnets id |
 | <a name="output_private_route_table_id"></a> [private\_route\_table\_id](#output\_private\_route\_table\_id) | The id of the PRIVATE route table |
 | <a name="output_public_route_table_id"></a> [public\_route\_table\_id](#output\_public\_route\_table\_id) | The id of the PUBLIC route table |
+| <a name="output_secret_arn"></a> [secret\_arn](#output\_secret\_arn) | n/a |
+| <a name="output_secret_name"></a> [secret\_name](#output\_secret\_name) | n/a |
 | <a name="output_unique_identifier"></a> [unique\_identifier](#output\_unique\_identifier) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

@@ -27,6 +27,14 @@ resource "aws_iam_role_policy" "k8s_role" {
         "ecr:BatchGetImage"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": "${local.secret_arn}"
     }
   ]
 }

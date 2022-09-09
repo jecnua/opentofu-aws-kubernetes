@@ -6,6 +6,8 @@ locals {
   controller_join_token   = var.nodes_config_bundle["controller_join_token"]
   unique_identifier       = var.nodes_config_bundle["unique_identifier"]
   controller_sg_id        = var.nodes_config_bundle["controllers_sg_id"]
+  secret_name             = var.nodes_config_bundle["secret_name"]
+  secret_arn              = var.nodes_config_bundle["secret_arn"]
   tags_as_map = merge(
     {
       "Name"              = format("k8s-node-%s-%s-%s", local.unique_identifier, local.environment, random_string.seed.result)
