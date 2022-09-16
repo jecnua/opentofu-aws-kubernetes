@@ -40,13 +40,3 @@ resource "aws_security_group_rule" "allow_all_from_self_controllers" {
   security_group_id = aws_security_group.k8s_controllers_node_sg.id
   type              = "ingress"
 }
-
-#TODO Temp until is done outside
-resource "aws_security_group_rule" "allow_all_from_k8s_controller_internal_elb_temp" {
-  from_port         = 6443
-  to_port           = 6443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.k8s_controllers_node_sg.id
-  type              = "ingress"
-}

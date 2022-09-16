@@ -4,6 +4,9 @@
 
 ### Breaking changes
 
+- Now the cluster is HA with multiple masters :)
+- You will need to open the security group to the IPs you want to access the cluster from (since it's using a NLB). Check the example
+
 ### Features & Changes
 
 - The master will populate a secret with the token and the CA HASH to share with the nodes

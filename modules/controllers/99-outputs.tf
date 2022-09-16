@@ -67,7 +67,7 @@ output "nodes_config_bundle" {
   }
 }
 
-output "k8s_controllers_internal_elb_ag_sg_id" {
+output "k8s_controllers_node_sg_id" {
   value = aws_security_group.k8s_controllers_node_sg.id
 }
 

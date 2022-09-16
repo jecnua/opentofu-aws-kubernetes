@@ -150,7 +150,6 @@ No modules.
 | [aws_secretsmanager_secret.secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_security_group.k8s_controllers_node_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.allow_all_egress_from_k8s_controller_nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.allow_all_from_k8s_controller_internal_elb_temp](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.allow_all_from_self_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.allow_all_from_us_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_subnet.k8s_private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
@@ -209,7 +208,7 @@ No modules.
 | <a name="output_controller_join_token"></a> [controller\_join\_token](#output\_controller\_join\_token) | n/a |
 | <a name="output_controller_lb_internal_dns_name"></a> [controller\_lb\_internal\_dns\_name](#output\_controller\_lb\_internal\_dns\_name) | The AWS DNS name of the controller nodes ELB |
 | <a name="output_controller_lb_internal_zone_id"></a> [controller\_lb\_internal\_zone\_id](#output\_controller\_lb\_internal\_zone\_id) | The AWS zone id for the controller nodes ELB |
-| <a name="output_k8s_controllers_internal_elb_ag_sg_id"></a> [k8s\_controllers\_internal\_elb\_ag\_sg\_id](#output\_k8s\_controllers\_internal\_elb\_ag\_sg\_id) | n/a |
+| <a name="output_k8s_controllers_node_sg_id"></a> [k8s\_controllers\_node\_sg\_id](#output\_k8s\_controllers\_node\_sg\_id) | n/a |
 | <a name="output_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#output\_k8s\_deb\_package\_version) | n/a |
 | <a name="output_k8s_role_id"></a> [k8s\_role\_id](#output\_k8s\_role\_id) | The role the nodes use. Can be used to attach policies |
 | <a name="output_kubernetes_cluster"></a> [kubernetes\_cluster](#output\_kubernetes\_cluster) | n/a |
