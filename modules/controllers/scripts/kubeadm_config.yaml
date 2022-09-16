@@ -8,6 +8,7 @@ bootstrapTokens:
     usages:
       - signing
       - authentication
+certificateKey: CERTIFICATEKEY
 nodeRegistration:
   imagePullPolicy: IfNotPresent
   kubeletExtraArgs:
@@ -21,9 +22,11 @@ nodeRegistration:
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration # https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-ClusterConfiguration
 kubernetesVersion: v${k8s_deb_package_version}
+controlPlaneEndpoint: ${load_balancer_dns} # TODO: make it optional?
 apiServer:
   certSANs:
     - "127.0.0.1" # Make it possible to tunnel from your machine to the control plane
+    - ${load_balancer_dns} # TODO: make it optional?
   extraArgs:
     audit-log-maxage: "30"
     audit-log-maxbackup: "10"

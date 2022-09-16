@@ -8,14 +8,14 @@ output "nodes_subnets_public_id" {
   value       = [aws_subnet.k8s_public.*.id]
 }
 
-output "controller_elb_internal_dns_name" {
+output "controller_lb_internal_dns_name" {
   description = "The AWS DNS name of the controller nodes ELB"
-  value       = aws_elb.k8s_controllers_internal_elb.dns_name
+  value       = aws_lb.k8s_controllers_external_lb.dns_name
 }
 
-output "controller_elb_internal_zone_id" {
+output "controller_lb_internal_zone_id" {
   description = "The AWS zone id for the controller nodes ELB"
-  value       = aws_elb.k8s_controllers_internal_elb.zone_id
+  value       = aws_lb.k8s_controllers_external_lb.zone_id
 }
 
 //output "controllers_sd_id" {

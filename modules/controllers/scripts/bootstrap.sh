@@ -10,6 +10,7 @@ K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 KCTL_USER='ubuntu'
 
 STERN_VERSION='1.11.0' # TODO: Parametric
+LB_DNS_NAME=${load_balancer_dns}
 
 ### Statics
 
@@ -145,14 +146,24 @@ EOF
 
 	OLD_HOME=$HOME
 	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
-	kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
 
-	# TODO: Cron every 6 hours to generate a new one and upload it to the secrect
+	# Generate certificate key
+	CERTIFICATEKEY=$(kubeadm certs certificate-key)
+	sed -i "s|CERTIFICATEKEY|$CERTIFICATEKEY|g" "/home/$KCTL_USER/kubeadm-config.yaml"
+
+	#kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
+	# HA Version # TODO: Make it optional?
+	kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5 --upload-certs
+
+	# TODO: Cron every 6 hours to generate a new one and upload it to the secret
 	# Upload a fresh token and CA hash
 	TOKEN=$(kubeadm token create)
 	HASH=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
 	SECRET_NAME=${secret_name}
-	aws secretsmanager update-secret --secret-id "$SECRET_NAME" --region "$AWS_REGION" --secret-string '{"token":"'"$TOKEN"'","hash":"'"$HASH"'"}'
+	aws secretsmanager update-secret \
+		--secret-id "$SECRET_NAME" \
+		--region "$AWS_REGION" \
+		--secret-string '{"token":"'"$TOKEN"'","hash":"'"$HASH"'","certificatekey":"'"$CERTIFICATEKEY"'"}'
 
 	HOME=$OLD_HOME
 
@@ -175,16 +186,14 @@ ${kubeadm_join_config}
 EOF
 
 	AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
-	CLUSTER_ID=${cluster_id}
-	# TODO: FIX
-	MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
+	MASTER_IP=$LB_DNS_NAME
 
 	SECRET_ARN=${secret_name}
 	while true; do
+		# Get all the secrets which are dynamic on cluster generation
 		TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
 		HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
-		#  echo TOKEN: "$TOKEN"
-		#  echo HASH: "$HASH"
+		CERTIFICATEKEY=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.certificatekey')
 		# shellcheck disable=SC2000
 		if [[ $(echo "$HASH" | wc -c) == "65" ]]; then
 			echo "Value found..."
@@ -198,8 +207,10 @@ EOF
 	# Substitute the join token and hash
 	sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
-	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
-	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s/CERTIFICATEKEY/$CERTIFICATEKEY/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	#
+	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml" # TODO: I may know beforehand
+	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"     # TODO: I may know beforehand
 
 	OLD_HOME=$HOME
 	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361

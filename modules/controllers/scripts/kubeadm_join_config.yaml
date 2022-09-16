@@ -12,6 +12,7 @@ controlPlane:
   localAPIEndpoint: # signal a new control plane bootstrap
     advertiseAddress: MYADDRESS
     bindPort: 6443
+  certificateKey: CERTIFICATEKEY
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration

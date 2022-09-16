@@ -10,7 +10,7 @@ data "template_file" "bootstrap_node_k8s_controllers" {
   template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
-    //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
+    load_balancer_dns       = aws_lb.k8s_controllers_external_lb.dns_name
     controller_join_token   = var.controller_join_token
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
@@ -23,7 +23,6 @@ data "template_file" "bootstrap_node_k8s_controllers" {
     cri_installation        = var.controllers_cri_bootstrap
     audit_policy            = data.template_file.bootstrap_audit_config_policy_file_yaml.rendered
     secret_name             = aws_secretsmanager_secret.secrets.name
-    cluster_id              = var.kubernetes_cluster
   }
 }
 
@@ -33,6 +32,7 @@ data "template_file" "bootstrap_k8s_controllers_kubeadm_config" {
     k8s_deb_package_version  = var.k8s_deb_package_version
     controller_join_token    = var.controller_join_token
     enable_admission_plugins = var.enable_admission_plugins
+    load_balancer_dns        = aws_lb.k8s_controllers_external_lb.dns_name # Sign with the NLB name
   }
 }
 
@@ -123,15 +123,16 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   wait_for_capacity_timeout = "10m"
   availability_zones        = [aws_subnet.k8s_private[count.index].availability_zone] # TODO: Cycle them up to AZs # Required now that I use a fixed private IP
   #  vpc_zone_identifier       = [aws_subnet.k8s_private.0.id] # A network interface may not specify both a network interface ID and a subnet. Launching EC2 instance failed.
+  target_group_arns = [aws_lb_target_group.controllers.arn]
 
   launch_template {
     id      = aws_launch_template.controller[count.index].id
     version = "$Latest"
   }
 
-  load_balancers = [
-    aws_elb.k8s_controllers_internal_elb.name,
-  ]
+  #  load_balancers = [
+  #    aws_elb.k8s_controllers_internal_elb.name,
+  #  ]
 
   termination_policies = [
     "OldestInstance",
