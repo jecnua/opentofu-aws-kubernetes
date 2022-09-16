@@ -63,6 +63,7 @@ output "nodes_config_bundle" {
     "controllers_sg_id"       = aws_security_group.k8s_controllers_node_sg.id
     "internal_network_cidr"   = var.internal_network_cidr
     "secret_arn"              = aws_secretsmanager_secret.secrets.arn
+    "lb_dns"                  = aws_lb.k8s_controllers_external_lb.dns_name
   }
 }
 

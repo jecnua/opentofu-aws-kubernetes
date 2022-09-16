@@ -6,6 +6,7 @@ locals {
   unique_identifier       = var.nodes_config_bundle["unique_identifier"]
   controller_sg_id        = var.nodes_config_bundle["controllers_sg_id"]
   secret_arn              = var.nodes_config_bundle["secret_arn"]
+  lb_dns                  = var.nodes_config_bundle["lb_dns"]
   tags_for_asg            = null_resource.tags_as_list_of_maps.*.triggers
   tags_as_map = merge(
     {

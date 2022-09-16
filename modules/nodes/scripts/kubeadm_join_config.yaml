@@ -2,7 +2,7 @@ apiVersion: kubeadm.k8s.io/v1beta3
 kind: JoinConfiguration
 discovery:
   bootstrapToken:
-    apiServerEndpoint: MASTERIP:6443
+    apiServerEndpoint: API_SERVER_ENDPOINT:6443 # TODO: I can avoid a sed, just use a template
     token: CONTROLLERJOINTOKEN
     caCertHashes: # https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
       - sha256:CAHASH

@@ -28,5 +28,6 @@ variable "nodes_config_bundle" {
     controllers_sg_id       = string
     internal_network_cidr   = string
     secret_arn              = string
+    lb_dns                  = string
   })
 }
