@@ -25,7 +25,6 @@ module "k8s" {
   unique_identifier                 = "k8s"
   ec2_k8s_controllers_instance_type = "m5a.large"
   kubernetes_cluster                = "k8s-poc"
-  internal_network_cidr             = "10.244.0.0/16" # Flannel CIDR
   controllers_cri_bootstrap         = module.containerd_cri.cri_bootstrap
 
   subnets_public_cidr_block = [

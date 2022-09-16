@@ -13,6 +13,8 @@
 
 ### Bugfixes
 
+- Removed unused internal_network_cidr
+
 ### Known bugs/issues
 
 ## 6.0.0

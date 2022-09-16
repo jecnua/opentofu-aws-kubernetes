@@ -1,5 +1,4 @@
 locals {
-  internal_network_cidr   = var.nodes_config_bundle["internal_network_cidr"]
   environment             = var.nodes_config_bundle["environment"]
   k8s_deb_package_version = var.nodes_config_bundle["k8s_deb_package_version"]
   kubernetes_cluster      = var.nodes_config_bundle["kubernetes_cluster"]

@@ -151,7 +151,6 @@ No modules.
 | [aws_security_group.k8s_controllers_node_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.allow_all_egress_from_k8s_controller_nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.allow_all_from_self_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.allow_all_from_us_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_subnet.k8s_private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.k8s_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [null_resource.tags_as_list_of_maps](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
@@ -186,7 +185,6 @@ No modules.
 | <a name="input_enable_admission_plugins"></a> [enable\_admission\_plugins](#input\_enable\_admission\_plugins) | The comma separated list of admission plugin to enable | `string` | `"NodeRestriction"` | no |
 | <a name="input_enable_ssm_access_to_nodes"></a> [enable\_ssm\_access\_to\_nodes](#input\_enable\_ssm\_access\_to\_nodes) | If set to true the nodes will register to AWS SSM | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment to use | `string` | n/a | yes |
-| <a name="input_internal_network_cidr"></a> [internal\_network\_cidr](#input\_internal\_network\_cidr) | TEMPORARY: Allow access from a certain ip range | `string` | n/a | yes |
 | <a name="input_k8s_controllers_lb_timeout_seconds"></a> [k8s\_controllers\_lb\_timeout\_seconds](#input\_k8s\_controllers\_lb\_timeout\_seconds) | lb timeout in seconds for the controllers | `string` | `"60"` | no |
 | <a name="input_k8s_controllers_num_nodes"></a> [k8s\_controllers\_num\_nodes](#input\_k8s\_controllers\_num\_nodes) | Number of nodes in the asg for the controllers | `string` | n/a | yes |
 | <a name="input_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#input\_k8s\_deb\_package\_version) | The version of the deb package to install in ubuntu (i.e. 1.25.0) | `string` | `"1.25.1"` | no |

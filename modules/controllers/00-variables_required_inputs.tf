@@ -55,11 +55,6 @@ variable "k8s_controllers_num_nodes" {
 
 ###################################### Bootstrap
 
-variable "internal_network_cidr" {
-  type        = string
-  description = "TEMPORARY: Allow access from a certain ip range" # TODO: FIXME: This needs to be removed and the sg exported
-}
-
 variable "controllers_cri_bootstrap" {
   type = string
 }
