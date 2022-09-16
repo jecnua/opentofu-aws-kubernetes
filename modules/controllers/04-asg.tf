@@ -48,6 +48,7 @@ data "template_file" "bootstrap_k8s_controllers_kubeadm_etcd_encryption" {
 
 data "template_file" "bootstrap_k8s_controllers_kubeadm_join_config" {
   template = file("${path.module}/scripts/kubeadm_join_config.yaml")
+  vars     = {}
 }
 
 data "template_cloudinit_config" "controller_bootstrap" {

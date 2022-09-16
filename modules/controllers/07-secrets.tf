@@ -4,5 +4,8 @@
 resource "aws_secretsmanager_secret" "secrets" {
   name        = "k8s-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}-secrets"
   description = "Secret shared between control plane and nodes for cluster ${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
-  tags        = local.tags_as_map
+  tags = merge(
+    local.tags_as_map,
+    { Name = "k8s-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}-secrets" }
+  )
 }
