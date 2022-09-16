@@ -10,19 +10,20 @@ data "template_file" "bootstrap_node_k8s_controllers" {
   template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
-    //    cluster_id              = var.kubernetes_cluster
     //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
     controller_join_token   = var.controller_join_token
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
     pre_install             = var.userdata_pre_install
     cni_install             = var.userdata_cni_install
+    kubeadm_join_config     = data.template_file.bootstrap_k8s_controllers_kubeadm_join_config.rendered
     post_install            = var.userdata_post_install
     kubeadm_config          = data.template_file.bootstrap_k8s_controllers_kubeadm_config.rendered
     kubeadm_etcd_encryption = data.template_file.bootstrap_k8s_controllers_kubeadm_etcd_encryption.rendered
     cri_installation        = var.controllers_cri_bootstrap
     audit_policy            = data.template_file.bootstrap_audit_config_policy_file_yaml.rendered
     secret_name             = aws_secretsmanager_secret.secrets.name
+    cluster_id              = var.kubernetes_cluster
   }
 }
 
@@ -43,6 +44,10 @@ data "template_file" "bootstrap_audit_config_policy_file_yaml" {
 data "template_file" "bootstrap_k8s_controllers_kubeadm_etcd_encryption" {
   template = file("${path.module}/scripts/etcd_enc.yaml")
   vars     = {}
+}
+
+data "template_file" "bootstrap_k8s_controllers_kubeadm_join_config" {
+  template = file("${path.module}/scripts/kubeadm_join_config.yaml")
 }
 
 data "template_cloudinit_config" "controller_bootstrap" {

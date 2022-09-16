@@ -165,6 +165,7 @@ No modules.
 | [template_file.bootstrap_audit_config_policy_file_yaml](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bootstrap_k8s_controllers_kubeadm_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bootstrap_k8s_controllers_kubeadm_etcd_encryption](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [template_file.bootstrap_k8s_controllers_kubeadm_join_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bootstrap_node_k8s_controllers](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
@@ -190,7 +191,7 @@ No modules.
 | <a name="input_internal_network_cidr"></a> [internal\_network\_cidr](#input\_internal\_network\_cidr) | TEMPORARY: Allow access from a certain ip range | `string` | n/a | yes |
 | <a name="input_k8s_controllers_lb_timeout_seconds"></a> [k8s\_controllers\_lb\_timeout\_seconds](#input\_k8s\_controllers\_lb\_timeout\_seconds) | lb timeout in seconds for the controllers | `string` | `"60"` | no |
 | <a name="input_k8s_controllers_num_nodes"></a> [k8s\_controllers\_num\_nodes](#input\_k8s\_controllers\_num\_nodes) | Number of nodes in the asg for the controllers | `string` | n/a | yes |
-| <a name="input_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#input\_k8s\_deb\_package\_version) | The version of the deb package to install in ubuntu (i.e. 1.25.0) | `string` | `"1.25.0"` | no |
+| <a name="input_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#input\_k8s\_deb\_package\_version) | The version of the deb package to install in ubuntu (i.e. 1.25.0) | `string` | `"1.25.1"` | no |
 | <a name="input_kubeadm_install_version"></a> [kubeadm\_install\_version](#input\_kubeadm\_install\_version) | The version to install in the syntax expected by kubeadm (i.e. stable-1.25) | `string` | `"stable-1.25"` | no |
 | <a name="input_kubernetes_cluster"></a> [kubernetes\_cluster](#input\_kubernetes\_cluster) | Cluster name indentifier | `string` | n/a | yes |
 | <a name="input_sns_topic_notifications"></a> [sns\_topic\_notifications](#input\_sns\_topic\_notifications) | The SNS topic to notify when the system autoscale. If empty no notification will be sent | `string` | `""` | no |

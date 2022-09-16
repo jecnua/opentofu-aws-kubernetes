@@ -50,7 +50,7 @@ variable "sns_topic_notifications" {
 variable "k8s_deb_package_version" {
   type        = string
   description = "The version of the deb package to install in ubuntu (i.e. 1.25.0)"
-  default     = "1.25.0"
+  default     = "1.25.1"
 }
 
 variable "kubeadm_install_version" {

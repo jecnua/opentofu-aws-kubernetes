@@ -1,0 +1,18 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: MASTERIP:6443
+    token: CONTROLLERJOINTOKEN
+    caCertHashes: # https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
+      - sha256:CAHASH
+  timeout: 5m0s
+  tlsBootstrapToken: CONTROLLERJOINTOKEN
+controlPlane:
+  localAPIEndpoint: # signal a new control plane bootstrap
+    advertiseAddress: MYADDRESS
+    bindPort: 6443
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd # https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/

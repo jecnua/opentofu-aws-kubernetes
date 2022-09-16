@@ -170,6 +170,42 @@ else
 
 	echo "I am NOT the first controller. I will join the first".
 
+	cat <<EOF >"/home/$KCTL_USER/kubeadm-join-config.yaml"
+${kubeadm_join_config}
+EOF
+
+	AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+	CLUSTER_ID=${cluster_id}
+	# TODO: FIX
+	MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
+
+	SECRET_ARN=${secret_name}
+	while true; do
+		TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
+		HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
+		#  echo TOKEN: "$TOKEN"
+		#  echo HASH: "$HASH"
+		# shellcheck disable=SC2000
+		if [[ $(echo "$HASH" | wc -c) == "65" ]]; then
+			echo "Value found..."
+			break
+		else
+			echo "Wait 10 seconds..."
+			sleep 10
+		fi
+	done
+	MYIP=$(curl --silent http://169.254.169.254/latest/meta-data/local-ipv4)
+	# Substitute the join token and hash
+	sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+
+	OLD_HOME=$HOME
+	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
+	kubeadm join --config "/home/$KCTL_USER/kubeadm-join-config.yaml" --v=5
+	HOME=$OLD_HOME
+
 fi
 # END Master logic
 #=======================================================================================================================
