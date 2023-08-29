@@ -1,6 +1,6 @@
 # Kubernetes controller module
 
-![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
+![](https://img.shields.io/badge/ubuntu-22.04-blue.svg)
 
 This module will create a new kubernetes cluster inside your VPC.
 
@@ -134,23 +134,24 @@ No modules.
 |------|------|
 | [aws_autoscaling_group.k8s_controllers_ag](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) | resource |
 | [aws_autoscaling_notification.elasticsearch_autoscaling_notification](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_notification) | resource |
-| [aws_elb.k8s_controllers_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elb) | resource |
 | [aws_iam_instance_profile.k8s_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_role.k8s_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.k8s_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.ssm_policy_att](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
+| [aws_lb.k8s_controllers_external_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
+| [aws_lb_listener.api](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
+| [aws_lb_target_group.controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 | [aws_network_interface.fixed_private_ip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_interface) | resource |
 | [aws_route_table.k8s_private_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table.k8s_public_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table_association.k8s_private_route_table_assoc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.k8s_public_route_table_assoc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
-| [aws_security_group.k8s_controllers_internal_elb_ag_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_secretsmanager_secret.secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_security_group.k8s_controllers_node_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.allow_all_egress_from_k8s_controller_nodes](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.allow_all_from_k8s_controller_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.allow_all_from_self_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.allow_all_from_us_controllers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.allow_all_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_subnet.k8s_private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.k8s_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [null_resource.tags_as_list_of_maps](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
@@ -162,6 +163,7 @@ No modules.
 | [template_file.bootstrap_audit_config_policy_file_yaml](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bootstrap_k8s_controllers_kubeadm_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bootstrap_k8s_controllers_kubeadm_etcd_encryption](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [template_file.bootstrap_k8s_controllers_kubeadm_join_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bootstrap_node_k8s_controllers](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
@@ -184,10 +186,9 @@ No modules.
 | <a name="input_enable_admission_plugins"></a> [enable\_admission\_plugins](#input\_enable\_admission\_plugins) | The comma separated list of admission plugin to enable | `string` | `"NodeRestriction"` | no |
 | <a name="input_enable_ssm_access_to_nodes"></a> [enable\_ssm\_access\_to\_nodes](#input\_enable\_ssm\_access\_to\_nodes) | If set to true the nodes will register to AWS SSM | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment to use | `string` | n/a | yes |
-| <a name="input_internal_network_cidr"></a> [internal\_network\_cidr](#input\_internal\_network\_cidr) | TEMPORARY: Allow access from a certain ip range | `string` | n/a | yes |
 | <a name="input_k8s_controllers_lb_timeout_seconds"></a> [k8s\_controllers\_lb\_timeout\_seconds](#input\_k8s\_controllers\_lb\_timeout\_seconds) | lb timeout in seconds for the controllers | `string` | `"60"` | no |
 | <a name="input_k8s_controllers_num_nodes"></a> [k8s\_controllers\_num\_nodes](#input\_k8s\_controllers\_num\_nodes) | Number of nodes in the asg for the controllers | `string` | n/a | yes |
-| <a name="input_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#input\_k8s\_deb\_package\_version) | The version of the deb package to install in ubuntu (i.e. 1.25.0) | `string` | `"1.25.0"` | no |
+| <a name="input_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#input\_k8s\_deb\_package\_version) | The version of the deb package to install in ubuntu (i.e. 1.25.0) | `string` | `"1.25.1"` | no |
 | <a name="input_kubeadm_install_version"></a> [kubeadm\_install\_version](#input\_kubeadm\_install\_version) | The version to install in the syntax expected by kubeadm (i.e. stable-1.25) | `string` | `"stable-1.25"` | no |
 | <a name="input_kubernetes_cluster"></a> [kubernetes\_cluster](#input\_kubernetes\_cluster) | Cluster name indentifier | `string` | n/a | yes |
 | <a name="input_sns_topic_notifications"></a> [sns\_topic\_notifications](#input\_sns\_topic\_notifications) | The SNS topic to notify when the system autoscale. If empty no notification will be sent | `string` | `""` | no |
@@ -203,9 +204,10 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_controller_elb_internal_dns_name"></a> [controller\_elb\_internal\_dns\_name](#output\_controller\_elb\_internal\_dns\_name) | The AWS DNS name of the controller nodes ELB |
-| <a name="output_controller_elb_internal_zone_id"></a> [controller\_elb\_internal\_zone\_id](#output\_controller\_elb\_internal\_zone\_id) | The AWS zone id for the controller nodes ELB |
 | <a name="output_controller_join_token"></a> [controller\_join\_token](#output\_controller\_join\_token) | n/a |
+| <a name="output_controller_lb_internal_dns_name"></a> [controller\_lb\_internal\_dns\_name](#output\_controller\_lb\_internal\_dns\_name) | The AWS DNS name of the controller nodes ELB |
+| <a name="output_controller_lb_internal_zone_id"></a> [controller\_lb\_internal\_zone\_id](#output\_controller\_lb\_internal\_zone\_id) | The AWS zone id for the controller nodes ELB |
+| <a name="output_k8s_controllers_node_sg_id"></a> [k8s\_controllers\_node\_sg\_id](#output\_k8s\_controllers\_node\_sg\_id) | n/a |
 | <a name="output_k8s_deb_package_version"></a> [k8s\_deb\_package\_version](#output\_k8s\_deb\_package\_version) | n/a |
 | <a name="output_k8s_role_id"></a> [k8s\_role\_id](#output\_k8s\_role\_id) | The role the nodes use. Can be used to attach policies |
 | <a name="output_kubernetes_cluster"></a> [kubernetes\_cluster](#output\_kubernetes\_cluster) | n/a |
@@ -214,6 +216,7 @@ No modules.
 | <a name="output_nodes_subnets_public_id"></a> [nodes\_subnets\_public\_id](#output\_nodes\_subnets\_public\_id) | The nodes subnets id |
 | <a name="output_private_route_table_id"></a> [private\_route\_table\_id](#output\_private\_route\_table\_id) | The id of the PRIVATE route table |
 | <a name="output_public_route_table_id"></a> [public\_route\_table\_id](#output\_public\_route\_table\_id) | The id of the PUBLIC route table |
+| <a name="output_secret_arn"></a> [secret\_arn](#output\_secret\_arn) | n/a |
 | <a name="output_unique_identifier"></a> [unique\_identifier](#output\_unique\_identifier) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

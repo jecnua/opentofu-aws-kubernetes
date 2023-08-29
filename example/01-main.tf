@@ -1,9 +1,9 @@
 variable "k8s_version" {
-  default = "1.20"
+  default = "1.25"
 }
 
 variable "k8s_full_version" {
-  default = "1.20.5"
+  default = "1.25.1"
 }
 
 module "containerd_cri" {
@@ -25,7 +25,6 @@ module "k8s" {
   unique_identifier                 = "k8s"
   ec2_k8s_controllers_instance_type = "m5a.large"
   kubernetes_cluster                = "k8s-poc"
-  internal_network_cidr             = "10.244.0.0/16" # Flannel CIDR
   controllers_cri_bootstrap         = module.containerd_cri.cri_bootstrap
 
   subnets_public_cidr_block = [
@@ -78,4 +77,17 @@ resource "aws_eip" "eip" {
 resource "aws_nat_gateway" "gw" {
   allocation_id = aws_eip.eip.id
   subnet_id     = "xxx"
+}
+
+data "external" "current_ip" {
+  program = ["bash", "-c", "curl -s 'https://api.ipify.org?format=json'"]
+}
+
+resource "aws_security_group_rule" "allow_api_access" {
+  from_port         = 6443
+  to_port           = 6443
+  protocol          = "tcp"
+  cidr_blocks       = ["${data.external.current_ip.result.ip}/32"]
+  security_group_id = module.k8s.k8s_controllers_node_sg_id
+  type              = "ingress"
 }

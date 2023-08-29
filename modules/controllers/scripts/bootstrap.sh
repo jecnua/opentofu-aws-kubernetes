@@ -9,7 +9,8 @@ K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 #KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
 KCTL_USER='ubuntu'
 
-STERN_VERSION='1.11.0'
+STERN_VERSION='1.11.0' # TODO: Parametric
+LB_DNS_NAME=${load_balancer_dns}
 
 ### Statics
 
@@ -79,6 +80,9 @@ apt install -y \
 	kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
 	kubectl="$K8S_DEB_PACKAGES_VERSION-00"
 
+# Requires js
+AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+
 # Install stern
 wget "https://github.com/wercker/stern/releases/download/$STERN_VERSION/stern_linux_amd64"
 chmod +x stern_linux_amd64
@@ -102,49 +106,137 @@ echo 'source /usr/share/bash-completion/bash_completion' >>~/.bashrc
 echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
 echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
 
-# Start as master (no HA)
+#=======================================================================================================================
+# START Master logic
 
-# Forcing version
-# VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
-cat <<EOF >"/home/$KCTL_USER/kubeadm-config.yaml"
+# Start as master (no HA)
+TAG_NAME="ControllerID"
+INSTANCE_ID=$(wget -qO- http://instance-data/latest/meta-data/instance-id)
+TAG_VALUE=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=$TAG_NAME" --region "$AWS_REGION" --output=text | cut -f5)
+
+if [[ $TAG_VALUE == "0" ]]; then
+
+	echo "First controller. The others will join me!"
+	# Forcing version
+	# VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
+	cat <<EOF >"/home/$KCTL_USER/kubeadm-config.yaml"
 ${kubeadm_config}
 EOF
 
-# Create the ETCD encryption file
-mkdir -p /etc/kubernetes/etcd-encryption/
-cat <<EOF >"/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
+	# Create the ETCD encryption file
+	mkdir -p /etc/kubernetes/etcd-encryption/
+	cat <<EOF >"/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
 ${kubeadm_etcd_encryption}
 EOF
 
-# Create audit policy file
-mkdir -p /var/log/kube-audit/
-mkdir -p /etc/kubernetes/kube-audit/
-cat <<EOF >"/etc/kubernetes/kube-audit/audit-policy.yaml"
+	# Create audit policy file
+	mkdir -p /var/log/kube-audit/
+	mkdir -p /etc/kubernetes/kube-audit/
+	cat <<EOF >"/etc/kubernetes/kube-audit/audit-policy.yaml"
 ${audit_policy}
 EOF
 
-# TODO: Temporary.
-# When doing multimaster this secrets needs to be the same, plus if you want the ETCD
-# snapshot to make sense, you need to keep this between cluster
-# Move it to a AWS Parameter Store or Secret Manager
-etcd_secret=$(head -c 32 /dev/urandom | base64)
-sed -i "s|PLACEHOLDER|$etcd_secret|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
-chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	# When doing multimaster this secrets needs to be the same, plus if you want the ETCD
+	# snapshot to make sense, you need to keep this between cluster
+	# It is shared like the rest of the data via Secret Manager
+	ETCD_SECRET=$(head -c 32 /dev/urandom | base64)
+	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
 
-OLD_HOME=$HOME
-export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
-kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
-HOME=$OLD_HOME
+	OLD_HOME=$HOME
+	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
 
-cd /home/$KCTL_USER || exit
-mkdir -p /home/$KCTL_USER/.kube
-sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
-sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
-echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
-su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
+	# Generate certificate key
+	CERTIFICATEKEY=$(kubeadm certs certificate-key)
+	sed -i "s|CERTIFICATEKEY|$CERTIFICATEKEY|g" "/home/$KCTL_USER/kubeadm-config.yaml"
 
-# Install CNI plugin
-${cni_install}
+	# HA Version
+	# TODO: Make it optional?
+	kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5 --upload-certs
+
+	# TODO: Cron every 6 hours to generate a new one and upload it to the secret
+	# Upload a fresh token and CA hash
+	TOKEN=$(kubeadm token create)
+	HASH=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
+	SECRET_NAME=${secret_name}
+	aws secretsmanager update-secret \
+		--secret-id "$SECRET_NAME" \
+		--region "$AWS_REGION" \
+		--secret-string '{"token":"'"$TOKEN"'","hash":"'"$HASH"'","certificatekey":"'"$CERTIFICATEKEY"'","etcdsecret":"'"$ETCD_SECRET"'"}'
+
+	HOME=$OLD_HOME
+
+	cd /home/$KCTL_USER || exit
+	mkdir -p /home/$KCTL_USER/.kube
+	sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
+	sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
+	echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
+	su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
+
+	su "$KCTL_USER" -c "kubectl create clusterrolebinding cluster-system-anonymons --clusterrole=cluster-admin --user=system:anonymous"
+
+	# Install CNI plugin
+	${cni_install}
+
+else
+
+	echo "I am NOT the first controller. I will join the first".
+
+	# Create audit policy file
+	mkdir -p /var/log/kube-audit/
+	mkdir -p /etc/kubernetes/kube-audit/
+	cat <<EOF >"/etc/kubernetes/kube-audit/audit-policy.yaml"
+${audit_policy}
+EOF
+
+	cat <<EOF >"/home/$KCTL_USER/kubeadm-join-config.yaml"
+${kubeadm_join_config}
+EOF
+
+	# Create the ETCD encryption file
+	mkdir -p /etc/kubernetes/etcd-encryption/
+	cat <<EOF >"/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
+${kubeadm_etcd_encryption}
+EOF
+
+	AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+	MASTER_IP=$LB_DNS_NAME
+
+	SECRET_ARN=${secret_name}
+	while true; do
+		# Get all the secrets which are dynamic on cluster generation
+		TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
+		HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
+		CERTIFICATEKEY=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.certificatekey')
+		ETCD_SECRET=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.etcdsecret')
+		# shellcheck disable=SC2000
+		if [[ $(echo "$HASH" | wc -c) == "65" ]]; then
+			echo "Value found..."
+			break
+		else
+			echo "Wait 10 seconds..."
+			sleep 10
+		fi
+	done
+	MYIP=$(curl --silent http://169.254.169.254/latest/meta-data/local-ipv4)
+	# Substitute the join token and hash
+	sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s/CERTIFICATEKEY/$CERTIFICATEKEY/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	#
+	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml" # TODO: I may know beforehand
+	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"     # TODO: I may know beforehand
+
+	OLD_HOME=$HOME
+	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
+	kubeadm join --config "/home/$KCTL_USER/kubeadm-join-config.yaml" --v=5
+	HOME=$OLD_HOME
+
+fi
+# END Master logic
+#=======================================================================================================================
 
 ${post_install}
 

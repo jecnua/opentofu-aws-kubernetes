@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 7.0.0
+
+### Breaking changes
+
+- Now the cluster is HA with multiple masters :) and THIS was not easy :D
+- You will need to open the security group to the IPs you want to access the cluster from (since it's using a NLB) and the NATs
+- Updated k8s version to 1.27
+- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be openTF)
+
+### Features & Changes
+
+- The master will populate a secret with the token and the CA HASH to share with the nodes
+
+### Bugfixes
+
+- Removed unused internal_network_cidr
+
+### Known bugs/issues
+
 ## 6.0.0
 
 ### Breaking changes

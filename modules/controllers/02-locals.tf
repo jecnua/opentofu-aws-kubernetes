@@ -1,7 +1,6 @@
 locals {
-  tags_as_map = merge(
+  tags_as_map = merge( # TODO: Remove name
     {
-      "Name"               = format("k8s-controller-%s-%s-%s", var.unique_identifier, var.environment, random_string.seed.result)
       "Environment"        = format("%s", var.environment)
       "k8s.io/role/master" = "1" # Taken from the kops # TODO: CHECK
       "KubernetesCluster"  = var.kubernetes_cluster
@@ -15,7 +14,6 @@ locals {
 
 resource "null_resource" "tags_as_list_of_maps" {
   count = length(keys(local.tags_as_map))
-
   triggers = {
     "key"                 = keys(local.tags_as_map)[count.index]
     "value"               = values(local.tags_as_map)[count.index]

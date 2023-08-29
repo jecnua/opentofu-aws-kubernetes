@@ -47,14 +47,13 @@ variable "ec2_k8s_controllers_instance_type" {
 variable "k8s_controllers_num_nodes" {
   type        = string
   description = "Number of nodes in the asg for the controllers"
+  #  validation {
+  #    condition     = var.k8s_controllers_num_nodes != 1
+  #    error_message = "The module only support 1 controller for now."
+  #  }
 }
 
 ###################################### Bootstrap
-
-variable "internal_network_cidr" {
-  type        = string
-  description = "TEMPORARY: Allow access from a certain ip range" # TODO: FIXME: This needs to be removed and the sg exported
-}
 
 variable "controllers_cri_bootstrap" {
   type = string

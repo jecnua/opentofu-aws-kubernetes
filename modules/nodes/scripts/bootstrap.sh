@@ -4,8 +4,6 @@
 
 DATA_DIR_NAME=data
 # shellcheck disable=SC2154
-CLUSTER_ID=${cluster_id}
-# shellcheck disable=SC2154
 K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 KCTL_USER='ubuntu'
 
@@ -14,6 +12,7 @@ KCTL_USER='ubuntu'
 echo "START: $(date)" >>/opt/bootstrap_times
 
 AWS_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/local-hostname)
+
 hostname "$AWS_HOSTNAME"
 echo "$AWS_HOSTNAME" >/etc/hostname
 echo "127.0.0.1 $AWS_HOSTNAME" >>/etc/hosts
@@ -102,13 +101,36 @@ chmod +x /opt/install-cri.sh
 # You need to filter by tag Name to find the master to connect to. You don't
 # know at startup time the ip.
 # Read gotchas #1
-AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
-MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
 cat <<EOF >"/home/$KCTL_USER/kubeadm-join-config.yaml"
 ${kubeadm_join_config}
 EOF
-# Replacing with the master ip
-sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+# Replacing the API_SERVER_ENDPOINT
+sed -i "s/API_SERVER_ENDPOINT/${lb_dns}/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+
+#=======================================================================================================================
+# Get a fresh join token and the CA Hash
+
+AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+SECRET_ARN=${secret_arn}
+while true; do
+	TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
+	HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
+	#  echo TOKEN: "$TOKEN"
+	#  echo HASH: "$HASH"
+	# shellcheck disable=SC2000
+	if [[ $(echo "$HASH" | wc -c) == "65" ]]; then
+		echo "Value found..."
+		break
+	else
+		echo "Wait 10 seconds..."
+		sleep 10
+	fi
+done
+# Substitute the join token and hash
+sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+
+#=======================================================================================================================
 
 OLD_HOME=$HOME
 export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
@@ -117,11 +139,11 @@ kubeadm join --config "/home/$KCTL_USER/kubeadm-join-config.yaml" --v=5
 echo 'source /usr/share/bash-completion/bash_completion' >>$HOME/.bashrc
 HOME=$OLD_HOME
 
+# TODO: This file does not exist
 # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
 echo 'protectKernelDefaults: true' >>/var/lib/kubelet/config.yaml
 
 # Adding autocomplete
-echo 'source /usr/share/bash-completion/bash_completion' >>/root/.bashrc
 echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
 echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
 

@@ -12,3 +12,5 @@ terraform.tfvars
 
 # Local
 local/
+
+open_issues.txt

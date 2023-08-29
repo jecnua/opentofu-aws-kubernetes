@@ -8,7 +8,6 @@ variable "ami_name_filter_regex" {
   type        = string
   description = "Regex to find the ami to use"
   default     = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"
-  #  "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
 }
 
 variable "ami_id" {
@@ -50,13 +49,13 @@ variable "sns_topic_notifications" {
 variable "k8s_deb_package_version" {
   type        = string
   description = "The version of the deb package to install in ubuntu (i.e. 1.25.0)"
-  default     = "1.25.0"
+  default     = "1.27.5"
 }
 
 variable "kubeadm_install_version" {
   type        = string
   description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.25)"
-  default     = "stable-1.25"
+  default     = "stable-1.27"
 }
 
 variable "userdata_pre_install" {

@@ -8,14 +8,14 @@ output "nodes_subnets_public_id" {
   value       = [aws_subnet.k8s_public.*.id]
 }
 
-output "controller_elb_internal_dns_name" {
+output "controller_lb_internal_dns_name" {
   description = "The AWS DNS name of the controller nodes ELB"
-  value       = aws_elb.k8s_controllers_internal_elb.dns_name
+  value       = aws_lb.k8s_controllers_external_lb.dns_name
 }
 
-output "controller_elb_internal_zone_id" {
+output "controller_lb_internal_zone_id" {
   description = "The AWS zone id for the controller nodes ELB"
-  value       = aws_elb.k8s_controllers_internal_elb.zone_id
+  value       = aws_lb.k8s_controllers_external_lb.zone_id
 }
 
 //output "controllers_sd_id" {
@@ -59,9 +59,17 @@ output "nodes_config_bundle" {
     "environment"             = var.environment
     "k8s_deb_package_version" = var.k8s_deb_package_version
     "kubernetes_cluster"      = var.kubernetes_cluster
-    "controller_join_token"   = var.controller_join_token
     "unique_identifier"       = var.unique_identifier
     "controllers_sg_id"       = aws_security_group.k8s_controllers_node_sg.id
-    "internal_network_cidr"   = var.internal_network_cidr
+    "secret_arn"              = aws_secretsmanager_secret.secrets.arn
+    "lb_dns"                  = aws_lb.k8s_controllers_external_lb.dns_name
   }
+}
+
+output "k8s_controllers_node_sg_id" {
+  value = aws_security_group.k8s_controllers_node_sg.id
+}
+
+output "secret_arn" {
+  value = aws_secretsmanager_secret.secrets.arn
 }

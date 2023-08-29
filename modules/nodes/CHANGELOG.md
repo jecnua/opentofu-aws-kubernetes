@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 7.0.0
+
+### Breaking changes
+
+- The nodes no longer take the token as a parameter (since it expires) and instead will retrieve it from a secret
+- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be openTF)
+
+### Features & Changes
+
+- Updated default ami
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 6.0.0
 
 ### Breaking changes

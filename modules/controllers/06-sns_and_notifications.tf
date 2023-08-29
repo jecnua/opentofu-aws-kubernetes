@@ -3,7 +3,7 @@ resource "aws_autoscaling_notification" "elasticsearch_autoscaling_notification"
   topic_arn = var.sns_topic_notifications
 
   group_names = [
-    aws_autoscaling_group.k8s_controllers_ag.name,
+    aws_autoscaling_group.k8s_controllers_ag.0.name, # TODO: Fix
   ]
 
   notifications = [
