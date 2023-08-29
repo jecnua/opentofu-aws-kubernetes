@@ -136,12 +136,11 @@ EOF
 ${audit_policy}
 EOF
 
-	# TODO: Temporary.
 	# When doing multimaster this secrets needs to be the same, plus if you want the ETCD
 	# snapshot to make sense, you need to keep this between cluster
-	# Move it to a AWS Parameter Store or Secret Manager
-	etcd_secret=$(head -c 32 /dev/urandom | base64)
-	sed -i "s|PLACEHOLDER|$etcd_secret|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	# It is shared like the rest of the data via Secret Manager
+	ETCD_SECRET=$(head -c 32 /dev/urandom | base64)
+	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
 	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
 
 	OLD_HOME=$HOME
@@ -151,8 +150,8 @@ EOF
 	CERTIFICATEKEY=$(kubeadm certs certificate-key)
 	sed -i "s|CERTIFICATEKEY|$CERTIFICATEKEY|g" "/home/$KCTL_USER/kubeadm-config.yaml"
 
-	#kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5
-	# HA Version # TODO: Make it optional?
+	# HA Version
+	# TODO: Make it optional?
 	kubeadm init --config "/home/$KCTL_USER/kubeadm-config.yaml" --v=5 --upload-certs
 
 	# TODO: Cron every 6 hours to generate a new one and upload it to the secret
@@ -163,7 +162,7 @@ EOF
 	aws secretsmanager update-secret \
 		--secret-id "$SECRET_NAME" \
 		--region "$AWS_REGION" \
-		--secret-string '{"token":"'"$TOKEN"'","hash":"'"$HASH"'","certificatekey":"'"$CERTIFICATEKEY"'"}'
+		--secret-string '{"token":"'"$TOKEN"'","hash":"'"$HASH"'","certificatekey":"'"$CERTIFICATEKEY"'","etcdsecret":"'"$ETCD_SECRET"'"}'
 
 	HOME=$OLD_HOME
 
@@ -174,6 +173,8 @@ EOF
 	echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
 	su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
 
+	su "$KCTL_USER" -c "kubectl create clusterrolebinding cluster-system-anonymons --clusterrole=cluster-admin --user=system:anonymous"
+
 	# Install CNI plugin
 	${cni_install}
 
@@ -181,8 +182,21 @@ else
 
 	echo "I am NOT the first controller. I will join the first".
 
+	# Create audit policy file
+	mkdir -p /var/log/kube-audit/
+	mkdir -p /etc/kubernetes/kube-audit/
+	cat <<EOF >"/etc/kubernetes/kube-audit/audit-policy.yaml"
+${audit_policy}
+EOF
+
 	cat <<EOF >"/home/$KCTL_USER/kubeadm-join-config.yaml"
 ${kubeadm_join_config}
+EOF
+
+	# Create the ETCD encryption file
+	mkdir -p /etc/kubernetes/etcd-encryption/
+	cat <<EOF >"/etc/kubernetes/etcd-encryption/etcd-enc.yaml"
+${kubeadm_etcd_encryption}
 EOF
 
 	AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
@@ -194,6 +208,7 @@ EOF
 		TOKEN=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.token')
 		HASH=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.hash')
 		CERTIFICATEKEY=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.certificatekey')
+		ETCD_SECRET=$(aws secretsmanager get-secret-value --secret-id "$SECRET_ARN" --region "$AWS_REGION" | jq --raw-output '.SecretString' | jq --raw-output '.etcdsecret')
 		# shellcheck disable=SC2000
 		if [[ $(echo "$HASH" | wc -c) == "65" ]]; then
 			echo "Value found..."
@@ -208,6 +223,8 @@ EOF
 	sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CERTIFICATEKEY/$CERTIFICATEKEY/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
+	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
 	#
 	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml" # TODO: I may know beforehand
 	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"     # TODO: I may know beforehand

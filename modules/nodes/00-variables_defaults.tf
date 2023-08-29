@@ -7,7 +7,7 @@ variable "additional_tags_as_map" {
 variable "ami_name_filter_regex" {
   type        = string
   description = "Regex to find the ami to use"
-  default     = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
+  default     = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"
 }
 
 variable "ami_owner" {
