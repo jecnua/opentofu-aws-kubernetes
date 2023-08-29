@@ -1,6 +1,6 @@
 # Kubernetes node module
 
-![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
+![](https://img.shields.io/badge/ubuntu-22.04-blue.svg)
 
 This module will create a new kubernetes cluster inside your VPC.
 
