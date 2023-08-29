@@ -6,6 +6,9 @@
 
 - Now the cluster is HA with multiple masters :)
 - You will need to open the security group to the IPs you want to access the cluster from (since it's using a NLB). Check the example
+- Updated k8s version to 1.27
+- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be openTF)
+
 
 ### Features & Changes
 
