@@ -1,6 +1,24 @@
 # CHANGELOG
 
-## 7.0.0
+## 8.0.0
+
+### Breaking changes
+
+- The variable to pass the CNI to install as been renamed and now only requires the http location of the file to apply
+
+### Features & Changes
+
+### Bugfixes
+
+- Fixed the auth issue for anonymous connection (nodes while they register)
+- Fixed a race condition in case the master cannot speak to... itself, while installing the CNI
+
+### Known bugs/issues
+
+## 7.0.0 (DO NOT USE THIS VERSION)
+
+I left in a temporary workaround to make the node register but it give too much power to anonymous.
+Use 7.1.0 in which the correct fix is implemented.
 
 ### Breaking changes
 

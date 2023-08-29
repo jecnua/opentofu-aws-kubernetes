@@ -15,7 +15,7 @@ data "template_file" "bootstrap_node_k8s_controllers" {
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
     pre_install             = var.userdata_pre_install
-    cni_install             = var.userdata_cni_install
+    cni_file_location       = var.cni_file_location
     kubeadm_join_config     = data.template_file.bootstrap_k8s_controllers_kubeadm_join_config.rendered
     post_install            = var.userdata_post_install
     kubeadm_config          = data.template_file.bootstrap_k8s_controllers_kubeadm_config.rendered

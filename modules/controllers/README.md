@@ -4,19 +4,6 @@
 
 This module will create a new kubernetes cluster inside your VPC.
 
-Support:
-
-    k8s     1.12.x      NO
-    k8s     1.13.12     YES
-    k8s     1.14.x      ?
-    k8s     1.15.x      YES
-    k8s     1.16.x      YES
-    k8s     1.17.x      YES
-    k8s     1.18.8      YES
-    k8s     1.19.4      YES
-    k8s     1.20.1      YES
-    k8s     1.21.0      YES
-
 ## Usage
 
 - [Utilities](../../examples/)
@@ -31,8 +18,8 @@ Be careful to pass the right subnets in availability_zone!
 
 You can choose what version of k8s to install passing this variables:
 
-    k8s_deb_package_version           = "1.19.4"
-    kubeadm_install_version           = "stable-1.19"
+    k8s_deb_package_version           = "1.27.5"
+    kubeadm_install_version           = "stable-1.27"
 
 ## Debug
 

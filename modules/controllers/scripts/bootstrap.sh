@@ -171,12 +171,53 @@ EOF
 	sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
 	sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
 	echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
-	su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
 
-	su "$KCTL_USER" -c "kubectl create clusterrolebinding cluster-system-anonymons --clusterrole=cluster-admin --user=system:anonymous"
+	# So now this is tricky! Sometimes when starting up, when you try to apply what follows it will fails because
+	# the call through the load balancer does not go through. To fix this, I cam creating a copy of the kubeconfig file
+	# which doesn't use the LB and I will use this to configure the CNI and signer
+	cp /home/$KCTL_USER/.kube/config /home/$KCTL_USER/.kube/local
+	sed -i "s|$LB_DNS_NAME|127.0.0.1|g" /home/$KCTL_USER/.kube/local
+	sudo chown $KCTL_USER:$KCTL_USER /home/$KCTL_USER/.kube/local
+
+	# Mabel the master
+	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
+
+	# The following fixed the issue with nodes not being able to join the cluster
+	# https://github.com/kubernetes-sigs/kubespray/issues/4117#issuecomment-1319776085
+	cat <<EOF >"/home/$KCTL_USER/auth.yaml"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubeadm:bootstrap-signer-clusterinfo
+  namespace: kube-public
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubeadm:bootstrap-signer-clusterinfo
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: system:anonymous
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubeadm:bootstrap-signer-clusterinfo
+  namespace: kube-public
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - cluster-info
+  resources:
+  - configmaps
+  verbs:
+  - get
+EOF
+	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl apply -f /home/$KCTL_USER/auth.yaml"
 
 	# Install CNI plugin
-	${cni_install}
+	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl apply -f ${cni_file_location}"
 
 else
 
