@@ -160,6 +160,12 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
     propagate_at_launch = true
   }
 
+  tag {
+    key                 = "Name"
+    value               = format("k8s-controller-%s-%s-%s-%s", var.unique_identifier, var.environment, random_string.seed.result, count.index)
+    propagate_at_launch = true
+  }
+
   dynamic "tag" {
     for_each = local.tags_for_asg
     content {

@@ -1,5 +1,5 @@
 locals {
-  tags_as_map = merge( # TODO: Remove name
+  tags_as_map = merge(
     {
       "Environment"        = format("%s", var.environment)
       "k8s.io/role/master" = "1" # Taken from the kops # TODO: CHECK

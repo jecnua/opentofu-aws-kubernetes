@@ -2,11 +2,15 @@
 
 ## 8.0.0
 
+DO NOT USE 7.0.0. Use this version instead.
+
 ### Breaking changes
 
 - The variable to pass the CNI to install as been renamed and now only requires the http location of the file to apply
 
 ### Features & Changes
+
+- Now controller nodes are tagged with a unique NAME tag
 
 ### Bugfixes
 
@@ -18,7 +22,7 @@
 ## 7.0.0 (DO NOT USE THIS VERSION)
 
 I left in a temporary workaround to make the node register but it give too much power to anonymous.
-Use 7.1.0 in which the correct fix is implemented.
+Use the next version in which the correct fix is implemented.
 
 ### Breaking changes
 
@@ -36,6 +40,8 @@ Use 7.1.0 in which the correct fix is implemented.
 - Removed unused internal_network_cidr
 
 ### Known bugs/issues
+
+- I left in a temporary workaround to make the node register but it give too much power to anonymous. Use the next version in which the correct fix is implemented.
 
 ## 6.0.0
 

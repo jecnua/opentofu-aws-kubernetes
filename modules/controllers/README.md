@@ -208,18 +208,3 @@ No modules.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 # TODO
-
-- Possible move to use parts (template_cloudinit_config)
-- check kubelet extra args if it's not deprecated
-- Use the loadbalancer to register to the masters
-- Use datasource instead of heredoc
-- Change ebs partition
-- Fix CA verification
-- Make KCTL_USER parametric
-- FIX the bash
-- FIX internal_network_cidr
-- Add tags on resources with path to the module they are defined it
-- Health check on the asg is done via ELB (check for using ALB)
-- Export the information needed to create a target group outside the module
-- Fix/reduce IAM roles power
-- Access logs for lbs
