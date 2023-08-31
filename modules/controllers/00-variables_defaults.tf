@@ -114,6 +114,18 @@ variable "ebs_volume_type" {
   default     = "gp3"
 }
 
+variable "health_check_type" {
+  type        = string
+  description = "The health check type"
+  default     = "EC2"
+}
+
+variable "health_check_grace_period" {
+  type        = string
+  description = "The health grace period"
+  default     = "300"
+}
+
 //variable "market_options" {
 //  type        = string
 //  description = "Market options for the instances"

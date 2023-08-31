@@ -10,7 +10,8 @@ DO NOT USE 7.0.0. Use this version instead.
 
 ### Features & Changes
 
-- Now controller nodes are tagged with a unique NAME tag
+- Now controller nodes are tagged with a unique 'Name' tag
+- health_check_type and health_check_grace_period are now variable
 
 ### Bugfixes
 
@@ -42,6 +43,7 @@ Use the next version in which the correct fix is implemented.
 ### Known bugs/issues
 
 - I left in a temporary workaround to make the node register but it give too much power to anonymous. Use the next version in which the correct fix is implemented.
+- Controller nodes are not able to re-join the cluster if they die.
 
 ## 6.0.0
 

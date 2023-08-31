@@ -25,7 +25,7 @@ kubernetesVersion: v${k8s_deb_package_version}
 controlPlaneEndpoint: ${load_balancer_dns} # TODO: make it optional?
 apiServer:
   certSANs:
-    - "127.0.0.1" # Make it possible to tunnel from your machine to the control plane
+    - "127.0.0.1" # Make it possible to tunnel from your machine to the control plane or call yourself from the machine
     - ${load_balancer_dns} # TODO: make it optional?
   extraArgs:
     audit-log-maxage: "30"

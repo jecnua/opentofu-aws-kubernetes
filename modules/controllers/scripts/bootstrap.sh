@@ -241,7 +241,8 @@ ${kubeadm_etcd_encryption}
 EOF
 
 	AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
-	MASTER_IP=$LB_DNS_NAME
+	MYIP=$(curl --silent http://169.254.169.254/latest/meta-data/local-ipv4)
+	MASTER_IP=$LB_DNS_NAME # TODO: Maybe change this to avoid the issue of the master calling itself or a master not ready?
 
 	SECRET_ARN=${secret_name}
 	while true; do
@@ -259,16 +260,16 @@ EOF
 			sleep 10
 		fi
 	done
-	MYIP=$(curl --silent http://169.254.169.254/latest/meta-data/local-ipv4)
 	# Substitute the join token and hash
 	sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CERTIFICATEKEY/$CERTIFICATEKEY/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
-	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
-	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
-	#
 	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml" # TODO: I may know beforehand
 	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"     # TODO: I may know beforehand
+	#
+	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+
 
 	OLD_HOME=$HOME
 	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361

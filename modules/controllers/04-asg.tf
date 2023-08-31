@@ -77,7 +77,7 @@ resource "aws_launch_template" "controller" {
     content {
       device_name = "/dev/sda1" # root
       ebs {
-        delete_on_termination = lookup(block_device_mappings.value, "delete_on_termination", true) # cattle not pets
+        delete_on_termination = lookup(block_device_mappings.value, "delete_on_termination", true) # TODO: Fix this on the master and reattach it
         volume_type           = lookup(block_device_mappings.value, "volume_type", var.ebs_volume_type)
         volume_size           = lookup(block_device_mappings.value, "volume_size", var.ebs_root_volume_size)
         encrypted             = lookup(block_device_mappings.value, "encrypted", true)
@@ -88,6 +88,7 @@ resource "aws_launch_template" "controller" {
   iam_instance_profile {
     name = aws_iam_instance_profile.k8s_instance_profile.id
   }
+  # TODO: Reimplement this for testing?
   //  instance_market_options {
   //    market_type = var.market_options
   //    spot_options {
@@ -110,15 +111,14 @@ resource "aws_network_interface" "fixed_private_ip" {
   security_groups = [aws_security_group.k8s_controllers_node_sg.id]
 }
 
-# TODO: Use this var.k8s_controllers_num_nodes to cycle
 resource "aws_autoscaling_group" "k8s_controllers_ag" {
   count                     = var.k8s_controllers_num_nodes
   name                      = "k8s-controller-${count.index}-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
   max_size                  = 1
   min_size                  = 1
   desired_capacity          = 1
-  health_check_grace_period = 300
-  health_check_type         = "EC2"
+  health_check_grace_period = var.health_check_grace_period
+  health_check_type         = var.health_check_type
   force_delete              = false
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
@@ -130,10 +130,6 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
     id      = aws_launch_template.controller[count.index].id
     version = "$Latest"
   }
-
-  #  load_balancers = [
-  #    aws_elb.k8s_controllers_internal_elb.name,
-  #  ]
 
   termination_policies = [
     "OldestInstance",
