@@ -8,9 +8,11 @@
 
 # Disclaimer - OpenTF support
 
-    I support OpenTF [https://github.com/opentffoundation/manifesto](https://github.com/opentffoundation/manifesto)
-    As soon as the first version of OpenTF is available this repo will switch to it and any "direct" support of terraform will be dropped.
-    I will tag the last commit tested on 1.5.5 for people that wants to use terraform or fork from there. Realistically the fork will not diverge immediately anyway.
+- [https://github.com/opentffoundation/manifesto](https://github.com/opentffoundation/manifesto)
+
+    I support OpenTF. As soon as the first version of OpenTF is available this repo will switch to it and 
+    any "direct" support of terraform will be dropped. I will tag the last commit tested on 1.5.5 for people 
+    that wants to use terraform or fork from there. Realistically the fork will not diverge immediately anyway.
 
 # Module
 
