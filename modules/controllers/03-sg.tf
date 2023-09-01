@@ -42,10 +42,10 @@ resource "aws_security_group_rule" "allow_all_lb" {
 # When deploying metric server it may go on any worker node and it needs to speak to kubelet on any
 # other node. We do not know when we create a node all the sg to add, so we allow all the internal subnets
 resource "aws_security_group_rule" "allow_kubelet_port_from_internal_subnets" {
-  type                     = "ingress"
-  from_port                = 10250
-  to_port                  = 10250
-  protocol                 = "TCP"
-  cidr_blocks              = var.subnets_private_cidr_block
-  security_group_id        = aws_security_group.k8s_controllers_node_sg.id
+  type              = "ingress"
+  from_port         = 10250
+  to_port           = 10250
+  protocol          = "TCP"
+  cidr_blocks       = var.subnets_private_cidr_block
+  security_group_id = aws_security_group.k8s_controllers_node_sg.id
 }
