@@ -102,7 +102,7 @@ chmod +x /opt/install-cri.sh
 /opt/install-cri.sh
 
 # Adding autocomplete
-echo 'source /usr/share/bash-completion/bash_completion' >>~/.bashrc
+echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc
 echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
 echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
 
@@ -219,6 +219,11 @@ EOF
 	# Install CNI plugin
 	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl apply -f ${cni_file_location}"
 
+	# Create a configmap for metricServer to use
+	# https://github.com/kubernetes-sigs/metrics-server/blob/master/KNOWN_ISSUES.md#incorrectly-configured-front-proxy-certificate
+	kubectl -nkube-system create configmap front-proxy-ca --from-file=front-proxy-ca.crt=/etc/kubernetes/pki/front-proxy-ca.crt -o yaml \
+		| kubectl -nkube-system replace configmap front-proxy-ca -f -
+
 else
 
 	echo "I am NOT the first controller. I will join the first".
@@ -281,6 +286,15 @@ fi
 #=======================================================================================================================
 
 ${post_install}
+
+# Adding autocomplete - This helps :)
+echo 'source <(kubeadm completion bash)' >> /home/$KCTL_USER/.bashrc
+echo 'source <(kubectl completion bash)' >> /home/$KCTL_USER/.bashrc
+echo "alias k=kubectl" >> /home/$KCTL_USER/.bashrc
+echo "alias cc=clear" >> /home/$KCTL_USER/.bashrc
+echo "complete -o default -F __start_kubectl k" >> /home/$KCTL_USER/.bashrc
+echo 'export KUBE_EDITOR="nano"' >> /home/$KCTL_USER/.bashrc
+
 
 touch /opt/bootstrap_completed
 echo "END: $(date)" >>/opt/bootstrap_times

@@ -136,16 +136,20 @@ OLD_HOME=$HOME
 export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
 kubeadm join --config "/home/$KCTL_USER/kubeadm-join-config.yaml" --v=5
 # Adding autocomplete
-echo 'source /usr/share/bash-completion/bash_completion' >>$HOME/.bashrc
+echo 'source /usr/share/bash-completion/bash_completion' >> $HOME/.bashrc
 HOME=$OLD_HOME
 
 # TODO: This file does not exist
 # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
 echo 'protectKernelDefaults: true' >>/var/lib/kubelet/config.yaml
 
-# Adding autocomplete
-echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
-echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
+# Adding autocomplete - This helps :)
+echo 'source <(kubeadm completion bash)' >> /home/$KCTL_USER/.bashrc
+echo 'source <(kubectl completion bash)' >> /home/$KCTL_USER/.bashrc
+echo "alias k=kubectl" >> /home/$KCTL_USER/.bashrc
+echo "alias cc=clear" >> /home/$KCTL_USER/.bashrc
+echo "complete -o default -F __start_kubectl k" >> /home/$KCTL_USER/.bashrc
+echo 'export KUBE_EDITOR="nano"' >> /home/$KCTL_USER/.bashrc
 
 # shellcheck disable=SC2154
 ${post_install}

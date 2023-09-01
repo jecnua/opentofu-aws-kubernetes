@@ -1,9 +1,18 @@
 # Terraform module for kubernetes on AWS
 
 [![Actions Status](https://github.com/jecnua/terraform-aws-kubernetes/workflows/Tests/badge.svg)](https://github.com/jecnua/terraform-aws-kubernetes/actions)
-![https://www.terraform.io/](https://img.shields.io/badge/terraform-v1.5.5-blue.svg?style=flat)
+![https://github.com/opentffoundation/manifesto](https://img.shields.io/badge/OpenTF-1.6.0-blue.svg?style=flat)
+![https://www.terraform.io/](https://img.shields.io/badge/terraform-<=v1.5.5-red.svg?style=flat)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![](https://img.shields.io/maintenance/yes/2023.svg)
+
+# Disclaimer - OpenTF support
+
+    I support OpenTF [https://github.com/opentffoundation/manifesto](https://github.com/opentffoundation/manifesto)
+    As soon as the first version of OpenTF is available this repo will switch to it and any "direct" support of terraform will be dropped.
+    I will tag the last commit tested on 1.5.5 for people that wants to use terraform or fork from there. Realistically the fork will not diverge immediately anyway.
+
+# Module
 
 This repository contains a set of modules that will allow you to install a kubernetes cluster in your own AWS environment.
 No other cloud provider is supported.

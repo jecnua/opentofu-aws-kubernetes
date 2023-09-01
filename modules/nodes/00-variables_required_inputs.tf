@@ -17,7 +17,9 @@ variable "nodes_cri_bootstrap" {
   type = string
 }
 
-variable "private_subnets" {}
+variable "private_subnets" {
+  type = list(string)
+}
 
 variable "nodes_config_bundle" {
   type = object({

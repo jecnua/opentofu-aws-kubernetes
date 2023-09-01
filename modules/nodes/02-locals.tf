@@ -20,6 +20,11 @@ locals {
   )
 }
 
+data "aws_subnet" "target" {
+  for_each = toset(var.private_subnets)
+  id       = each.value
+}
+
 resource "null_resource" "tags_as_list_of_maps" {
   count = length(keys(local.tags_as_map))
   triggers = {

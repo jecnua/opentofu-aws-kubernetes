@@ -1,6 +1,24 @@
 # CHANGELOG
 
-## 7.0.0
+## 8.0.0
+
+DO NOT USE 7.0.0. Use this version instead.
+
+### Breaking changes
+
+### Features & Changes
+
+- Creating a new configmap in kube-system to allow the configuration of metric-server https://github.com/kubernetes-sigs/metrics-server/blob/master/KNOWN_ISSUES.md#incorrectly-configured-front-proxy-certificate
+- Port 10250 is now open on all nodes to the internal subnets CIDR to allow metric server to work
+
+### Bugfixes
+
+### Known bugs/issues
+
+## 7.0.0 (DO NOT USE THIS VERSION)
+
+I left in a temporary workaround to make the node register but it give too much power to anonymous.
+Use the next version in which the correct fix is implemented.
 
 ### Breaking changes
 
