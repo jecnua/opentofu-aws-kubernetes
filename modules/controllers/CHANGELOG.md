@@ -12,9 +12,9 @@ DO NOT USE 7.0.0. Use this version instead.
 
 - Now controller nodes are tagged with a unique 'Name' tag
 - health_check_type and health_check_grace_period are now variable
-- Creating a new configmap in kube-system to allow the configuration of metric-server https://github.com/kubernetes-sigs/metrics-server/blob/master/KNOWN_ISSUES.md#incorrectly-configured-front-proxy-certificate
 - Port 10250 is now open on all nodes to the internal subnets CIDR to allow metric server to work
 - Added kubectl alias and bash completition just not to have to do it every time :D
+- authorization-mode option for api server can now be modifies (in case you need to add Webhook)
 
 ### Bugfixes
 

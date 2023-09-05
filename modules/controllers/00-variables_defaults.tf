@@ -65,7 +65,6 @@ variable "userdata_pre_install" {
 }
 
 # By default will install calico as CNI but you can override it to use what you want
-# Example of weave as alternative (remember to escape the "):
 variable "cni_file_location" {
   description = "User-data script that will be applied"
   type        = string
@@ -124,6 +123,12 @@ variable "health_check_grace_period" {
   type        = string
   description = "The health grace period"
   default     = "300"
+}
+
+variable "authorization_mode"{
+  type        = string
+  description = "API server authorization modes: https://kubernetes.io/docs/reference/access-authn-authz/authorization/#authorization-modules"
+  default     = "Node,RBAC"
 }
 
 //variable "market_options" {

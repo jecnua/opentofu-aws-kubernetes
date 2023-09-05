@@ -33,6 +33,7 @@ data "template_file" "bootstrap_k8s_controllers_kubeadm_config" {
     controller_join_token    = var.controller_join_token
     enable_admission_plugins = var.enable_admission_plugins
     load_balancer_dns        = aws_lb.k8s_controllers_external_lb.dns_name # Sign with the NLB name
+    authorization_mode       = var.authorization_mode
   }
 }
 

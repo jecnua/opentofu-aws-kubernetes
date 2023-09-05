@@ -36,6 +36,7 @@ apiServer:
     enable-admission-plugins: ${enable_admission_plugins}
     encryption-provider-config: /etc/kubernetes/etcd-encryption/etcd-enc.yaml
     profiling: "false"
+    authorization-mode: ${authorization_mode}
   extraVolumes:
     - hostPath: /etc/kubernetes/etcd-encryption
       mountPath: /etc/kubernetes/etcd-encryption

@@ -218,12 +218,6 @@ EOF
 
 	# Install CNI plugin
 	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl apply -f ${cni_file_location}"
-
-	# Create a configmap for metricServer to use
-	# https://github.com/kubernetes-sigs/metrics-server/blob/master/KNOWN_ISSUES.md#incorrectly-configured-front-proxy-certificate
-	kubectl -nkube-system create configmap front-proxy-ca --from-file=front-proxy-ca.crt=/etc/kubernetes/pki/front-proxy-ca.crt -o yaml \
-		| kubectl -nkube-system replace configmap front-proxy-ca -f -
-
 else
 
 	echo "I am NOT the first controller. I will join the first".
