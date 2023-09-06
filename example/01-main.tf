@@ -44,8 +44,12 @@ module "k8s_nodes_containerd" {
   ec2_k8s_workers_instance_type = "m5a.large"
   vpc_id                        = "vpc-xxx"
   private_subnets               = module.k8s.nodes_subnets_private_id
-  nodes_cri_bootstrap           = module.containerd_cri.cri_bootstrap
-  nodes_config_bundle           = module.k8s.nodes_config_bundle # You get you configurations from the master module
+  private_subnets_cidr = [
+    "x.x.x.x/25",
+    "x.x.x.x/25",
+  ]
+  nodes_cri_bootstrap = module.containerd_cri.cri_bootstrap
+  nodes_config_bundle = module.k8s.nodes_config_bundle # You get you configurations from the master module
 }
 
 module "k8s_nodes_crio" {
@@ -54,8 +58,12 @@ module "k8s_nodes_crio" {
   ec2_k8s_workers_instance_type = "m5a.large"
   vpc_id                        = "vpc-xxx"
   private_subnets               = module.k8s.nodes_subnets_private_id
-  nodes_cri_bootstrap           = module.crio_cri.cri_bootstrap
-  nodes_config_bundle           = module.k8s.nodes_config_bundle # You get you configurations from the master module
+  private_subnets_cidr = [
+    "x.x.x.x/25",
+    "x.x.x.x/25",
+  ]
+  nodes_cri_bootstrap = module.crio_cri.cri_bootstrap
+  nodes_config_bundle = module.k8s.nodes_config_bundle # You get you configurations from the master module
 }
 
 resource "aws_route" "private_subnets_route_traffic_to_NAT" {
