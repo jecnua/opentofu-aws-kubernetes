@@ -14,11 +14,18 @@ variable "k8s_workers_num_nodes" {
 }
 
 variable "nodes_cri_bootstrap" {
-  type = string
+  type        = string
+  description = "The CRI to use for this node."
 }
 
 variable "private_subnets" {
-  type = list(string)
+  type        = list(string)
+  description = "The list of all possible subnets IDS controllers and nodes may be created into"
+}
+
+variable "private_subnets_cidr" {
+  type        = list(string)
+  description = "The list of all possible subnets CIDR controllers and nodes may be created into"
 }
 
 variable "nodes_config_bundle" {
@@ -31,4 +38,5 @@ variable "nodes_config_bundle" {
     secret_arn              = string
     lb_dns                  = string
   })
+  description = "Map which containes all the data requires to spin up and attach a node to a set of controllers. It is an output of the controller module."
 }

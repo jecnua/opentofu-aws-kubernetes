@@ -6,6 +6,8 @@ DO NOT USE 7.0.0. Use this version instead.
 
 ### Breaking changes
 
+- New variable private_subnets_cidr is required. This list contains all the CIDR controllers and nodes MAY be spinned into to allow access to ports. Temporary until I find a better way which works with datasources outputs.
+
 ### Features & Changes
 
 - Creating a new configmap in kube-system to allow the configuration of metric-server https://github.com/kubernetes-sigs/metrics-server/blob/master/KNOWN_ISSUES.md#incorrectly-configured-front-proxy-certificate

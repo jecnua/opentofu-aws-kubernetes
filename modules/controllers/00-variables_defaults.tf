@@ -125,7 +125,7 @@ variable "health_check_grace_period" {
   default     = "300"
 }
 
-variable "authorization_mode"{
+variable "authorization_mode" {
   type        = string
   description = "API server authorization modes: https://kubernetes.io/docs/reference/access-authn-authz/authorization/#authorization-modules"
   default     = "Node,RBAC"
