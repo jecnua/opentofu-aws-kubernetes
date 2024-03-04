@@ -14,7 +14,7 @@ resource "aws_subnet" "k8s_private" {
   tags = {
     Environment                       = var.environment
     ManagedBy                         = "opentofu (k8s module)"
-    ModuleRepository                  = "https://github.com/jecnua/terraform-aws-kubernetes"
+    ModuleRepository                  = "https://github.com/jecnua/opentofu-aws-kubernetes"
     Name                              = "${var.unique_identifier} ${var.environment} k8s private subnet"
     KubernetesCluster                 = var.kubernetes_cluster
     "kubernetes.io/role/internal-elb" = "true" # Needed for integration with load balancing
@@ -31,7 +31,7 @@ resource "aws_subnet" "k8s_public" {
   tags = {
     Environment              = var.environment
     ManagedBy                = "opentofu (k8s module)"
-    ModuleRepository         = "https://github.com/jecnua/terraform-aws-kubernetes"
+    ModuleRepository         = "https://github.com/jecnua/opentofu-aws-kubernetes"
     Name                     = "${var.unique_identifier} ${var.environment} k8s public subnet"
     KubernetesCluster        = var.kubernetes_cluster
     "kubernetes.io/role/elb" = "true" # Needed for integration with load balancing
@@ -44,7 +44,7 @@ resource "aws_route_table" "k8s_private_route_table" {
   tags = {
     Environment       = var.environment
     ManagedBy         = "opentofu (k8s module)"
-    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
+    ModuleRepository  = "https://github.com/jecnua/opentofu-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} k8s private route table"
     KubernetesCluster = var.kubernetes_cluster
   }
@@ -56,7 +56,7 @@ resource "aws_route_table" "k8s_public_route_table" {
   tags = {
     Environment       = var.environment
     ManagedBy         = "opentofu (k8s module)"
-    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
+    ModuleRepository  = "https://github.com/jecnua/opentofu-aws-kubernetes"
     Name              = "${var.unique_identifier} ${var.environment} k8s public route table"
     KubernetesCluster = var.kubernetes_cluster
   }
