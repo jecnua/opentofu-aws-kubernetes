@@ -20,6 +20,12 @@ locals {
   )
 }
 
+# This won't work with an output with unknown data. Until I solve this, I am asking for a new variable
+# data "aws_subnet" "target" {
+#   for_each = toset(var.private_subnets)
+#   id       = each.value
+# }
+
 resource "null_resource" "tags_as_list_of_maps" {
   count = length(keys(local.tags_as_map))
   triggers = {

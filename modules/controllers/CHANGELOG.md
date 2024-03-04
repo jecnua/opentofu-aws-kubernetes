@@ -1,6 +1,32 @@
 # CHANGELOG
 
-## 7.0.0
+## 8.0.0
+
+DO NOT USE 7.0.0. Use this version instead.
+
+### Breaking changes
+
+- The variable to pass the CNI to install as been renamed and now only requires the http location of the file to apply
+
+### Features & Changes
+
+- Now controller nodes are tagged with a unique 'Name' tag
+- health_check_type and health_check_grace_period are now variable
+- Port 10250 is now open on all nodes to the internal subnets CIDR to allow metric server to work
+- Added kubectl alias and bash completition just not to have to do it every time :D
+- authorization-mode option for api server can now be modifies (in case you need to add Webhook)
+
+### Bugfixes
+
+- Fixed the auth issue for anonymous connection (nodes while they register)
+- Fixed a race condition in case the master cannot speak to... itself, while installing the CNI
+
+### Known bugs/issues
+
+## 7.0.0 (DO NOT USE THIS VERSION)
+
+I left in a temporary workaround to make the node register but it give too much power to anonymous.
+Use the next version in which the correct fix is implemented.
 
 ### Breaking changes
 
@@ -18,6 +44,9 @@
 - Removed unused internal_network_cidr
 
 ### Known bugs/issues
+
+- I left in a temporary workaround to make the node register but it give too much power to anonymous. Use the next version in which the correct fix is implemented.
+- Controller nodes are not able to re-join the cluster if they die.
 
 ## 6.0.0
 

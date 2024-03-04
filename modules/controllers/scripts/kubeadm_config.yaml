@@ -25,7 +25,7 @@ kubernetesVersion: v${k8s_deb_package_version}
 controlPlaneEndpoint: ${load_balancer_dns} # TODO: make it optional?
 apiServer:
   certSANs:
-    - "127.0.0.1" # Make it possible to tunnel from your machine to the control plane
+    - "127.0.0.1" # Make it possible to tunnel from your machine to the control plane or call yourself from the machine
     - ${load_balancer_dns} # TODO: make it optional?
   extraArgs:
     audit-log-maxage: "30"
@@ -36,6 +36,7 @@ apiServer:
     enable-admission-plugins: ${enable_admission_plugins}
     encryption-provider-config: /etc/kubernetes/etcd-encryption/etcd-enc.yaml
     profiling: "false"
+    authorization-mode: ${authorization_mode}
   extraVolumes:
     - hostPath: /etc/kubernetes/etcd-encryption
       mountPath: /etc/kubernetes/etcd-encryption

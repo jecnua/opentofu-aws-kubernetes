@@ -34,12 +34,12 @@ resource "aws_security_group_rule" "allow_all_from_self_workers" {
 # Allow ALL from the cluster: TCP and UDP
 # Needed by some CNI network plugins
 resource "aws_security_group_rule" "allow_all_from_k8s_controller_nodes" {
+  type                     = "ingress"
   from_port                = 0
   to_port                  = 0
   protocol                 = "-1"
   source_security_group_id = local.controller_sg_id
   security_group_id        = aws_security_group.k8s_workers_node_sg.id
-  type                     = "ingress"
 }
 
 # Allow everything from the cluster: TCP and UDP
@@ -55,18 +55,14 @@ resource "aws_security_group_rule" "allow_all_from_k8s_worker_nodes" {
   security_group_id        = local.controller_sg_id
 }
 
-resource "aws_autoscaling_notification" "elasticsearch_autoscaling_notification" {
-  count     = var.sns_topic_notifications == "" ? 0 : 1
-  topic_arn = var.sns_topic_notifications
-
-  group_names = [
-    aws_autoscaling_group.k8s_workers_ag[0].name,
-  ]
-
-  notifications = [
-    "autoscaling:EC2_INSTANCE_LAUNCH",
-    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
-    "autoscaling:EC2_INSTANCE_TERMINATE",
-    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
-  ]
+# https://kubernetes.io/docs/reference/networking/ports-and-protocols/
+# When deploying metric server it may go on any worker node and it needs to speak to kubelet on any
+# other node. We do not know when we create a node all the sg to add, so we allow all the internal subnets
+resource "aws_security_group_rule" "allow_kubelet_port_from_internal_subnets" {
+  type              = "ingress"
+  from_port         = 10250
+  to_port           = 10250
+  protocol          = "TCP"
+  cidr_blocks       = var.private_subnets_cidr
+  security_group_id = aws_security_group.k8s_workers_node_sg.id
 }

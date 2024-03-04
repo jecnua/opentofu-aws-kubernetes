@@ -65,12 +65,10 @@ variable "userdata_pre_install" {
 }
 
 # By default will install calico as CNI but you can override it to use what you want
-# Example of weave as alternative (remember to escape the "):
-# su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-variable "userdata_cni_install" {
+variable "cni_file_location" {
   description = "User-data script that will be applied"
   type        = string
-  default     = "su \"$KCTL_USER\" -c \"kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml\""
+  default     = "https://docs.projectcalico.org/manifests/calico.yaml"
 }
 
 variable "userdata_post_install" {
@@ -113,6 +111,24 @@ variable "ebs_volume_type" {
   type        = string
   description = "The EBS type"
   default     = "gp3"
+}
+
+variable "health_check_type" {
+  type        = string
+  description = "The health check type"
+  default     = "EC2"
+}
+
+variable "health_check_grace_period" {
+  type        = string
+  description = "The health grace period"
+  default     = "300"
+}
+
+variable "authorization_mode" {
+  type        = string
+  description = "API server authorization modes: https://kubernetes.io/docs/reference/access-authn-authz/authorization/#authorization-modules"
+  default     = "Node,RBAC"
 }
 
 //variable "market_options" {

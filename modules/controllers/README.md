@@ -4,19 +4,6 @@
 
 This module will create a new kubernetes cluster inside your VPC.
 
-Support:
-
-    k8s     1.12.x      NO
-    k8s     1.13.12     YES
-    k8s     1.14.x      ?
-    k8s     1.15.x      YES
-    k8s     1.16.x      YES
-    k8s     1.17.x      YES
-    k8s     1.18.8      YES
-    k8s     1.19.4      YES
-    k8s     1.20.1      YES
-    k8s     1.21.0      YES
-
 ## Usage
 
 - [Utilities](../../examples/)
@@ -31,8 +18,8 @@ Be careful to pass the right subnets in availability_zone!
 
 You can choose what version of k8s to install passing this variables:
 
-    k8s_deb_package_version           = "1.19.4"
-    kubeadm_install_version           = "stable-1.19"
+    k8s_deb_package_version           = "1.27.5"
+    kubeadm_install_version           = "stable-1.27"
 
 ## Debug
 
@@ -221,18 +208,3 @@ No modules.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 # TODO
-
-- Possible move to use parts (template_cloudinit_config)
-- check kubelet extra args if it's not deprecated
-- Use the loadbalancer to register to the masters
-- Use datasource instead of heredoc
-- Change ebs partition
-- Fix CA verification
-- Make KCTL_USER parametric
-- FIX the bash
-- FIX internal_network_cidr
-- Add tags on resources with path to the module they are defined it
-- Health check on the asg is done via ELB (check for using ALB)
-- Export the information needed to create a target group outside the module
-- Fix/reduce IAM roles power
-- Access logs for lbs

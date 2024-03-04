@@ -102,7 +102,7 @@ chmod +x /opt/install-cri.sh
 /opt/install-cri.sh
 
 # Adding autocomplete
-echo 'source /usr/share/bash-completion/bash_completion' >>~/.bashrc
+echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc
 echo 'source <(kubectl completion bash)' >/etc/bash_completion.d/kubectl
 echo 'source <(kubeadm completion bash)' >/etc/bash_completion.d/kubeadm
 
@@ -171,13 +171,53 @@ EOF
 	sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
 	sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
 	echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
-	su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
 
-	su "$KCTL_USER" -c "kubectl create clusterrolebinding cluster-system-anonymons --clusterrole=cluster-admin --user=system:anonymous"
+	# So now this is tricky! Sometimes when starting up, when you try to apply what follows it will fails because
+	# the call through the load balancer does not go through. To fix this, I cam creating a copy of the kubeconfig file
+	# which doesn't use the LB and I will use this to configure the CNI and signer
+	cp /home/$KCTL_USER/.kube/config /home/$KCTL_USER/.kube/local
+	sed -i "s|$LB_DNS_NAME|127.0.0.1|g" /home/$KCTL_USER/.kube/local
+	sudo chown $KCTL_USER:$KCTL_USER /home/$KCTL_USER/.kube/local
+
+	# Mabel the master
+	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
+
+	# The following fixed the issue with nodes not being able to join the cluster
+	# https://github.com/kubernetes-sigs/kubespray/issues/4117#issuecomment-1319776085
+	cat <<EOF >"/home/$KCTL_USER/auth.yaml"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubeadm:bootstrap-signer-clusterinfo
+  namespace: kube-public
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubeadm:bootstrap-signer-clusterinfo
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: system:anonymous
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubeadm:bootstrap-signer-clusterinfo
+  namespace: kube-public
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - cluster-info
+  resources:
+  - configmaps
+  verbs:
+  - get
+EOF
+	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl apply -f /home/$KCTL_USER/auth.yaml"
 
 	# Install CNI plugin
-	${cni_install}
-
+	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl apply -f ${cni_file_location}"
 else
 
 	echo "I am NOT the first controller. I will join the first".
@@ -200,7 +240,8 @@ ${kubeadm_etcd_encryption}
 EOF
 
 	AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
-	MASTER_IP=$LB_DNS_NAME
+	MYIP=$(curl --silent http://169.254.169.254/latest/meta-data/local-ipv4)
+	MASTER_IP=$LB_DNS_NAME # TODO: Maybe change this to avoid the issue of the master calling itself or a master not ready?
 
 	SECRET_ARN=${secret_name}
 	while true; do
@@ -218,16 +259,16 @@ EOF
 			sleep 10
 		fi
 	done
-	MYIP=$(curl --silent http://169.254.169.254/latest/meta-data/local-ipv4)
 	# Substitute the join token and hash
 	sed -i "s/CONTROLLERJOINTOKEN/$TOKEN/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CAHASH/$HASH/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
 	sed -i "s/CERTIFICATEKEY/$CERTIFICATEKEY/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"
-	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
-	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
-	#
 	sed -i "s/MASTERIP/$MASTER_IP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml" # TODO: I may know beforehand
 	sed -i "s/MYADDRESS/$MYIP/g" "/home/$KCTL_USER/kubeadm-join-config.yaml"     # TODO: I may know beforehand
+	#
+	sed -i "s|PLACEHOLDER|$ETCD_SECRET|g" /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+	chmod 600 /etc/kubernetes/etcd-encryption/etcd-enc.yaml
+
 
 	OLD_HOME=$HOME
 	export HOME=/root # Fix bug: https://github.com/kubernetes/kubeadm/issues/2361
@@ -239,6 +280,15 @@ fi
 #=======================================================================================================================
 
 ${post_install}
+
+# Adding autocomplete - This helps :)
+echo 'source <(kubeadm completion bash)' >> /home/$KCTL_USER/.bashrc
+echo 'source <(kubectl completion bash)' >> /home/$KCTL_USER/.bashrc
+echo "alias k=kubectl" >> /home/$KCTL_USER/.bashrc
+echo "alias cc=clear" >> /home/$KCTL_USER/.bashrc
+echo "complete -o default -F __start_kubectl k" >> /home/$KCTL_USER/.bashrc
+echo 'export KUBE_EDITOR="nano"' >> /home/$KCTL_USER/.bashrc
+
 
 touch /opt/bootstrap_completed
 echo "END: $(date)" >>/opt/bootstrap_times

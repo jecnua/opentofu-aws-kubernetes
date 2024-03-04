@@ -1,11 +1,20 @@
 # Terraform module for kubernetes on AWS
 
 [![Actions Status](https://github.com/jecnua/terraform-aws-kubernetes/workflows/Tests/badge.svg)](https://github.com/jecnua/terraform-aws-kubernetes/actions)
-![https://www.terraform.io/](https://img.shields.io/badge/terraform-v1.2.x-blue.svg?style=flat)
+![https://github.com/opentffoundation/manifesto](https://img.shields.io/badge/OpenTF-1.6.0-blue.svg?style=flat)
+![https://www.terraform.io/](https://img.shields.io/badge/terraform-<=v1.5.5-red.svg?style=flat)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/maintenance/yes/2022.svg)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/jecnua/terraform-aws-kubernetes.svg)](http://isitmaintained.com/project/jecnua/terraform-aws-kubernetes "Percentage of issues still open")
+![](https://img.shields.io/maintenance/yes/2023.svg)
+
+# Disclaimer - OpenTF support
+
+- [https://github.com/opentffoundation/manifesto](https://github.com/opentffoundation/manifesto)
+
+    I support OpenTF. As soon as the first version of OpenTF is available this repo will switch to it and 
+    any "direct" support of terraform will be dropped. I will tag the last commit tested on 1.5.5 for people 
+    that wants to use terraform or fork from there. Realistically the fork will not diverge immediately anyway.
+
+# Module
 
 This repository contains a set of modules that will allow you to install a kubernetes cluster in your own AWS environment.
 No other cloud provider is supported.
@@ -27,31 +36,24 @@ More information on each module can be found at the following links:
 
 [Module maintainers](MAINTAINERS.md)
 
-## Supported terraform versions
+## Terraform
 
-*NOTE*: It only supports Terraform 1.2.x onward
+### Supported terraform versions
 
-For older Terraform version please use:
+This module will only support up to terraform 1.5.5 (due to the change of licence).
 
-- For 0.11 the tag _v0.11.x-last-supported-code_
-- For 0.12 the tag _v0.12.x-last-supported-code_
-- For 0.13 the tag _v0.13.x-last-supported-code_
-- For 0.14 the tag _v0.14.x-last-supported-code_
+### Providers
 
-*DISCLAIMER*: The code on these branches is not updated.
-
-## Tests
-
-Unfortunately for now is tested manually. I do however test it weekly :)
-Last tested with:
+Unfortunately for now is tested manually. Last tested with:
 
 ```
 $ terraform version
-Terraform v1.2.6
+Terraform v1.5.5
 on linux_amd64
-+ provider registry.terraform.io/hashicorp/aws v4.23.0
-+ provider registry.terraform.io/hashicorp/http v3.0.1
-+ provider registry.terraform.io/hashicorp/null v3.1.1
-+ provider registry.terraform.io/hashicorp/random v3.3.2
++ provider registry.terraform.io/hashicorp/aws v5.14.0
++ provider registry.terraform.io/hashicorp/external v2.3.1
++ provider registry.terraform.io/hashicorp/http v3.4.0
++ provider registry.terraform.io/hashicorp/null v3.2.1
++ provider registry.terraform.io/hashicorp/random v3.5.1
 + provider registry.terraform.io/hashicorp/template v2.2.0
 ```
