@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### Dynamic vars (from terraform)
+### Dynamic vars
 
 DATA_DIR_NAME=data
 # shellcheck disable=SC2154

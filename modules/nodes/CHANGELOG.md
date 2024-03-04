@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 9.0.0
+
+### Features & Changes
+
+- Moved to opentofu.
+
+### Bugfixes
+
+### Known bugs/issues
+
 ## 8.0.0
 
 DO NOT USE 7.0.0. Use this version instead.
@@ -25,7 +35,7 @@ Use the next version in which the correct fix is implemented.
 ### Breaking changes
 
 - The nodes no longer take the token as a parameter (since it expires) and instead will retrieve it from a secret
-- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be openTF)
+- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be opentofu)
 
 ### Features & Changes
 

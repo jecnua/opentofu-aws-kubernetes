@@ -13,7 +13,7 @@ locals {
       "Environment"       = format("%s", local.environment)
       "k8s.io/role/node"  = "1" # Taken from the kops # TODO: CHECK
       "KubernetesCluster" = local.kubernetes_cluster
-      "ManagedBy"         = "terraform k8s module"
+      "ManagedBy"         = "opentofu k8s module"
       "ModuleRepository"  = "https://github.com/jecnua/terraform-aws-kubernetes"
     },
     var.additional_tags_as_map,
