@@ -6,6 +6,10 @@ resource "random_string" "seed" {
   special = false
 }
 
+locals {
+  kubeadm_install_version = var.kubeadm_install_version == "" ? join(".", [split(".", var.k8s_deb_package_version)[0], split(".", var.k8s_deb_package_version)[1]]) : var.kubeadm_install_version
+}
+
 data "template_file" "bootstrap_node_k8s_controllers" {
   template = file("${path.module}/scripts/bootstrap.sh")
 
@@ -13,7 +17,7 @@ data "template_file" "bootstrap_node_k8s_controllers" {
     load_balancer_dns       = aws_lb.k8s_controllers_external_lb.dns_name
     controller_join_token   = var.controller_join_token
     k8s_deb_package_version = var.k8s_deb_package_version
-    kubeadm_install_version = var.kubeadm_install_version
+    kubeadm_install_version = "stable-${local.kubeadm_install_version}"
     pre_install             = var.userdata_pre_install
     cni_file_location       = var.cni_file_location
     kubeadm_join_config     = data.template_file.bootstrap_k8s_controllers_kubeadm_join_config.rendered

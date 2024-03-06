@@ -48,16 +48,10 @@ fi
 
 #################################################
 
-#apt update
-#apt install gnupg2 ca-certificates
-#apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
-#kubeadm config print init-defaults
-
 # Add k8s repo
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
 
 # You need nfs-common to use efs
 apt update
@@ -72,9 +66,9 @@ apt install -y \
 	apparmor-utils
 # This need to be synchronized
 apt install -y \
-	kubelet="$K8S_DEB_PACKAGES_VERSION-00" \
-	kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
-	kubectl="$K8S_DEB_PACKAGES_VERSION-00"
+	kubelet="$K8S_DEB_PACKAGES_VERSION-*" \
+	kubeadm="$K8S_DEB_PACKAGES_VERSION-*" \
+	kubectl="$K8S_DEB_PACKAGES_VERSION-*"
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)

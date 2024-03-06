@@ -26,12 +26,11 @@ More information on each module can be found at the following links:
 
 [Module maintainers](MAINTAINERS.md)
 
-## opentofu
+## Opentofu
 
 ### Supported opentofu versions
 
 This module only support opentofu since version v9.0.0.
-The last version tested on terraform (1.5.5) is v8.0.0.
 
 ### Providers
 
@@ -39,4 +38,10 @@ Unfortunately for now is tested manually. Last tested with:
 
 ```
 $ tofu version
+OpenTofu v1.6.2
+on linux_amd64
++ provider registry.opentofu.org/hashicorp/aws v5.39.1
++ provider registry.opentofu.org/hashicorp/http v3.4.2
++ provider registry.opentofu.org/hashicorp/null v3.2.2
++ provider registry.opentofu.org/hashicorp/random v3.6.0
 ```

@@ -48,14 +48,14 @@ variable "sns_topic_notifications" {
 
 variable "k8s_deb_package_version" {
   type        = string
-  description = "The version of the deb package to install in ubuntu (i.e. 1.25.0)"
-  default     = "1.27.5"
+  description = "The version of the deb package to install in ubuntu (i.e. 1.29.2)"
+  default     = "1.29.2"
 }
 
 variable "kubeadm_install_version" {
   type        = string
-  description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.25)"
-  default     = "stable-1.27"
+  description = "Forces the version to install in the syntax expected by kubeadm (i.e. stable-1.29)"
+  default     = ""
 }
 
 variable "userdata_pre_install" {

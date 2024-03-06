@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 9.0.0
+
+### Features & Changes
+
+- Moved to opentofu. The last version tested on terraform (1.5.5) is v8.0.0.
+- Updated k8s version to 1.29
+- var.kubeadm_install_version is now computed automatically
+- Updated stern version (1.11 -> 1.28)
+- Changed the repote repository where to pull from kubernetes packages
+
+### Bugfixes
+
+- Fixed a bug when installing kubeadm/kubelet/etc
+
+### Known bugs/issues
+
 ## 8.0.0
 
 DO NOT USE 7.0.0. Use this version instead.

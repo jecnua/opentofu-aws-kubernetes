@@ -74,7 +74,7 @@ resource "aws_autoscaling_group" "k8s_workers_ag" {
   ]
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 
   launch_template {

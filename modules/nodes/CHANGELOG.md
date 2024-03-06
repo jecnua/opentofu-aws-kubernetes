@@ -4,7 +4,7 @@
 
 ### Features & Changes
 
-- Moved to opentofu.
+- Moved to opentofu. The last version tested on terraform (1.5.5) is v8.0.0.
 
 ### Bugfixes
 
