@@ -18,46 +18,23 @@ EOF
 # Apply sysctl params without reboot
 sysctl --system
 
-## Compile crio-o
-
-DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  libvirt-clients \
-  golang \
-  libdevmapper-dev \
-  lvm2 \
-  make
-#git clone https://github.com/cri-o/cri-o.git
-#cd cri-o || exit 1
-#git checkout v1.21.0
-#sed -i 's/- exclude_graphdriver_devicemapper/# - exclude_graphdriver_devicemapper/g' .golangci.yml
-#make install
-
-## Install via apt
-
-. /etc/lsb-release
-OS='x'$DISTRIB_ID'_'$DISTRIB_RELEASE
-VERSION=${crio_version}
-
-echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/ /" > "/etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.list"
-
-curl -L "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key" | apt-key add -
-curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key" | apt-key add -
-
+# Install via apt
+# https://github.com/cri-o/packaging
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y cri-o cri-o-runc cri-tools
-
-##
-
-sed -i 's|conmon = ""|conmon = "/usr/bin/conmon"|g' /etc/crio/crio.conf
-
-systemctl status crio
-
+apt-get install -y software-properties-common curl
+KUBERNETES_VERSION=v${kubernetes_version}
+PROJECT_PATH=prerelease:/main
+curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/$PROJECT_PATH/deb/Release.key |
+    gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/$PROJECT_PATH/deb/ /" |
+    tee /etc/apt/sources.list.d/cri-o.list
+apt-get update
+apt-get install -y cri-o
 systemctl enable crio.service
 systemctl start crio.service
 systemctl status crio.service
-
 crictl info
+crio status info
 
 # TODO: Move it to node configuration?
 # Preferably, the user should use

@@ -1,7 +1,7 @@
 data "template_file" "bootstrap_k8s_cri_installation_docker" {
   template = file("${path.module}/scripts/cri-o.sh")
   vars = {
-    crio_version = var.crio_version
+    kubernetes_version = var.kubernetes_version
   }
 }
 

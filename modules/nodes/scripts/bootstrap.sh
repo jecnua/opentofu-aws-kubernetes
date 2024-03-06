@@ -75,10 +75,15 @@ apt install -y \
 apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 # Install falco
-curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc | apt-key add -
-echo "deb https://download.falco.org/packages/deb stable main" | tee -a /etc/apt/sources.list.d/falcosecurity.list
+curl -fsSL https://falco.org/repo/falcosecurity-packages.asc | \
+	gpg --dearmor -o /usr/share/keyrings/falco-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/falco-archive-keyring.gpg] https://download.falco.org/packages/deb stable main" | \
+	tee -a /etc/apt/sources.list.d/falcosecurity.list
 apt update -y
-apt -y install "linux-headers-$(uname -r)"
+apt install -y dkms make linux-headers-$(uname -r)
+# If you use falcoctl driver loader to build the eBPF probe locally you need also clang toolchain
+apt install -y clang llvm
+
 apt install -y falco
 systemctl start falco
 systemctl status falco

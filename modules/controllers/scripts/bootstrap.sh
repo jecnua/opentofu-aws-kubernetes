@@ -164,8 +164,8 @@ EOF
 
 	cd /home/$KCTL_USER || exit
 	mkdir -p /home/$KCTL_USER/.kube
-	sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
-	sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
+	cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
+	chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
 	echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
 
 	# So now this is tricky! Sometimes when starting up, when you try to apply what follows it will fails because
@@ -173,7 +173,7 @@ EOF
 	# which doesn't use the LB and I will use this to configure the CNI and signer
 	cp /home/$KCTL_USER/.kube/config /home/$KCTL_USER/.kube/local
 	sed -i "s|$LB_DNS_NAME|127.0.0.1|g" /home/$KCTL_USER/.kube/local
-	sudo chown $KCTL_USER:$KCTL_USER /home/$KCTL_USER/.kube/local
+	chown $KCTL_USER:$KCTL_USER /home/$KCTL_USER/.kube/local
 
 	# Mabel the master
 	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
