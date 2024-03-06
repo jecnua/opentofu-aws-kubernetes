@@ -142,6 +142,11 @@ HOME=$OLD_HOME
 # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
 echo 'protectKernelDefaults: true' >>/var/lib/kubelet/config.yaml
 
+# CIS 4.1.1 [1.29] Run the below command (based on the file location on your system) on the each worker node.
+chmod 600 /lib/systemd/system/kubelet.service
+# CIS 4.1.9 [1.29] Run the following command (using the config file location identified in the Audit step)
+chmod 600 /var/lib/kubelet/config.yaml
+
 # Adding autocomplete - This helps :)
 echo 'source <(kubeadm completion bash)' >> /home/$KCTL_USER/.bashrc
 echo 'source <(kubectl completion bash)' >> /home/$KCTL_USER/.bashrc
