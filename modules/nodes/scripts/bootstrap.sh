@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### Dynamic vars (from terraform)
+### Dynamic vars
 
 DATA_DIR_NAME=data
 # shellcheck disable=SC2154
@@ -48,16 +48,10 @@ fi
 
 #################################################
 
-#apt update
-#apt install gnupg2 ca-certificates
-#apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
-#kubeadm config print init-defaults
-
 # Add k8s repo
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
 
 # You need nfs-common to use efs
 apt update
@@ -72,19 +66,24 @@ apt install -y \
 	apparmor-utils
 # This need to be synchronized
 apt install -y \
-	kubelet="$K8S_DEB_PACKAGES_VERSION-00" \
-	kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
-	kubectl="$K8S_DEB_PACKAGES_VERSION-00"
+	kubelet="$K8S_DEB_PACKAGES_VERSION-*" \
+	kubeadm="$K8S_DEB_PACKAGES_VERSION-*" \
+	kubectl="$K8S_DEB_PACKAGES_VERSION-*"
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
 apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 # Install falco
-curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc | apt-key add -
-echo "deb https://download.falco.org/packages/deb stable main" | tee -a /etc/apt/sources.list.d/falcosecurity.list
+curl -fsSL https://falco.org/repo/falcosecurity-packages.asc | \
+	gpg --dearmor -o /usr/share/keyrings/falco-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/falco-archive-keyring.gpg] https://download.falco.org/packages/deb stable main" | \
+	tee -a /etc/apt/sources.list.d/falcosecurity.list
 apt update -y
-apt -y install "linux-headers-$(uname -r)"
+apt install -y dkms make linux-headers-$(uname -r)
+# If you use falcoctl driver loader to build the eBPF probe locally you need also clang toolchain
+apt install -y clang llvm
+
 apt install -y falco
 systemctl start falco
 systemctl status falco
@@ -142,6 +141,11 @@ HOME=$OLD_HOME
 # TODO: This file does not exist
 # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
 echo 'protectKernelDefaults: true' >>/var/lib/kubelet/config.yaml
+
+# CIS 4.1.1 [1.29] Run the below command (based on the file location on your system) on the each worker node.
+chmod 600 /lib/systemd/system/kubelet.service
+# CIS 4.1.9 [1.29] Run the following command (using the config file location identified in the Audit step)
+chmod 600 /var/lib/kubelet/config.yaml
 
 # Adding autocomplete - This helps :)
 echo 'source <(kubeadm completion bash)' >> /home/$KCTL_USER/.bashrc

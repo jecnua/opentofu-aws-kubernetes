@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 9.0.0
+
+### Features & Changes
+
+- Moved to opentofu. The last version tested on terraform (1.5.5) is v8.0.0.
+- Updated k8s version to 1.29
+- var.kubeadm_install_version is now computed automatically
+- Updated stern version (1.11 -> 1.28)
+- Changed the repote repository where to pull from kubernetes packages
+
+### Bugfixes
+
+- Fixed a bug when installing kubeadm/kubelet/etc
+
+### Known bugs/issues
+
 ## 8.0.0
 
 DO NOT USE 7.0.0. Use this version instead.
@@ -33,7 +49,7 @@ Use the next version in which the correct fix is implemented.
 - Now the cluster is HA with multiple masters :) and THIS was not easy :D
 - You will need to open the security group to the IPs you want to access the cluster from (since it's using a NLB) and the NATs
 - Updated k8s version to 1.27
-- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be openTF)
+- Updated terraform version to <= 1.5.5 (last version I will support. Next one will be opentofu)
 
 ### Features & Changes
 

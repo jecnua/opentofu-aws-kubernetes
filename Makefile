@@ -1,7 +1,7 @@
 fmt-all:
-	terraform fmt -recursive modules/nodes/*.tf
-	terraform fmt -recursive modules/controllers/*.tf
-	terraform fmt -recursive example/*.tf
+	tofu fmt -recursive modules/nodes/*.tf
+	tofu fmt -recursive modules/controllers/*.tf
+	tofu fmt -recursive example/*.tf
 
 checks: fmt-all # 59
 	tfsec .

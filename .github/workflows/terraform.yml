@@ -1,27 +1,24 @@
-name: Validate terraform
+name: Validate opentofu
 on:
   push:
-    branches:
-      - '**'
-  # https://github.com/hashicorp/setup-terraform
 jobs:
   tf:
-    name: terraform checks modules
+    name: opentofu checks modules
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: hashicorp/setup-terraform@v2
+    - uses: actions/checkout@v4
+    - uses: opentofu/setup-opentofu@v1
       with:
-        terraform_version: 1.5.5
+        tofu_version: 1.6.2
     - run: |
-        terraform fmt -check -recursive ./modules
-    - name: Terraform Init
+        tofu fmt -check -recursive ./modules
+    - name: tofu Init
       id: init
       run: |
         cd example
-        terraform init
-    - name: Terraform Validate
+        tofu init
+    - name: tofu validate
       id: validate
       run: |
         cd example
-        terraform validate -no-color
+        tofu validate -no-color

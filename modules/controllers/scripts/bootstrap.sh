@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### Dynamic vars (from terraform)
+### Dynamic vars
 
 DATA_DIR_NAME=data
 # shellcheck disable=SC2154
@@ -9,7 +9,7 @@ K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 #KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
 KCTL_USER='ubuntu'
 
-STERN_VERSION='1.11.0' # TODO: Parametric
+STERN_VERSION='1.28.0' # TODO: Parametric
 LB_DNS_NAME=${load_balancer_dns}
 
 ### Statics
@@ -51,16 +51,11 @@ fi
 
 #################################################
 
-#apt update
-#apt install gnupg2 ca-certificates
-#apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
-#kubeadm config print init-defaults
-
+# TODO: Fix the version and make it parametric
 # Add k8s repo
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
 
 # You need nfs-common to use efs
 apt update
@@ -73,12 +68,13 @@ apt install -y \
 	net-tools \
 	binutils \
 	etcd-client \
-	apparmor-utils
+	apparmor-utils \
+	kubernetes-cni
 # This need to be synchronized
 apt install -y \
-	kubelet="$K8S_DEB_PACKAGES_VERSION-00" \
-	kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
-	kubectl="$K8S_DEB_PACKAGES_VERSION-00"
+	kubelet="$K8S_DEB_PACKAGES_VERSION-*" \
+	kubeadm="$K8S_DEB_PACKAGES_VERSION-*" \
+	kubectl="$K8S_DEB_PACKAGES_VERSION-*"
 
 # Requires js
 AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
@@ -168,8 +164,8 @@ EOF
 
 	cd /home/$KCTL_USER || exit
 	mkdir -p /home/$KCTL_USER/.kube
-	sudo cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
-	sudo chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
+	cp -i /etc/kubernetes/admin.conf /home/$KCTL_USER/.kube/config
+	chown "$KCTL_USER":"$KCTL_USER" -R /home/$KCTL_USER/.kube
 	echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
 
 	# So now this is tricky! Sometimes when starting up, when you try to apply what follows it will fails because
@@ -177,7 +173,7 @@ EOF
 	# which doesn't use the LB and I will use this to configure the CNI and signer
 	cp /home/$KCTL_USER/.kube/config /home/$KCTL_USER/.kube/local
 	sed -i "s|$LB_DNS_NAME|127.0.0.1|g" /home/$KCTL_USER/.kube/local
-	sudo chown $KCTL_USER:$KCTL_USER /home/$KCTL_USER/.kube/local
+	chown $KCTL_USER:$KCTL_USER /home/$KCTL_USER/.kube/local
 
 	# Mabel the master
 	su "$KCTL_USER" -c "KUBECONFIG=/home/$KCTL_USER/.kube/local kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"

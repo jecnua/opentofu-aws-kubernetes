@@ -18,8 +18,8 @@ Be careful to pass the right subnets in availability_zone!
 
 You can choose what version of k8s to install passing this variables:
 
-    k8s_deb_package_version           = "1.27.5"
-    kubeadm_install_version           = "stable-1.27"
+    k8s_deb_package_version           = "1.29.2"
+    kubeadm_install_version           = "stable-1.29"
 
 ## Debug
 
