@@ -72,7 +72,7 @@ resource "aws_launch_template" "controller" {
   name                                 = "k8s-controller-${count.index}-${var.environment}-${var.kubernetes_cluster}-${random_string.seed.result}"
   instance_initiated_shutdown_behavior = "terminate"
   image_id                             = var.ami_id != "" ? var.ami_id : data.aws_ami.ami_dynamic.id
-  instance_type                        = var.ec2_k8s_controllers_instance_type
+  instance_type                        = var.ec2_k8s_controllers_instance_types != [] ? var.ec2_k8s_controllers_instance_types[0] : var.ec2_k8s_controllers_instance_type
   user_data                            = data.template_cloudinit_config.controller_bootstrap.rendered
   key_name                             = var.enable_ssm_access_to_nodes ? null : var.ec2_key_name
   tags                                 = local.tags_as_map
@@ -93,13 +93,17 @@ resource "aws_launch_template" "controller" {
   iam_instance_profile {
     name = aws_iam_instance_profile.k8s_instance_profile.id
   }
-  # TODO: Reimplement this for testing?
-  //  instance_market_options {
-  //    market_type = var.market_options
-  //    spot_options {
-  //      spot_instance_type = "one-time" # Auto Scaling only supports the 'one-time' Spot instance type with no duration.
-  //    }
-  //  }
+
+  # dynamic "instance_market_options" {
+  #   for_each = var.market_options != "" ? [1] : []
+  #   content {
+  #     market_type = var.market_options
+  #     spot_options {
+  #       spot_instance_type = "one-time" # Auto Scaling only supports the 'one-time' Spot instance type with no duration.
+  #     }
+  #   }
+  # }
+
   # Remounting the same private IP when a node dies
   network_interfaces {
     network_interface_id = aws_network_interface.fixed_private_ip[count.index].id
@@ -131,9 +135,32 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   #  vpc_zone_identifier       = [aws_subnet.k8s_private.0.id] # A network interface may not specify both a network interface ID and a subnet. Launching EC2 instance failed.
   target_group_arns = [aws_lb_target_group.controllers.arn]
 
-  launch_template {
-    id      = aws_launch_template.controller[count.index].id
-    version = "$Latest"
+  # launch_template {
+  #   id      = aws_launch_template.controller[count.index].id
+  #   version = "$Latest"
+  # }
+
+  mixed_instances_policy {
+    dynamic "instances_distribution" {
+      for_each = var.market_options == "spot" ? [1] : []
+      content {
+        spot_allocation_strategy                 = "lowest-price"
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+    }
+    launch_template {
+      launch_template_specification {
+        launch_template_id = aws_launch_template.controller[count.index].id
+        version            = "$Latest"
+      }
+      dynamic "override" {
+        for_each = var.ec2_k8s_controllers_instance_types
+        content {
+          instance_type = override.value
+        }
+      }
+    }
   }
 
   termination_policies = [
@@ -152,7 +179,7 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   ]
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 
   tag {

@@ -131,8 +131,20 @@ variable "authorization_mode" {
   default     = "Node,RBAC"
 }
 
-//variable "market_options" {
-//  type        = string
-//  description = "Market options for the instances"
-//  default     = "spot"
-//}
+variable "market_options" {
+  type        = string
+  description = "Market options for the instances"
+  default     = "" # spot
+}
+
+variable "ec2_k8s_controllers_instance_type" {
+  type        = string
+  description = "Instance size for the nodes"
+  default     = "m7a.large"
+}
+
+variable "ec2_k8s_controllers_instance_types" {
+  type        = list(string)
+  description = "Instance size for the nodes"
+  default     = []
+}

@@ -39,11 +39,6 @@ variable "subnets_public_cidr_block" {
 
 ###################################### EC2
 
-variable "ec2_k8s_controllers_instance_type" {
-  type        = string
-  description = "Instance size for the nodes"
-}
-
 variable "k8s_controllers_num_nodes" {
   type        = string
   description = "Number of nodes in the asg for the controllers"
